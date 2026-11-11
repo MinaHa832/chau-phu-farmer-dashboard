@@ -91,6 +91,7 @@ async function fetchHistory() {
       rainFall24H_mm: row.rainFall24H_mm || "",
       rainFall7to7_mm: row.rainFall7to7_mm || "",
       lastStatus: row.lastStatus || "",
+      lastMeasurement_local: row.lastMeasurement_local || "",
       sourceRetrievedAt_local: row.sourceRetrievedAt_local || "",
     }));
 }
