@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 768 975" role="img" aria-labelledby="title desc">
+<title id="title">Châu Phú 18 RMU map</title><desc id="desc">Clean reference basemap showing the 2025 commune outline; RMU boundaries are drawn from the blue divisions in the user-supplied map photo.</desc>
+<defs><linearGradient id="paper" x2="0" y2="1"><stop stop-color="#f8f8f1"/><stop offset="1" stop-color="#edf3ed"/></linearGradient><pattern id="grain" width="28" height="28" patternUnits="userSpaceOnUse"><path d="M0 27.5H28" stroke="#748d7b" stroke-opacity=".045"/></pattern></defs>
+<rect width="768" height="975" fill="url(#paper)"/>
+<rect x="0" y="126" width="768" height="792" fill="#eaf2ef"/>
+<g fill="none" stroke="#97b3a5" stroke-width=".8" stroke-opacity=".27"><path d="M60.7 126V918"/><path d="M183.0 126V918"/><path d="M305.2 126V918"/><path d="M427.5 126V918"/><path d="M549.7 126V918"/><path d="M672.0 126V918"/><path d="M794.2 126V918"/><path d="M12 956.0H756"/><path d="M12 831.0H756"/><path d="M12 706.0H756"/><path d="M12 581.0H756"/><path d="M12 456.0H756"/><path d="M12 331.0H756"/><path d="M12 206.0H756"/></g>
+<path d="M245.1 812.7 L194.8 827.4 L82.0 876.1 L38.0 891.2 L12.1 895.9 L236.3 592.6 L402.5 393.4 L584.7 156.7 L587.4 154.3 L604.4 150.6 L675.6 219.7 L680.7 227.2 L749.6 279.5 L740.9 300.1 L330.9 792.4 L322.3 785.1 Z" fill="#f4efdc" stroke="#426e5d" stroke-width="2.2" stroke-linejoin="round"/>
+<path d="M245.1 812.7 L194.8 827.4 L82.0 876.1 L38.0 891.2 L12.1 895.9 L236.3 592.6 L402.5 393.4 L584.7 156.7 L587.4 154.3 L604.4 150.6 L675.6 219.7 L680.7 227.2 L749.6 279.5 L740.9 300.1 L330.9 792.4 L322.3 785.1 Z" fill="url(#grain)" stroke="none"/>
+<text x="30" y="43" font-family="system-ui, sans-serif" font-size="24" font-weight="800" fill="#205441">CHÂU PHÚ</text>
+<text x="30" y="67" font-family="system-ui, sans-serif" font-size="12" font-weight="650" fill="#567468">18 RMU · blue-line map transcription</text>
+<text x="30" y="86" font-family="system-ui, sans-serif" font-size="10" fill="#71877a">Map-derived boundaries and area estimates · not cadastral survey</text>
+<rect x="26" y="120" width="716" height="800" rx="8" fill="none" stroke="#789283" stroke-opacity=".55" stroke-width="1"/>
+<g font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#587568"><text x="183.0" y="948" text-anchor="middle">105.15°E</text><text x="427.5" y="948" text-anchor="middle">105.20°E</text><text x="672.0" y="948" text-anchor="middle">105.25°E</text><text x="12" y="834.0" text-anchor="start">10.45°N</text><text x="12" y="584.0" text-anchor="start">10.50°N</text><text x="12" y="334.0" text-anchor="start">10.55°N</text></g>
+<g transform="translate(638 891)" fill="none" stroke="#315a49" stroke-width="3"><path d="M0 0H44M0 -5V5M44 -5V5"/></g><text x="660" y="878" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#315a49">1 km</text>
+<text x="736" y="23" text-anchor="end" font-family="system-ui, sans-serif" font-size="9" fill="#71877a">COMMUNE OUTLINE · 2025</text>
+</svg>
