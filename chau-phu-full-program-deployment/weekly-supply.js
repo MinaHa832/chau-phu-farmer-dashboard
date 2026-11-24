@@ -149,7 +149,8 @@
     if (!output) return;
     const activeRecord = get($('supplyWeek')?.value, $('supplyRmu')?.value);
     if (activeRecord?.stageScenario) {
-      output.innerHTML = '<span>가상 시나리오 공급량</span><strong>' + fmt(activeRecord.availableM3) + ' m³</strong><small>수위 지표 반영 · 가정 유량·가동시간·손실률 · 실측 아님</small>';
+      const stageLabel = activeRecord.stageIndex === null || activeRecord.stageIndex === undefined ? '수위 중립 배율 적용' : '수위 지표 반영';
+      output.innerHTML = '<span>가상 시나리오 공급량</span><strong>' + fmt(activeRecord.availableM3) + ' m³</strong><small>' + stageLabel + ' · 가정 유량·가동시간·손실률 · 실측 아님</small>';
       return;
     }
     const method = $('supplyMethod')?.value || 'rmu_meter';
