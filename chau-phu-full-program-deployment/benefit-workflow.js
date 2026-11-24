@@ -276,7 +276,7 @@
     state.records.unshift(record);
     if (!saveState()) { state.records.shift(); return; }
     event.target.reset();
-    $('benefitMeasureBasis').value = 'meter';
+    $('benefitMeasureBasis').value = 'estimate';
     render(); announce(t('savedMessage'));
   }
   function loadDemo() {
