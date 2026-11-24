@@ -39,7 +39,8 @@
     }
   };
 
-  let language = localStorage.getItem('mekong-suksuk.benefit-language') || 'ko';
+  let language = 'ko';
+  try { language = localStorage.getItem('mekong-suksuk.benefit-language') || 'ko'; } catch (_) {}
   let activeRole = 'farmer';
   let state = loadState();
   const t = (key) => (dict[language] || dict.ko)[key] || dict.ko[key] || key;
