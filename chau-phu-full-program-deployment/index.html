@@ -357,6 +357,7 @@
 <label class="benefit-field"><span data-i18n="actualFuel"></span><input id="benefitActualFuel" type="number" min="0" step="0.1"></label>
 <label class="benefit-field"><span data-i18n="fuelRate"></span><input id="benefitFuelRate" type="number" min="0" step="1"></label>
 <label class="benefit-field full"><span data-i18n="extraCost"></span><input id="benefitExtraCost" type="number" min="0" step="1" value="0"></label>
+<label class="benefit-field full"><span data-i18n="deliveryQuality"></span><select id="benefitDeliveryQuality"><option value="unknown" data-i18n="qualityUnknown"></option><option value="adequate" data-i18n="qualityAdequate"></option><option value="shortage" data-i18n="qualityShortage"></option></select></label>
 <div class="benefit-form-section"><strong data-i18n="sourceTitle"></strong></div>
 <label class="benefit-field"><span data-i18n="measureBasis"></span><select id="benefitMeasureBasis"><option value="meter" data-i18n="basisMeter"></option><option value="ledger" data-i18n="basisLedger"></option><option value="estimate" data-i18n="basisEstimate"></option></select></label>
 <label class="benefit-field"><span data-i18n="baselineEvidence"></span><input id="benefitBaselineEvidence" type="text" maxlength="160"></label>
@@ -379,7 +380,7 @@
 <div><span data-i18n="fuelDelta"></span><strong id="benefitPreviewFuel">—</strong></div>
 <div><span data-i18n="netCost"></span><strong id="benefitPreviewNet">—</strong></div>
 </div>
-<p class="benefit-footnote">계산식: 물량 차이 = 기준기간 − 현재기간. 전기료·연료비 변화 = (기준 사용량 − 현재 사용량) × 입력 단가. 절수량은 금액으로 자동 환산하지 않습니다.</p>
+<p class="benefit-footnote" data-i18n="formulaNote"></p>
 </div>
 </div>
 <div class="card">
@@ -394,7 +395,7 @@
 <h3 data-i18n="queueTitle"></h3><div class="benefit-record-list" id="benefitReviewQueue"></div>
 </div>
 <div class="card">
-<div class="benefit-section-head"><div><span class="section-kicker">WATER SERVICE CONCERNS</span><h2 data-i18n="incidentTitle"></h2><p>제보는 확인 요청이며, 자동 위반 판정이나 불이익으로 사용되지 않습니다.</p></div></div>
+<div class="benefit-section-head"><div><span class="section-kicker">WATER SERVICE CONCERNS</span><h2 data-i18n="incidentTitle"></h2><p data-i18n="reportDisclaimer"></p></div></div>
 <div class="benefit-record-list" id="benefitIncidentQueue"></div>
 </div>
 <div class="card">
