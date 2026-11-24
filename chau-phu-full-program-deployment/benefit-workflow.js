@@ -17,7 +17,10 @@
       volumeSaved: '기준 대비 물량 차이', waterRate: '물량 변화율', electricityDelta: '전기료 변화 추정', fuelDelta: '연료비 변화 추정', netCost: '추가비용 반영 운영비 차이', saved: '감소 추정', increased: '증가 추정', equal: '변화 없음', notCalculated: '입력 필요', compareReady: '비교 조건 확인', compareHold: '비교 조건 미확인', statusWaitingFarmer: '농가 확인 대기', statusFarmerConfirmed: '독립 검증 대기', statusDisputed: '농가 이의 제기', statusVerified: '독립 검증 완료 · 지급 아님', statusRevision: '수정·보류 요청', demoBadge: '예시 입력 · 실측 자료 아님',
       reviewerTitle: '삼자 확인·검증 대기열', reviewerHelp: '운영자 입력 → 농가 사실 확인 → 독립 감시자 검증 순서입니다. 검증 완료는 편익 지급이나 급수 우선순위 변경을 뜻하지 않습니다.', queueTitle: '비교 기록 검토', reviewNote: '검토 근거 또는 수정 요청', approve: '근거 확인 완료', hold: '수정·보류 요청', approveBlocked: '비교조건·자료 근거·농가 확인을 갖춘 실제 기록만 검증할 수 있습니다.', incidentTitle: '급수 제보 검토', noIncidents: '검토할 제보가 없습니다.', investigate: '확인 진행', closeIncident: '검토 종료', open: '접수', investigating: '확인 중', closed: '검토 종료',
       policyTitle: '성과 확인과 보류 기준', monitorRoles: '운영자: 계량·펌프·전기/연료 장부 기록 · 농가: 실제 공급량·일정 확인 및 이의 제기 · 독립 감시자: 비교 조건·근거·처리 이력 검토', success: '성과지표: 비교 조건이 맞는 검증 물량, 농가 확인률, 독립 검증 완료 기록', stop: '보류 조건: 유량계/대장 부재, 기준기간 불일치, 공급 부족·이의 제기 미해결, 비용 근거 누락. 보류는 자동 급수 제한이나 벌점으로 연결하지 않습니다.', payout: '농가별 분배 규칙과 실제 자금원은 확정되지 않아 자동 이체·환급·편익 배분은 구현하지 않았습니다.', savedMessage: '기록을 저장했습니다. 농가 확인 대기 상태입니다.', reportSaved: '제보를 접수했습니다. 사실 판단은 별도 검토가 필요합니다.', reviewSaved: '검토 상태를 저장했습니다.', selectRmu: 'RMU 선택', selectFarm: '농가를 선택하세요', requiredError: '기간과 기준/현재 물량을 입력해 주세요.', storageError: '이 브라우저에 저장하지 못했습니다. 저장 공간을 확인해 주세요.', confirmedMessage: '공급 기록을 확인했습니다. 금액 지급 동의는 아닙니다.', disputedMessage: '이의 상태를 기록했습니다. 급수 제한으로 이어지지 않습니다.',
-      periodLength: '기간 일수', lengthMatched: '동일 기간 일수', lengthMismatch: '기간 일수 다름', noMeterWarning: '추정 자료는 비교 참고용이며 검증 완료될 수 없습니다.'
+      periodLength: '기간 일수', lengthMatched: '동일 기간 일수', lengthMismatch: '기간 일수 다름', noMeterWarning: '추정 자료는 비교 참고용이며 검증 완료될 수 없습니다.',
+      formulaNote: '계산식: 물량 차이 = 기준기간 − 현재기간. 전기료·연료비 변화 = (기준 사용량 − 현재 사용량) × 입력 단가. 공급 부족은 절수로 보지 않으며, 절수량은 금액으로 자동 환산하지 않습니다.',
+      reportDisclaimer: '제보는 확인 요청이며, 자동 위반 판정·벌점·급수 제한으로 사용되지 않습니다.',
+      deliveryQuality: '현재 기간 공급 서비스 상태', qualityAdequate: '필요한 급수 서비스가 정상 제공됨', qualityShortage: '공급 부족·중단이 있었음', qualityUnknown: '확인되지 않음', qualityHold: '공급 부족 여부가 확인되지 않아 절수량 검증을 보류합니다.'
     },
     vi: {
       title: 'Lợi ích tiết kiệm nước · Vận hành và xác minh', subtitle: 'Màn hình thử nghiệm để ghi nhận so sánh sau vụ, xác nhận của nông hộ và kiểm tra độc lập.',
@@ -29,7 +32,10 @@
       volumeSaved: 'Chênh lệch nước so với kỳ cơ sở', waterRate: 'Tỷ lệ thay đổi lượng nước', electricityDelta: 'Ước tính thay đổi tiền điện', fuelDelta: 'Ước tính thay đổi tiền nhiên liệu', netCost: 'Chênh lệch chi phí vận hành sau chi phí bổ sung', saved: 'Ước tính giảm', increased: 'Ước tính tăng', equal: 'Không đổi', notCalculated: 'Cần nhập dữ liệu', compareReady: 'Điều kiện so sánh đã kiểm tra', compareHold: 'Chưa kiểm tra điều kiện so sánh', statusWaitingFarmer: 'Chờ nông hộ xác nhận', statusFarmerConfirmed: 'Chờ xác minh độc lập', statusDisputed: 'Nông hộ có ý kiến', statusVerified: 'Đã xác minh độc lập · không phải thanh toán', statusRevision: 'Yêu cầu sửa/tạm dừng', demoBadge: 'Dữ liệu ví dụ · không phải số đo thực',
       reviewerTitle: 'Quy trình xác nhận ba bên', reviewerHelp: 'Người vận hành nhập → nông hộ xác nhận sự việc → giám sát độc lập kiểm tra. Xác minh không đồng nghĩa với chi trả lợi ích hoặc thay đổi thứ tự cấp nước.', queueTitle: 'Hàng đợi hồ sơ so sánh', reviewNote: 'Căn cứ xem xét hoặc nội dung yêu cầu sửa', approve: 'Xác minh đủ căn cứ', hold: 'Yêu cầu sửa/tạm dừng', approveBlocked: 'Chỉ xác minh hồ sơ thực có điều kiện so sánh, bằng chứng và xác nhận của nông hộ.', incidentTitle: 'Xem xét báo cáo cấp nước', noIncidents: 'Không có báo cáo chờ xử lý.', investigate: 'Đang xác minh', closeIncident: 'Kết thúc xem xét', open: 'Đã tiếp nhận', investigating: 'Đang xác minh', closed: 'Đã kết thúc',
       policyTitle: 'Chỉ số kết quả và tiêu chí tạm dừng', monitorRoles: 'Người vận hành: ghi đồng hồ/bơm/điện và nhiên liệu · Nông hộ: xác nhận lượng/lịch cấp và phản hồi · Giám sát độc lập: kiểm tra điều kiện so sánh, bằng chứng và lịch sử xử lý', success: 'Chỉ số: lượng nước được xác minh trong điều kiện so sánh được, tỷ lệ nông hộ xác nhận, số hồ sơ được kiểm tra độc lập', stop: 'Tạm dừng khi thiếu đồng hồ/sổ ghi, kỳ cơ sở không phù hợp, thiếu nước/tranh chấp chưa giải quyết hoặc thiếu chứng từ chi phí. Không tự động hạn chế cấp nước hoặc phạt.', payout: 'Chưa thống nhất quy tắc chia cho từng hộ và nguồn tiền thực tế; chưa triển khai chuyển khoản, hoàn tiền hoặc tự chia lợi ích.', savedMessage: 'Đã lưu hồ sơ. Đang chờ nông hộ xác nhận.', reportSaved: 'Đã tiếp nhận báo cáo. Cần xem xét riêng trước khi kết luận.', reviewSaved: 'Đã lưu trạng thái xem xét.', selectRmu: 'Chọn RMU', selectFarm: 'Chọn nông hộ', requiredError: 'Vui lòng nhập kỳ và lượng nước cơ sở/hiện tại.', storageError: 'Không lưu được trong trình duyệt này. Hãy kiểm tra dung lượng lưu trữ.', confirmedMessage: 'Đã xác nhận hồ sơ cấp nước. Đây không phải đồng ý thanh toán.', disputedMessage: 'Đã ghi nhận ý kiến. Không dẫn đến hạn chế cấp nước.',
-      periodLength: 'Số ngày', lengthMatched: 'Số ngày bằng nhau', lengthMismatch: 'Số ngày khác nhau', noMeterWarning: 'Dữ liệu ước tính chỉ để tham khảo và không thể được xác minh.'
+      periodLength: 'Số ngày', lengthMatched: 'Số ngày bằng nhau', lengthMismatch: 'Số ngày khác nhau', noMeterWarning: 'Dữ liệu ước tính chỉ để tham khảo và không thể được xác minh.',
+      formulaNote: 'Công thức: chênh lệch nước = kỳ cơ sở − kỳ hiện tại. Thay đổi chi phí điện/nhiên liệu = (mức dùng kỳ cơ sở − kỳ hiện tại) × đơn giá nhập. Thiếu nước không được tính là tiết kiệm; lượng nước không tự quy đổi thành tiền.',
+      reportDisclaimer: 'Báo cáo chỉ yêu cầu kiểm tra; không tự động kết luận vi phạm, phạt hoặc hạn chế cấp nước.',
+      deliveryQuality: 'Tình trạng dịch vụ cấp nước kỳ hiện tại', qualityAdequate: 'Dịch vụ cấp nước cần thiết đã được cung cấp', qualityShortage: 'Có thiếu nước/ngừng cấp', qualityUnknown: 'Chưa xác minh', qualityHold: 'Chưa xác nhận thiếu nước hay không; tạm giữ việc xác minh tiết kiệm.'
     }
   };
 
@@ -88,8 +94,10 @@
     return Math.round((b - a) / 86400000) + 1;
   }
   function calculate(record) {
+    const hasBaseWater = record.baselineWaterM3 !== null && record.baselineWaterM3 !== undefined && record.baselineWaterM3 !== '';
+    const hasActualWater = record.actualWaterM3 !== null && record.actualWaterM3 !== undefined && record.actualWaterM3 !== '';
     const baseWater = Number(record.baselineWaterM3), actualWater = Number(record.actualWaterM3);
-    const waterDelta = Number.isFinite(baseWater) && Number.isFinite(actualWater) ? baseWater - actualWater : null;
+    const waterDelta = hasBaseWater && hasActualWater && Number.isFinite(baseWater) && Number.isFinite(actualWater) ? baseWater - actualWater : null;
     const waterPct = baseWater > 0 && waterDelta !== null ? waterDelta / baseWater * 100 : null;
     const electricity = record.baselineKwh !== null && record.actualKwh !== null && record.electricityRate !== null
       ? (Number(record.baselineKwh) - Number(record.actualKwh)) * Number(record.electricityRate) : null;
@@ -112,7 +120,7 @@
   }
   function canVerify(record) {
     return !record.demo && record.status === 'farmer_confirmed' && isComparable(record) &&
-      record.measureBasis !== 'estimate' && record.baselineEvidence?.trim() && record.actualEvidence?.trim();
+      record.measureBasis !== 'estimate' && record.deliveryQuality === 'adequate' && record.baselineEvidence?.trim() && record.actualEvidence?.trim();
   }
   function statusText(record) {
     if (record.status === 'farmer_confirmed') return t('statusFarmerConfirmed');
@@ -160,6 +168,7 @@
       </div>
       <p class="benefit-record-meta">${esc(formatDate(record.baselineStart))}–${esc(formatDate(record.baselineEnd))} → ${esc(formatDate(record.currentStart))}–${esc(formatDate(record.currentEnd))} · ${esc(dateLengthText(record))}</p>
       <p class="benefit-record-meta">${esc(comparable ? t('compareReady') : t('compareHold'))} · ${esc(record.measureBasis === 'estimate' ? t('noMeterWarning') : '')}</p>
+      <p class="benefit-record-meta">${esc(record.deliveryQuality === 'adequate' ? t('qualityAdequate') : t('qualityHold'))}</p>
       ${context === 'farmer' && record.status !== 'verified' ? `<label class="benefit-field benefit-note-field"><span>${esc(t('farmerNote'))}</span><textarea data-farmer-note="${esc(record.id)}" rows="2"></textarea></label><div class="benefit-actions"><button class="btn btn-secondary btn-small" data-farmer-action="confirm" data-id="${esc(record.id)}">${esc(t('confirmFacts'))}</button><button class="btn btn-secondary btn-small" data-farmer-action="dispute" data-id="${esc(record.id)}">${esc(t('dispute'))}</button></div>` : ''}
       ${context === 'reviewer' ? `<div class="benefit-review-tools"><label class="benefit-field"><span>${esc(t('reviewNote'))}</span><textarea data-review-note="${esc(record.id)}" rows="2"></textarea></label><div class="benefit-actions">${canVerify(record) ? `<button class="btn btn-primary btn-small" data-review-action="verify" data-id="${esc(record.id)}">${esc(t('approve'))}</button>` : `<span class="benefit-blocked">${esc(t('approveBlocked'))}</span>`}${record.status !== 'verified' ? `<button class="btn btn-secondary btn-small" data-review-action="revision" data-id="${esc(record.id)}">${esc(t('hold'))}</button>` : ''}</div></div>` : ''}
     </article>`;
@@ -230,6 +239,8 @@
   }
   function render() {
     applyStaticText();
+    const issueRmu = $('benefitIssueRmu');
+    if (issueRmu) fillSelect(issueRmu, RMUS.map((rmu) => ({ value: rmu, label: rmu })), t('selectRmu'), issueRmu.value);
     renderRoles();
     renderFarmer();
     renderOperator();
@@ -255,7 +266,7 @@
       baselineStart, baselineEnd, currentStart, currentEnd, baselineWaterM3: baselineWater, actualWaterM3: actualWater,
       baselineKwh: numberFrom('benefitBaselineKwh'), actualKwh: numberFrom('benefitActualKwh'), electricityRate: numberFrom('benefitElectricityRate'),
       baselineFuelL: numberFrom('benefitBaselineFuel'), actualFuelL: numberFrom('benefitActualFuel'), fuelRate: numberFrom('benefitFuelRate'), extraCost: numberFrom('benefitExtraCost') || 0,
-      measureBasis, baselineEvidence: $('benefitBaselineEvidence').value.trim(), actualEvidence: $('benefitActualEvidence').value.trim(),
+      measureBasis, deliveryQuality: $('benefitDeliveryQuality').value, baselineEvidence: $('benefitBaselineEvidence').value.trim(), actualEvidence: $('benefitActualEvidence').value.trim(),
       checkScope: $('benefitCheckScope').checked, checkCrop: $('benefitCheckCrop').checked, checkWeather: $('benefitCheckWeather').checked,
       operatorNote: $('benefitOperatorNote').value.trim(), status: 'awaiting_farmer', demo: false,
       createdAt: new Date().toISOString(), history: []
@@ -275,7 +286,7 @@
       baselineStart: '2024-07-01', baselineEnd: '2024-10-20', currentStart: '2025-07-01', currentEnd: '2025-10-20',
       baselineWaterM3: 10000, actualWaterM3: 8500, baselineKwh: 3200, actualKwh: 2800, electricityRate: 3000,
       baselineFuelL: 0, actualFuelL: 0, fuelRate: 0, extraCost: 300000,
-      measureBasis: 'meter', baselineEvidence: '예시 계량 기록 (합성 값)', actualEvidence: '예시 계량 기록 (합성 값)',
+      measureBasis: 'meter', deliveryQuality: 'adequate', baselineEvidence: '예시 계량 기록 (합성 값)', actualEvidence: '예시 계량 기록 (합성 값)',
       checkScope: true, checkCrop: true, checkWeather: true, operatorNote: '예시 계산 전용. 실제 측정·단가·급수권역 자료가 아닙니다.',
       status: 'awaiting_farmer', demo: true, createdAt: new Date().toISOString(), history: []
     };
