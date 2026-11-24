@@ -318,24 +318,54 @@
 <div class="card">
 <div class="benefit-section-head"><div><span class="section-kicker">FARMER / CONFIRM</span><h2 data-i18n="farmViewTitle"></h2><p data-i18n="farmerHelp"></p></div><span class="benefit-scope" id="benefitFarmerRMU">—</span></div>
 <label class="benefit-field"><span data-i18n="chooseFarm"></span><select id="benefitFarmerFarm"></select></label>
+<div class="benefit-quick-request">
+<h3 data-i18n="requestTitle"></h3><p data-i18n="requestHelp"></p>
+<form id="benefitRequestForm" class="benefit-request-form">
+<label class="benefit-field"><span data-i18n="requestWeek"></span><select id="benefitRequestWeek"></select></label>
+<label class="benefit-field"><span data-i18n="requestVolume"></span><input id="benefitRequestVolume" type="number" min="0.1" step="0.1" required></label>
+<label class="benefit-field full"><span data-i18n="requestDetails"></span><input id="benefitRequestReason" type="text" maxlength="400"></label>
+<div class="benefit-field full"><button class="btn btn-primary btn-small" id="benefitRequestSubmit" type="submit" data-i18n="requestSubmit"></button></div>
+</form>
+<div class="benefit-requests-heading"><h3 data-i18n="farmerRequestsTitle"></h3></div>
+<div class="benefit-record-list" id="benefitFarmerRequests"></div>
+</div>
 <div class="benefit-record-list" id="benefitFarmerRecords" style="margin-top:14px"></div>
 <p class="benefit-footnote" data-i18n="individualBenefit"></p>
 </div>
 <div class="card">
 <div class="benefit-section-head"><div><span class="section-kicker">REPORT / REQUEST REVIEW</span><h2 data-i18n="reportTitle"></h2></div></div>
+<details class="benefit-advanced"><summary><strong data-i18n="reportToggle"></strong></summary>
 <form id="benefitIncidentForm" class="benefit-form">
 <label class="benefit-field"><span data-i18n="rmuLabel"></span><select id="benefitIssueRmu" data-benefit-zone-select></select></label>
 <label class="benefit-field"><span data-i18n="issueType"></span><select id="benefitIssueType"><option value="issueBypass" data-i18n="issueBypass"></option><option value="issueOrder" data-i18n="issueOrder"></option><option value="issueMismatch" data-i18n="issueMismatch"></option><option value="issueShortage" data-i18n="issueShortage"></option><option value="issueOther" data-i18n="issueOther"></option></select></label>
 <label class="benefit-field full"><span data-i18n="issueDetails"></span><textarea id="benefitIssueDetails" rows="3" required maxlength="1500"></textarea></label>
 <div class="benefit-field full"><button class="btn btn-primary btn-small" type="submit" data-i18n="submitReport"></button></div>
 </form>
+</details>
 </div>
 </div>
 </div>
 <div class="benefit-view" id="benefitViewOperator" data-benefit-view="operator" role="tabpanel" hidden>
-<div class="benefit-two-col">
+<div class="card benefit-ops-dashboard">
+<div class="benefit-section-head"><div><span class="section-kicker">WEEKLY OPERATIONS</span><h2 data-i18n="operatorTitle"></h2><p data-i18n="operatorHelp"></p></div></div>
+<div class="benefit-ops-controls">
+<label class="benefit-field"><span data-i18n="opsWeek"></span><select id="benefitOpsWeek"></select></label>
+<label class="benefit-field"><span data-i18n="opsRmu"></span><select id="benefitOpsRmu"></select></label>
+</div>
+<div class="benefit-mini-metrics" id="benefitOpsMetrics"></div>
+<div class="benefit-ops-visual"><h3 data-i18n="opsChartTitle"></h3><div class="benefit-ops-chart" id="benefitOpsChart" aria-live="polite"></div></div>
+<div class="benefit-work-area"><h3 data-i18n="opsWorkTitle"></h3><p class="benefit-request-help" data-i18n="opsWorkHelp"></p><div class="benefit-operation-list" id="benefitOpsWorklist"></div></div>
+</div>
 <div class="card">
-<div class="benefit-section-head"><div><span class="section-kicker">OPERATOR / PERIOD COMPARISON</span><h2 data-i18n="operatorTitle"></h2><p data-i18n="operatorHelp"></p></div></div>
+<div class="benefit-requests-heading"><div><span class="section-kicker">FARMER REQUESTS</span><h2 data-i18n="requestQueueTitle"></h2></div><span class="benefit-count" id="benefitRequestCount" aria-live="polite">0</span></div>
+<p class="benefit-request-help" data-i18n="requestQueueHelp"></p>
+<div class="benefit-request-queue" id="benefitRequestQueue"></div>
+</div>
+<div class="benefit-notice" id="benefitNotice" role="status" aria-live="polite"></div>
+<details class="benefit-advanced">
+<summary><strong data-i18n="advancedTitle"></strong><span data-i18n="advancedHelp"></span></summary><div class="benefit-two-col">
+<div class="card">
+<div class="benefit-section-head"><div><span class="section-kicker">OPERATOR / PERIOD COMPARISON</span><h2 data-i18n="seasonCompareTitle"></h2><p data-i18n="operatorHistoryHelp"></p></div></div>
 <form id="benefitForm" class="benefit-form">
 <label class="benefit-field full"><span data-i18n="cycleLabel"></span><input id="benefitCycleLabel" type="text" maxlength="120"></label>
 <label class="benefit-field"><span data-i18n="rmuLabel"></span><select id="benefitRmu" required></select></label>
@@ -370,7 +400,7 @@
 <label class="benefit-field full"><span data-i18n="noteLabel"></span><textarea id="benefitOperatorNote" rows="3" maxlength="1000"></textarea></label>
 <div class="benefit-card-actions benefit-field full"><button class="btn btn-primary" type="submit" data-i18n="saveRecord"></button><button class="btn btn-secondary btn-small" type="button" id="benefitLoadDemo" data-i18n="sampleButton"></button><button class="btn btn-secondary btn-small" type="button" id="benefitExport" data-i18n="exportButton"></button></div>
 </form>
-<div class="benefit-notice" id="benefitNotice" role="status" aria-live="polite"></div>
+
 </div>
 <div class="card benefit-preview">
 <div class="benefit-section-head"><div><span class="section-kicker">ESTIMATE / NOT A SETTLEMENT</span><h2 data-i18n="previewTitle"></h2><p data-i18n="previewHelp"></p></div></div>
@@ -387,6 +417,7 @@
 <div class="benefit-section-head"><div><span class="section-kicker">LOCAL AUDIT RECORDS</span><h2 data-i18n="recordsTitle"></h2></div></div>
 <div class="benefit-record-list" id="benefitOperatorRecords"></div>
 </div>
+</details>
 </div>
 <div class="benefit-view" id="benefitViewReviewer" data-benefit-view="reviewer" role="tabpanel" hidden>
 <div class="card">
@@ -1256,6 +1287,9 @@
     const rawSupplyPct=Number($('allocationSupplyPct').value);
     const supplyPct=Math.max(0,Math.min(100,Number.isFinite(rawSupplyPct)?rawSupplyPct:70));
     const allocationPlan=simulateBalanceAllocation(filtered,supplyPct);
+    const globalAllocationPlan=calendarZone==='all'?allocationPlan:simulateBalanceAllocation(sums.weeks,supplyPct);
+    window.__MEKONG_ALLOCATION_PLAN__={startDate:calendarStart,supplyPct,weeks:globalAllocationPlan.map((plan,week)=>({index:week+1,startDate:weekStart(week),rows:plan.rows.map(row=>({farmId:String(row.farm.id),farmName:row.farm.name||String(row.farm.id),rmu:row.farm.rmu||'미배정',crop:CROPS[row.farm.crop]||row.farm.crop,requestM3:row.request,plannedM3:row.allocated,waitDays:row.waitDays||0}))}))};
+    window.MekongBenefit?.render();
     renderBalanceAllocation(filtered,allocationPlan,supplyPct);
     const heads=`<tr><th>농가 / 구역</th>${Array.from({length:WEEK_COUNT},(_,w)=>`<th class="week">${w+1}주차<small>${dateShort(weekStart(w))}</small></th>`).join('')}</tr>`;
     $('calendarTable').innerHTML=`<table class="calendar-table"><thead>${heads}</thead><tbody>${filtered.length?filtered.map(({farm,values})=>`<tr data-calendar-farm-id="${escapeHTML(farm.id)}" class="${farm.id===savedFarmId?'recently-saved-row':''}"><td><b>${escapeHTML(farm.name)}</b><span class="cell-note">${escapeHTML(farmZoneLabel(farm))}${!farm.rmu&&farm.legacyRmu?` · 기존 ${escapeHTML(farm.legacyRmu)} · 재배정 필요`:''} · ${escapeHTML(CROPS[farm.crop])}</span></td>${values.map(v=>cellHTML(v,field)).join('')}</tr>${farm.crop==='rice'?irrigationDecisionRow(farm):''}`).join(''):`<tr><td colspan="17" class="empty-state">${farms.length?'이 RMU에 등록된 농가가 없습니다.':'농가를 먼저 등록하세요.'}</td></tr>`}</tbody></table>`;
