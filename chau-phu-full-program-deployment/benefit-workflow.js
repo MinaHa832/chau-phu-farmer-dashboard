@@ -67,9 +67,10 @@
     const value = Number(raw);
     return Number.isFinite(value) && value >= 0 ? value : null;
   }
-  function numberText(value, digits = 1) {
+  function numberText(value, digits) {
     if (!Number.isFinite(value)) return '—';
-    return new Intl.NumberFormat(language === 'vi' ? 'vi-VN' : 'ko-KR', { maximumFractionDigits: digits }).format(value);
+    const fractionDigits = Number.isFinite(digits) ? digits : (value !== 0 && Math.abs(value) < 1 ? 3 : 1);
+    return new Intl.NumberFormat(language === 'vi' ? 'vi-VN' : 'ko-KR', { maximumFractionDigits: fractionDigits }).format(value);
   }
   function moneyText(value) {
     if (!Number.isFinite(value)) return t('notCalculated');
