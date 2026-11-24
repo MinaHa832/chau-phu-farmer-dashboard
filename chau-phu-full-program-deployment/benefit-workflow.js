@@ -8,48 +8,50 @@
   const esc = (value) => String(value ?? '').replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
   const dict = {
     ko: {
-      title: '절수 편익 · 운영 검증', subtitle: '작기 후 동기간 비교를 기록하고, 농가 확인과 독립 검증을 거치는 시범 화면입니다.',
+      title: '절수 편익 · 운영 검증', subtitle: '주간 배분 계획과 실제 급수 현황, 절수 편익 기록을 한곳에서 관리하는 시범 화면입니다.',
       sim: '시범 화면 · 실제 정산 아님', noticeTitle: '계산과 권한의 경계', notice: '45·30·15·10은 주간 물 배분의 평가 가중치입니다. 절수 편익 배분 비율로 쓰지 않습니다. 물량은 기준기간 대비 차이, 전기·연료는 각각의 운영비 차이로 계산합니다. 확인되지 않은 금액은 지급액으로 표시하지 않습니다.',
       local: '이 브라우저에만 저장됩니다. 역할 전환은 화면 시연이며 로그인·공유 데이터베이스·실제 권한 분리는 아직 없습니다.',
       farmer: '농가 안내', operator: '운영자 기록', reviewer: '독립 감시자', farmViewTitle: '농가별 공동 급수 확인', chooseFarm: '농가 선택', noFarm: '농가 정보 없음 · 먼저 농가 등록 화면에서 불러오세요.',
-      farmerHelp: '선택한 농가의 RMU에 연결된 공동 급수 기록을 확인합니다. 기록 확인은 물량·일정에 대한 확인이며, 편익 금액이나 지급 동의가 아닙니다.', noRecord: '이 RMU에 비교 기록이 없습니다.', individualBenefit: '공동 펌프의 RMU 합계만 기록됩니다. 농가별 계량이나 합의 규칙이 없으므로 개인 절수량·현금 편익은 계산하지 않습니다.', confirmFacts: '기록 확인', dispute: '이의 제기', farmerNote: '확인할 점 또는 이의 사유 (선택)', reportTitle: '급수 문제·순서 변경 제보', issueType: '제보 유형', issueBypass: '무단 우회 취수 의심', issueOrder: '급수 순서·일정 변경', issueMismatch: '계량·기록 불일치', issueShortage: '공급 부족·중단', issueOther: '기타 확인 요청', issueDetails: '관찰한 사실을 적어주세요. 제보만으로 위반이나 책임이 확정되지는 않습니다.', submitReport: '검토 요청 등록',
-      operatorTitle: '작기 비교 기록 입력', operatorHelp: '작기 종료 후 같은 급수 범위와 비교 가능한 기간을 입력합니다. RMU는 사진 기준 집계 구역이며 실제 펌프 공급권역은 확인되지 않았습니다.', sampleButton: '예시 시나리오 불러오기', exportButton: '기록 CSV 내보내기', cycleLabel: '현재 작기 / 비교 이름', rmuLabel: '시범 집계 RMU', serviceArea: '펌프·수로 구간명 (확인 전에는 추정)', baselinePeriod: '기준기간', currentPeriod: '현재기간', startDate: '시작일', endDate: '종료일', baselineWater: '기준기간 취수량 (m³)', actualWater: '현재기간 취수량 (m³)', baselineKwh: '기준 전력 (kWh)', actualKwh: '현재 전력 (kWh)', electricityRate: '전력 단가 (VND/kWh)', baselineFuel: '기준 연료 (L)', actualFuel: '현재 연료 (L)', fuelRate: '연료 단가 (VND/L)', extraCost: '추가 운영·계측 비용 (VND)', sourceTitle: '자료 근거', measureBasis: '계측 방식', basisMeter: '유량계·전력계 계측', basisLedger: '운영 대장·영수증', basisEstimate: '추정·자료 미확인', baselineEvidence: '기준 자료 출처/기록 번호', actualEvidence: '현재 자료 출처/기록 번호', checksTitle: '비교 가능성 확인', checkScope: '동일 펌프·수로와 급수 범위', checkCrop: '작물·면적·생육단계를 맞춤', checkWeather: '강우·날씨·공급일수 차이를 확인/조정', noteLabel: '운영 메모 (개인정보 제외)', saveRecord: '농가 확인 요청으로 저장', previewTitle: '계산 미리보기', previewHelp: '비교 입력값 기준의 추정입니다. 전기·연료 비용은 각각 표시하며, 절수량과 비용을 섞지 않습니다.', recordsTitle: '작기 기록', noRecords: '아직 기록이 없습니다.',
+      farmerHelp: '선택한 농가의 RMU 급수 기록을 확인하고, 필요한 주차의 급수 요청을 등록합니다. 확인은 편익 금액이나 지급 동의가 아닙니다.', noRecord: '이 RMU에 비교 기록이 없습니다.', individualBenefit: '공동 펌프의 RMU 합계만 기록됩니다. 농가별 계량이나 합의 규칙이 없으므로 개인 절수량·현금 편익은 계산하지 않습니다.', confirmFacts: '기록 확인', dispute: '이의 제기', farmerNote: '확인할 점 또는 이의 사유 (선택)', reportTitle: '급수 문제·순서 변경 제보', issueType: '제보 유형', issueBypass: '무단 우회 취수 의심', issueOrder: '급수 순서·일정 변경', issueMismatch: '계량·기록 불일치', issueShortage: '공급 부족·중단', issueOther: '기타 확인 요청', issueDetails: '관찰한 사실을 적어주세요. 제보만으로 위반이나 책임이 확정되지는 않습니다.', submitReport: '검토 요청 등록',
+      operatorTitle: '주간 급수 운영', operatorHelp: '물수요 캘린더의 주간 배분 계획을 확인하고 실제 급수량과 처리 상태를 기록합니다.', operatorHistoryHelp: '작기 종료 후 같은 급수 범위와 비교 가능한 기간을 입력합니다. RMU는 사진 기준 집계 구역이며 실제 펌프 공급권역은 확인되지 않았습니다.', seasonCompareTitle: '작기별 절수 편익 계산', sampleButton: '예시 시나리오 불러오기', exportButton: '기록 CSV 내보내기', cycleLabel: '현재 작기 / 비교 이름', rmuLabel: '시범 집계 RMU', serviceArea: '펌프·수로 구간명 (확인 전에는 추정)', baselinePeriod: '기준기간', currentPeriod: '현재기간', startDate: '시작일', endDate: '종료일', baselineWater: '기준기간 취수량 (m³)', actualWater: '현재기간 취수량 (m³)', baselineKwh: '기준 전력 (kWh)', actualKwh: '현재 전력 (kWh)', electricityRate: '전력 단가 (VND/kWh)', baselineFuel: '기준 연료 (L)', actualFuel: '현재 연료 (L)', fuelRate: '연료 단가 (VND/L)', extraCost: '추가 운영·계측 비용 (VND)', sourceTitle: '자료 근거', measureBasis: '계측 방식', basisMeter: '유량계·전력계 계측', basisLedger: '운영 대장·영수증', basisEstimate: '추정·자료 미확인', baselineEvidence: '기준 자료 출처/기록 번호', actualEvidence: '현재 자료 출처/기록 번호', checksTitle: '비교 가능성 확인', checkScope: '동일 펌프·수로와 급수 범위', checkCrop: '작물·면적·생육단계를 맞춤', checkWeather: '강우·날씨·공급일수 차이를 확인/조정', noteLabel: '운영 메모 (개인정보 제외)', saveRecord: '농가 확인 요청으로 저장', previewTitle: '계산 미리보기', previewHelp: '비교 입력값 기준의 추정입니다. 전기·연료 비용은 각각 표시하며, 절수량과 비용을 섞지 않습니다.', recordsTitle: '작기 기록', noRecords: '아직 기록이 없습니다.',
       volumeSaved: '기준 대비 물량 차이', waterRate: '물량 변화율', electricityDelta: '전기료 변화 추정', fuelDelta: '연료비 변화 추정', netCost: '추가비용 반영 운영비 차이', saved: '감소 추정', increased: '증가 추정', equal: '변화 없음', notCalculated: '입력 필요', compareReady: '비교 조건 확인', compareHold: '비교 조건 미확인', statusWaitingFarmer: '농가 확인 대기', statusFarmerConfirmed: '독립 검증 대기', statusDisputed: '농가 이의 제기', statusVerified: '독립 검증 완료 · 지급 아님', statusRevision: '수정·보류 요청', demoBadge: '예시 입력 · 실측 자료 아님',
       reviewerTitle: '삼자 확인·검증 대기열', reviewerHelp: '운영자 입력 → 농가 사실 확인 → 독립 감시자 검증 순서입니다. 검증 완료는 편익 지급이나 급수 우선순위 변경을 뜻하지 않습니다.', queueTitle: '비교 기록 검토', reviewNote: '검토 근거 또는 수정 요청', approve: '근거 확인 완료', hold: '수정·보류 요청', approveBlocked: '비교조건·자료 근거·농가 확인을 갖춘 실제 기록만 검증할 수 있습니다.', incidentTitle: '급수 제보 검토', noIncidents: '검토할 제보가 없습니다.', investigate: '확인 진행', closeIncident: '검토 종료', open: '접수', investigating: '확인 중', closed: '검토 종료',
       policyTitle: '성과 확인과 보류 기준', monitorRoles: '운영자: 계량·펌프·전기/연료 장부 기록 · 농가: 실제 공급량·일정 확인 및 이의 제기 · 독립 감시자: 비교 조건·근거·처리 이력 검토', success: '성과지표: 비교 조건이 맞는 검증 물량, 농가 확인률, 독립 검증 완료 기록', stop: '보류 조건: 유량계/대장 부재, 기준기간 불일치, 공급 부족·이의 제기 미해결, 비용 근거 누락. 보류는 자동 급수 제한이나 벌점으로 연결하지 않습니다.', payout: '농가별 분배 규칙과 실제 자금원은 확정되지 않아 자동 이체·환급·편익 배분은 구현하지 않았습니다.', savedMessage: '기록을 저장했습니다. 농가 확인 대기 상태입니다.', reportSaved: '제보를 접수했습니다. 사실 판단은 별도 검토가 필요합니다.', reviewSaved: '검토 상태를 저장했습니다.', selectRmu: 'RMU 선택', selectFarm: '농가를 선택하세요', requiredError: '기간과 기준/현재 물량을 입력해 주세요.', storageError: '이 브라우저에 저장하지 못했습니다. 저장 공간을 확인해 주세요.', confirmedMessage: '공급 기록을 확인했습니다. 금액 지급 동의는 아닙니다.', disputedMessage: '이의 상태를 기록했습니다. 급수 제한으로 이어지지 않습니다.',
       periodLength: '기간 일수', lengthMatched: '동일 기간 일수', lengthMismatch: '기간 일수 다름', noMeterWarning: '추정 자료는 비교 참고용이며 검증 완료될 수 없습니다.',
       formulaNote: '계산식: 물량 차이 = 기준기간 − 현재기간. 전기료·연료비 변화 = (기준 사용량 − 현재 사용량) × 입력 단가. 공급 부족은 절수로 보지 않으며, 절수량은 금액으로 자동 환산하지 않습니다.',
       reportDisclaimer: '제보는 확인 요청이며, 자동 위반 판정·벌점·급수 제한으로 사용되지 않습니다.',
-      deliveryQuality: '현재 기간 공급 서비스 상태', qualityAdequate: '필요한 급수 서비스가 정상 제공됨', qualityShortage: '공급 부족·중단이 있었음', qualityUnknown: '확인되지 않음', qualityHold: '공급 부족 여부가 확인되지 않아 절수량 검증을 보류합니다.'
+      deliveryQuality: '현재 기간 공급 서비스 상태', qualityAdequate: '필요한 급수 서비스가 정상 제공됨', qualityShortage: '공급 부족·중단이 있었음', qualityUnknown: '확인되지 않음', qualityHold: '공급 부족 여부가 확인되지 않아 절수량 검증을 보류합니다.',
+      opsWeek: '운영 주차', opsRmu: 'RMU 구역', opsAllRmus: '전체 RMU', opsMetricFarms: '급수 대상 농가', opsMetricPlanned: '배분 계획량', opsMetricDelivered: '실제 급수량', opsMetricProcessed: '처리 완료', opsChartTitle: '계획 대비 실제 급수량', opsChartPlan: '계획', opsChartActual: '실제', opsChartEmpty: '표시할 급수 계획이 없습니다.', opsWorkTitle: '이번 주 급수 작업', opsWorkHelp: '실제 급수량은 현장에서 확인한 뒤 입력하세요. 배분 계획량을 실제량으로 자동 복사하지 않습니다.', opsNoPlan: '이 주차에 배분 가능한 농가가 없습니다. 물수요 캘린더와 농가 등록을 확인하세요.', opsRequestAmount: '요청량', opsPlannedAmount: '배분 예정', opsActualAmount: '실제 급수량 (m³)', opsStatus: '처리 상태', opsNote: '간단 메모', opsSave: '급수 기록 저장', opsPending: '대기', opsInProgress: '급수 중', opsComplete: '완료', opsPartial: '부분 급수', opsNoWater: '미급수', opsNeedVolume: '완료·부분 급수·미급수 처리는 실제 급수량을 입력해 주세요.', opsNoWaterReason: '미급수 처리에는 사유를 적어 주세요.', opsSaved: '급수 운영 기록을 저장했습니다.', requestTitle: '농가 급수 요청', requestHelp: '농가와 희망 주차를 선택하고 필요한 양을 적어 요청을 등록합니다.', requestWeek: '희망 주차', requestVolume: '요청 급수량 (m³)', requestDetails: '요청 사유 또는 전달사항 (선택)', requestSubmit: '급수 요청 등록', requestFarmNeeded: '요청을 등록하려면 먼저 농가를 선택하세요.', farmerRequestsTitle: '내 급수 요청', farmerRequestsEmpty: '등록한 급수 요청이 없습니다.', requestQueueTitle: '농가 요청 처리', requestQueueHelp: '요청을 확인해 처리 상태와 실제 공급량을 기록합니다.', requestQueueEmpty: '선택한 주차에 접수된 요청이 없습니다.', requestStatus: '요청 처리 상태', requestDelivered: '실제 공급량 (m³)', requestOperatorNote: '운영자 메모', requestSave: '요청 처리 저장', requestPending: '접수 대기', requestProcessing: '처리 중', requestCompleted: '처리 완료', requestPartial: '부분 공급', requestDeclined: '공급 불가', requestSaved: '급수 요청을 등록했습니다.', requestUpdated: '농가 요청 처리 기록을 저장했습니다.', requestStatusPending: '접수 대기', requestStatusProcessing: '처리 중', requestStatusCompleted: '처리 완료', requestStatusPartial: '부분 공급', requestStatusDeclined: '공급 불가', advancedTitle: '작기별 절수 편익 계산 · 자료 검증', advancedHelp: '작기 종료 후 비교 자료를 입력하거나 저장된 절수 편익 기록을 검토합니다.'
     },
     vi: {
-      title: 'Lợi ích tiết kiệm nước · Vận hành và xác minh', subtitle: 'Màn hình thử nghiệm để ghi nhận so sánh sau vụ, xác nhận của nông hộ và kiểm tra độc lập.',
+      title: 'Lợi ích tiết kiệm nước · Vận hành và xác minh', subtitle: 'Quản lý kế hoạch phân bổ hàng tuần, lượng nước đã cấp và hồ sơ lợi ích tiết kiệm trên cùng một màn hình thử nghiệm.',
       sim: 'Bản thử nghiệm · không quyết toán', noticeTitle: 'Ranh giới tính toán và quyền hạn', notice: '45·30·15·10 là trọng số đánh giá cho phương án phân bổ nước hàng tuần, không phải tỷ lệ chia lợi ích tiết kiệm. Khối lượng nước được so sánh với kỳ cơ sở; điện và nhiên liệu được tính riêng. Số tiền chưa xác minh không được coi là khoản chi trả.',
       local: 'Dữ liệu chỉ lưu trong trình duyệt này. Chuyển vai trò chỉ để trình diễn; chưa có đăng nhập, cơ sở dữ liệu dùng chung hay phân quyền thực tế.',
       farmer: 'Thông tin nông hộ', operator: 'Nhật ký vận hành', reviewer: 'Giám sát độc lập', farmViewTitle: 'Xác nhận cấp nước chung của nông hộ', chooseFarm: 'Chọn nông hộ', noFarm: 'Chưa có dữ liệu nông hộ · hãy tải dữ liệu ở màn hình đăng ký.',
-      farmerHelp: 'Hiển thị hồ sơ cấp nước chung gắn với RMU của nông hộ. Xác nhận là xác nhận lượng nước/lịch cấp, không phải đồng ý số tiền lợi ích hay thanh toán.', noRecord: 'Chưa có hồ sơ so sánh cho RMU này.', individualBenefit: 'Chỉ ghi tổng lượng của RMU dùng chung. Không tính lượng tiết kiệm hay lợi ích tiền mặt cho từng hộ khi chưa có đồng hồ riêng hoặc quy tắc thỏa thuận.', confirmFacts: 'Xác nhận hồ sơ', dispute: 'Gửi ý kiến', farmerNote: 'Điểm cần kiểm tra hoặc lý do phản hồi (không bắt buộc)', reportTitle: 'Báo cáo vấn đề cấp nước/thay đổi thứ tự', issueType: 'Loại báo cáo', issueBypass: 'Nghi ngờ lấy nước qua đường vòng', issueOrder: 'Thay đổi thứ tự/lịch cấp', issueMismatch: 'Sai lệch giữa đồng hồ và sổ ghi', issueShortage: 'Thiếu nước/ngừng cấp', issueOther: 'Yêu cầu kiểm tra khác', issueDetails: 'Mô tả điều đã quan sát. Chỉ báo cáo không xác định vi phạm hay trách nhiệm.', submitReport: 'Gửi yêu cầu xem xét',
-      operatorTitle: 'Nhập so sánh theo vụ', operatorHelp: 'Sau khi kết thúc vụ, nhập cùng phạm vi cấp nước và kỳ có thể so sánh. RMU là khu tổng hợp theo ảnh; ranh giới phục vụ của bơm thực tế chưa được xác nhận.', sampleButton: 'Tải tình huống ví dụ', exportButton: 'Xuất CSV hồ sơ', cycleLabel: 'Vụ hiện tại / tên so sánh', rmuLabel: 'RMU tổng hợp thử nghiệm', serviceArea: 'Tên đoạn bơm/kênh (chưa xác minh)', baselinePeriod: 'Kỳ cơ sở', currentPeriod: 'Kỳ hiện tại', startDate: 'Ngày bắt đầu', endDate: 'Ngày kết thúc', baselineWater: 'Lượng nước kỳ cơ sở (m³)', actualWater: 'Lượng nước kỳ hiện tại (m³)', baselineKwh: 'Điện kỳ cơ sở (kWh)', actualKwh: 'Điện kỳ hiện tại (kWh)', electricityRate: 'Giá điện (VND/kWh)', baselineFuel: 'Nhiên liệu kỳ cơ sở (L)', actualFuel: 'Nhiên liệu kỳ hiện tại (L)', fuelRate: 'Giá nhiên liệu (VND/L)', extraCost: 'Chi phí vận hành/đo đạc bổ sung (VND)', sourceTitle: 'Bằng chứng dữ liệu', measureBasis: 'Phương thức đo', basisMeter: 'Đồng hồ lưu lượng/điện', basisLedger: 'Sổ vận hành/hóa đơn', basisEstimate: 'Ước tính/chưa xác minh', baselineEvidence: 'Nguồn/số hồ sơ kỳ cơ sở', actualEvidence: 'Nguồn/số hồ sơ kỳ hiện tại', checksTitle: 'Kiểm tra khả năng so sánh', checkScope: 'Cùng bơm/kênh và phạm vi cấp nước', checkCrop: 'Đã khớp cây trồng, diện tích, giai đoạn sinh trưởng', checkWeather: 'Đã xem xét/điều chỉnh mưa, thời tiết, số ngày cấp', noteLabel: 'Ghi chú vận hành (không nhập dữ liệu cá nhân)', saveRecord: 'Lưu và yêu cầu nông hộ xác nhận', previewTitle: 'Tính toán sơ bộ', previewHelp: 'Ước tính theo dữ liệu nhập. Điện và nhiên liệu hiển thị riêng; không cộng lẫn với lượng nước tiết kiệm.', recordsTitle: 'Hồ sơ theo vụ', noRecords: 'Chưa có hồ sơ.',
+      farmerHelp: 'Xem hồ sơ cấp nước theo RMU và gửi yêu cầu cho tuần mong muốn. Xác nhận hồ sơ không phải đồng ý khoản lợi ích hay thanh toán.', noRecord: 'Chưa có hồ sơ so sánh cho RMU này.', individualBenefit: 'Chỉ ghi tổng lượng của RMU dùng chung. Không tính lượng tiết kiệm hay lợi ích tiền mặt cho từng hộ khi chưa có đồng hồ riêng hoặc quy tắc thỏa thuận.', confirmFacts: 'Xác nhận hồ sơ', dispute: 'Gửi ý kiến', farmerNote: 'Điểm cần kiểm tra hoặc lý do phản hồi (không bắt buộc)', reportTitle: 'Báo cáo vấn đề cấp nước/thay đổi thứ tự', issueType: 'Loại báo cáo', issueBypass: 'Nghi ngờ lấy nước qua đường vòng', issueOrder: 'Thay đổi thứ tự/lịch cấp', issueMismatch: 'Sai lệch giữa đồng hồ và sổ ghi', issueShortage: 'Thiếu nước/ngừng cấp', issueOther: 'Yêu cầu kiểm tra khác', issueDetails: 'Mô tả điều đã quan sát. Chỉ báo cáo không xác định vi phạm hay trách nhiệm.', submitReport: 'Gửi yêu cầu xem xét',
+      operatorTitle: 'Vận hành cấp nước hàng tuần', operatorHelp: 'Xem phương án phân bổ trong lịch nhu cầu nước và ghi lượng thực cấp cùng trạng thái xử lý.', operatorHistoryHelp: 'Sau khi kết thúc vụ, nhập cùng phạm vi cấp nước và kỳ có thể so sánh. RMU là khu tổng hợp theo ảnh; ranh giới phục vụ của bơm thực tế chưa được xác nhận.', seasonCompareTitle: 'Tính lợi ích tiết kiệm theo vụ', sampleButton: 'Tải tình huống ví dụ', exportButton: 'Xuất CSV hồ sơ', cycleLabel: 'Vụ hiện tại / tên so sánh', rmuLabel: 'RMU tổng hợp thử nghiệm', serviceArea: 'Tên đoạn bơm/kênh (chưa xác minh)', baselinePeriod: 'Kỳ cơ sở', currentPeriod: 'Kỳ hiện tại', startDate: 'Ngày bắt đầu', endDate: 'Ngày kết thúc', baselineWater: 'Lượng nước kỳ cơ sở (m³)', actualWater: 'Lượng nước kỳ hiện tại (m³)', baselineKwh: 'Điện kỳ cơ sở (kWh)', actualKwh: 'Điện kỳ hiện tại (kWh)', electricityRate: 'Giá điện (VND/kWh)', baselineFuel: 'Nhiên liệu kỳ cơ sở (L)', actualFuel: 'Nhiên liệu kỳ hiện tại (L)', fuelRate: 'Giá nhiên liệu (VND/L)', extraCost: 'Chi phí vận hành/đo đạc bổ sung (VND)', sourceTitle: 'Bằng chứng dữ liệu', measureBasis: 'Phương thức đo', basisMeter: 'Đồng hồ lưu lượng/điện', basisLedger: 'Sổ vận hành/hóa đơn', basisEstimate: 'Ước tính/chưa xác minh', baselineEvidence: 'Nguồn/số hồ sơ kỳ cơ sở', actualEvidence: 'Nguồn/số hồ sơ kỳ hiện tại', checksTitle: 'Kiểm tra khả năng so sánh', checkScope: 'Cùng bơm/kênh và phạm vi cấp nước', checkCrop: 'Đã khớp cây trồng, diện tích, giai đoạn sinh trưởng', checkWeather: 'Đã xem xét/điều chỉnh mưa, thời tiết, số ngày cấp', noteLabel: 'Ghi chú vận hành (không nhập dữ liệu cá nhân)', saveRecord: 'Lưu và yêu cầu nông hộ xác nhận', previewTitle: 'Tính toán sơ bộ', previewHelp: 'Ước tính theo dữ liệu nhập. Điện và nhiên liệu hiển thị riêng; không cộng lẫn với lượng nước tiết kiệm.', recordsTitle: 'Hồ sơ theo vụ', noRecords: 'Chưa có hồ sơ.',
       volumeSaved: 'Chênh lệch nước so với kỳ cơ sở', waterRate: 'Tỷ lệ thay đổi lượng nước', electricityDelta: 'Ước tính thay đổi tiền điện', fuelDelta: 'Ước tính thay đổi tiền nhiên liệu', netCost: 'Chênh lệch chi phí vận hành sau chi phí bổ sung', saved: 'Ước tính giảm', increased: 'Ước tính tăng', equal: 'Không đổi', notCalculated: 'Cần nhập dữ liệu', compareReady: 'Điều kiện so sánh đã kiểm tra', compareHold: 'Chưa kiểm tra điều kiện so sánh', statusWaitingFarmer: 'Chờ nông hộ xác nhận', statusFarmerConfirmed: 'Chờ xác minh độc lập', statusDisputed: 'Nông hộ có ý kiến', statusVerified: 'Đã xác minh độc lập · không phải thanh toán', statusRevision: 'Yêu cầu sửa/tạm dừng', demoBadge: 'Dữ liệu ví dụ · không phải số đo thực',
       reviewerTitle: 'Quy trình xác nhận ba bên', reviewerHelp: 'Người vận hành nhập → nông hộ xác nhận sự việc → giám sát độc lập kiểm tra. Xác minh không đồng nghĩa với chi trả lợi ích hoặc thay đổi thứ tự cấp nước.', queueTitle: 'Hàng đợi hồ sơ so sánh', reviewNote: 'Căn cứ xem xét hoặc nội dung yêu cầu sửa', approve: 'Xác minh đủ căn cứ', hold: 'Yêu cầu sửa/tạm dừng', approveBlocked: 'Chỉ xác minh hồ sơ thực có điều kiện so sánh, bằng chứng và xác nhận của nông hộ.', incidentTitle: 'Xem xét báo cáo cấp nước', noIncidents: 'Không có báo cáo chờ xử lý.', investigate: 'Đang xác minh', closeIncident: 'Kết thúc xem xét', open: 'Đã tiếp nhận', investigating: 'Đang xác minh', closed: 'Đã kết thúc',
       policyTitle: 'Chỉ số kết quả và tiêu chí tạm dừng', monitorRoles: 'Người vận hành: ghi đồng hồ/bơm/điện và nhiên liệu · Nông hộ: xác nhận lượng/lịch cấp và phản hồi · Giám sát độc lập: kiểm tra điều kiện so sánh, bằng chứng và lịch sử xử lý', success: 'Chỉ số: lượng nước được xác minh trong điều kiện so sánh được, tỷ lệ nông hộ xác nhận, số hồ sơ được kiểm tra độc lập', stop: 'Tạm dừng khi thiếu đồng hồ/sổ ghi, kỳ cơ sở không phù hợp, thiếu nước/tranh chấp chưa giải quyết hoặc thiếu chứng từ chi phí. Không tự động hạn chế cấp nước hoặc phạt.', payout: 'Chưa thống nhất quy tắc chia cho từng hộ và nguồn tiền thực tế; chưa triển khai chuyển khoản, hoàn tiền hoặc tự chia lợi ích.', savedMessage: 'Đã lưu hồ sơ. Đang chờ nông hộ xác nhận.', reportSaved: 'Đã tiếp nhận báo cáo. Cần xem xét riêng trước khi kết luận.', reviewSaved: 'Đã lưu trạng thái xem xét.', selectRmu: 'Chọn RMU', selectFarm: 'Chọn nông hộ', requiredError: 'Vui lòng nhập kỳ và lượng nước cơ sở/hiện tại.', storageError: 'Không lưu được trong trình duyệt này. Hãy kiểm tra dung lượng lưu trữ.', confirmedMessage: 'Đã xác nhận hồ sơ cấp nước. Đây không phải đồng ý thanh toán.', disputedMessage: 'Đã ghi nhận ý kiến. Không dẫn đến hạn chế cấp nước.',
       periodLength: 'Số ngày', lengthMatched: 'Số ngày bằng nhau', lengthMismatch: 'Số ngày khác nhau', noMeterWarning: 'Dữ liệu ước tính chỉ để tham khảo và không thể được xác minh.',
       formulaNote: 'Công thức: chênh lệch nước = kỳ cơ sở − kỳ hiện tại. Thay đổi chi phí điện/nhiên liệu = (mức dùng kỳ cơ sở − kỳ hiện tại) × đơn giá nhập. Thiếu nước không được tính là tiết kiệm; lượng nước không tự quy đổi thành tiền.',
       reportDisclaimer: 'Báo cáo chỉ yêu cầu kiểm tra; không tự động kết luận vi phạm, phạt hoặc hạn chế cấp nước.',
-      deliveryQuality: 'Tình trạng dịch vụ cấp nước kỳ hiện tại', qualityAdequate: 'Dịch vụ cấp nước cần thiết đã được cung cấp', qualityShortage: 'Có thiếu nước/ngừng cấp', qualityUnknown: 'Chưa xác minh', qualityHold: 'Chưa xác nhận thiếu nước hay không; tạm giữ việc xác minh tiết kiệm.'
+      deliveryQuality: 'Tình trạng dịch vụ cấp nước kỳ hiện tại', qualityAdequate: 'Dịch vụ cấp nước cần thiết đã được cung cấp', qualityShortage: 'Có thiếu nước/ngừng cấp', qualityUnknown: 'Chưa xác minh', qualityHold: 'Chưa xác nhận thiếu nước hay không; tạm giữ việc xác minh tiết kiệm.',
+      opsWeek: 'Tuần vận hành', opsRmu: 'Khu RMU', opsAllRmus: 'Tất cả RMU', opsMetricFarms: 'Nông hộ cần cấp nước', opsMetricPlanned: 'Lượng phân bổ', opsMetricDelivered: 'Lượng thực cấp', opsMetricProcessed: 'Đã xử lý', opsChartTitle: 'So sánh kế hoạch và lượng thực cấp', opsChartPlan: 'Kế hoạch', opsChartActual: 'Thực tế', opsChartEmpty: 'Không có kế hoạch cấp nước để hiển thị.', opsWorkTitle: 'Công việc cấp nước tuần này', opsWorkHelp: 'Nhập lượng đã cấp sau khi xác nhận tại hiện trường. Kế hoạch không tự động được sao chép thành lượng thực tế.', opsNoPlan: 'Không có nông hộ đủ điều kiện phân bổ trong tuần này. Hãy kiểm tra lịch nhu cầu nước và đăng ký nông hộ.', opsRequestAmount: 'Lượng yêu cầu', opsPlannedAmount: 'Lượng dự kiến', opsActualAmount: 'Lượng thực cấp (m³)', opsStatus: 'Trạng thái xử lý', opsNote: 'Ghi chú ngắn', opsSave: 'Lưu hồ sơ cấp nước', opsPending: 'Chờ xử lý', opsInProgress: 'Đang cấp nước', opsComplete: 'Hoàn tất', opsPartial: 'Cấp một phần', opsNoWater: 'Không cấp', opsNeedVolume: 'Vui lòng nhập lượng thực cấp cho trạng thái hoàn tất, cấp một phần hoặc không cấp.', opsNoWaterReason: 'Vui lòng ghi lý do khi chọn không cấp.', opsSaved: 'Đã lưu hồ sơ vận hành cấp nước.', requestTitle: 'Yêu cầu cấp nước của nông hộ', requestHelp: 'Chọn tuần mong muốn, nhập lượng nước cần và gửi yêu cầu.', requestWeek: 'Tuần mong muốn', requestVolume: 'Lượng nước yêu cầu (m³)', requestDetails: 'Lý do hoặc ghi chú (không bắt buộc)', requestSubmit: 'Gửi yêu cầu cấp nước', requestFarmNeeded: 'Vui lòng chọn nông hộ trước khi gửi yêu cầu.', farmerRequestsTitle: 'Yêu cầu của tôi', farmerRequestsEmpty: 'Chưa có yêu cầu cấp nước.', requestQueueTitle: 'Xử lý yêu cầu của nông hộ', requestQueueHelp: 'Kiểm tra yêu cầu, cập nhật trạng thái và ghi lượng nước thực cấp.', requestQueueEmpty: 'Không có yêu cầu nào trong tuần đã chọn.', requestStatus: 'Trạng thái xử lý', requestDelivered: 'Lượng thực cấp (m³)', requestOperatorNote: 'Ghi chú của người vận hành', requestSave: 'Lưu xử lý yêu cầu', requestPending: 'Chờ tiếp nhận', requestProcessing: 'Đang xử lý', requestCompleted: 'Đã xử lý', requestPartial: 'Cấp một phần', requestDeclined: 'Không thể cấp', requestSaved: 'Đã gửi yêu cầu cấp nước.', requestUpdated: 'Đã lưu thông tin xử lý yêu cầu.', requestStatusPending: 'Chờ tiếp nhận', requestStatusProcessing: 'Đang xử lý', requestStatusCompleted: 'Đã xử lý', requestStatusPartial: 'Cấp một phần', requestStatusDeclined: 'Không thể cấp', advancedTitle: 'Tính lợi ích tiết kiệm theo vụ · xác minh dữ liệu', advancedHelp: 'Nhập dữ liệu so sánh sau vụ hoặc xem lại hồ sơ lợi ích tiết kiệm đã lưu.'
     }
   };
 
   let language = 'ko';
   try { language = localStorage.getItem('mekong-suksuk.benefit-language') || 'ko'; } catch (_) {}
-  let activeRole = 'farmer';
+  let activeRole = 'operator';
   let state = loadState();
   const t = (key) => (dict[language] || dict.ko)[key] || dict.ko[key] || key;
 
-  function emptyState() { return { schema: 'mekong-suksuk-benefits/v1', records: [], incidents: [] }; }
+  function emptyState() { return { schema: 'mekong-suksuk-benefits/v1', records: [], incidents: [], operations: [], requests: [] }; }
   function loadState() {
     try {
       const parsed = JSON.parse(localStorage.getItem(STORE_KEY) || 'null');
-      if (parsed && Array.isArray(parsed.records) && Array.isArray(parsed.incidents)) return parsed;
+      if (parsed && Array.isArray(parsed.records) && Array.isArray(parsed.incidents)) return { ...emptyState(), ...parsed, operations: Array.isArray(parsed.operations) ? parsed.operations : [], requests: Array.isArray(parsed.requests) ? parsed.requests : [] };
     } catch (_) {}
     return emptyState();
   }
@@ -175,20 +177,26 @@
     </article>`;
   }
   function renderFarmer() {
+    fillWeekChoices('benefitRequestWeek', t('requestWeek'), $('benefitRequestWeek')?.value || '1');
     const farms = readFarms();
     const select = $('benefitFarmerFarm');
     const old = select.value;
-    fillSelect(select, farms.map((farm) => ({ value: String(farm.id), label: `${farm.name || farm.id}${farm.rmu ? ` · ${farm.rmu}` : ' · 미배정'}` })), farms.length ? t('selectFarm') : t('noFarm'), old);
+    fillSelect(select, farms.map((farm) => ({ value: String(farm.id), label: (farm.name || farm.id) + (farm.rmu ? ' · ' + farm.rmu : ' · 미배정') })), farms.length ? t('selectFarm') : t('noFarm'), old);
     const selected = farms.find((farm) => String(farm.id) === select.value);
     const output = $('benefitFarmerRecords');
+    const requestButton = $('benefitRequestSubmit');
+    if (requestButton) requestButton.disabled = !selected;
+    const requestList = $('benefitFarmerRequests');
     if (!selected) {
-      output.innerHTML = `<div class="benefit-empty">${esc(t('noFarm'))}</div>`;
+      output.innerHTML = '<div class="benefit-empty">' + esc(t('noFarm')) + '</div>';
       $('benefitFarmerRMU').textContent = '—';
+      if (requestList) requestList.innerHTML = '<div class="benefit-empty">' + esc(t('noFarm')) + '</div>';
       return;
     }
     $('benefitFarmerRMU').textContent = selected.rmu || '미배정';
     const records = selected.rmu ? state.records.filter((record) => record.rmu === selected.rmu) : [];
-    output.innerHTML = records.length ? records.map((record) => recordCard(record, 'farmer')).join('') : `<div class="benefit-empty">${esc(t('noRecord'))}</div>`;
+    output.innerHTML = records.length ? records.map((record) => recordCard(record, 'farmer')).join('') : '<div class="benefit-empty">' + esc(t('noRecord')) + '</div>';
+    renderFarmerRequests(selected);
   }
   function previewValues() {
     const record = {
@@ -211,12 +219,197 @@
     water.classList.toggle('is-negative', result.waterDelta !== null && result.waterDelta < 0);
     cost.classList.toggle('is-negative', result.netCost !== null && result.netCost < 0);
   }
+  function allocationWeeks() {
+    const plan = window.__MEKONG_ALLOCATION_PLAN__;
+    return Array.isArray(plan?.weeks) ? plan.weeks : Array.from({ length: 16 }, (_, index) => ({ index: index + 1, startDate: '', rows: [] }));
+  }
+  function fillWeekChoices(id, placeholder, preferred) {
+    const weeks = allocationWeeks();
+    const select = $(id);
+    const options = weeks.map((week, index) => {
+      const number = Number(week.index) || index + 1;
+      const label = number + '주차' + (week.startDate ? ' · ' + formatDate(week.startDate) : '');
+      return { value: String(number), label };
+    });
+    const old = preferred ?? select?.value ?? '1';
+    fillSelect(select, options, placeholder, old || '1');
+  }
+  function operationId(weekStart, farmId) { return String(weekStart || 'undated') + '|' + String(farmId); }
+  function operationStatusText(status) {
+    return t(({ pending: 'opsPending', in_progress: 'opsInProgress', complete: 'opsComplete', partial: 'opsPartial', not_delivered: 'opsNoWater' })[status] || 'opsPending');
+  }
+  function requestStatusText(status) {
+    return t(({ pending: 'requestStatusPending', processing: 'requestStatusProcessing', completed: 'requestStatusCompleted', partial: 'requestStatusPartial', declined: 'requestStatusDeclined' })[status] || 'requestStatusPending');
+  }
+  function statusSelectOptions(current, type) {
+    const values = type === 'request'
+      ? [['pending', 'requestStatusPending'], ['processing', 'requestStatusProcessing'], ['completed', 'requestStatusCompleted'], ['partial', 'requestStatusPartial'], ['declined', 'requestStatusDeclined']]
+      : [['pending', 'opsPending'], ['in_progress', 'opsInProgress'], ['complete', 'opsComplete'], ['partial', 'opsPartial'], ['not_delivered', 'opsNoWater']];
+    return values.map(([value, key]) => '<option value="' + value + '"' + (current === value ? ' selected' : '') + '>' + esc(t(key)) + '</option>').join('');
+  }
+  function renderFarmerRequests(farm) {
+    const list = $('benefitFarmerRequests');
+    if (!list) return;
+    const requests = state.requests.filter((request) => String(request.farmId) === String(farm.id)).sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+    if (!requests.length) { list.innerHTML = '<div class="benefit-empty">' + esc(t('farmerRequestsEmpty')) + '</div>'; return; }
+    list.innerHTML = requests.map((request) => {
+      const week = Number(request.weekIndex) || 1;
+      const date = request.weekStart ? ' · ' + formatDate(request.weekStart) : '';
+      return '<article class="benefit-request-farmer-card"><div class="benefit-record-top"><div><strong>' + esc(week + '주차' + date) + '</strong><small>' + esc(request.rmu || '미배정') + ' · ' + esc(formatDate((request.createdAt || '').slice(0, 10))) + '</small></div><span class="benefit-state">' + esc(requestStatusText(request.status)) + '</span></div><p class="benefit-record-meta">' + esc(t('requestVolume')) + ': ' + esc(numberText(Number(request.requestM3))) + ' m³' + (request.deliveredM3 !== null && request.deliveredM3 !== undefined ? ' · ' + esc(t('requestDelivered')) + ': ' + esc(numberText(Number(request.deliveredM3))) + ' m³' : '') + '</p><p class="benefit-record-meta">' + esc(request.reason || '—') + '</p></article>';
+    }).join('');
+  }
+  function renderOperations() {
+    const weeks = allocationWeeks();
+    const weekSelect = $('benefitOpsWeek');
+    const rmuSelect = $('benefitOpsRmu');
+    if (!weekSelect || !rmuSelect) return;
+    fillWeekChoices('benefitOpsWeek', t('opsWeek'), weekSelect.value || '1');
+    fillSelect(rmuSelect, [{ value: 'all', label: t('opsAllRmus') }, ...RMUS.map((rmu) => ({ value: rmu, label: rmu }))], t('opsRmu'), rmuSelect.value || 'all');
+    const weekNumber = Number(weekSelect.value) || 1;
+    const planWeek = weeks.find((week, index) => (Number(week.index) || index + 1) === weekNumber) || null;
+    const startDate = planWeek?.startDate || '';
+    const allRows = Array.isArray(planWeek?.rows) ? planWeek.rows : [];
+    const visibleRows = allRows.filter((row) => rmuSelect.value === 'all' || (row.rmu || '미배정') === rmuSelect.value).map((row) => {
+      const id = operationId(startDate, row.farmId);
+      const saved = state.operations.find((item) => item.id === id);
+      const planned = saved && saved.plannedM3 !== null && saved.plannedM3 !== undefined && Number.isFinite(Number(saved.plannedM3)) ? Number(saved.plannedM3) : Number(row.plannedM3) || 0;
+      const requested = saved && saved.requestM3 !== null && saved.requestM3 !== undefined && Number.isFinite(Number(saved.requestM3)) ? Number(saved.requestM3) : Number(row.requestM3) || 0;
+      return { id, row, saved, planned, requested, actual: saved?.actualM3 };
+    });
+    const plannedTotal = visibleRows.reduce((sum, item) => sum + item.planned, 0);
+    const actualTotal = visibleRows.reduce((sum, item) => sum + (Number.isFinite(Number(item.actual)) ? Number(item.actual) : 0), 0);
+    const processed = visibleRows.filter((item) => ['complete', 'partial', 'not_delivered'].includes(item.saved?.status)).length;
+    $('benefitOpsMetrics').innerHTML =
+      '<div class="benefit-mini-metric"><span>' + esc(t('opsMetricFarms')) + '</span><strong>' + visibleRows.length + '</strong></div>' +
+      '<div class="benefit-mini-metric"><span>' + esc(t('opsMetricPlanned')) + '</span><strong>' + esc(numberText(plannedTotal)) + ' m³</strong></div>' +
+      '<div class="benefit-mini-metric"><span>' + esc(t('opsMetricDelivered')) + '</span><strong>' + esc(numberText(actualTotal)) + ' m³</strong></div>' +
+      '<div class="benefit-mini-metric"><span>' + esc(t('opsMetricProcessed')) + '</span><strong>' + processed + ' / ' + visibleRows.length + '</strong></div>';
+    const maxVolume = Math.max(1, ...visibleRows.map((item) => Math.max(item.planned, Number(item.actual) || 0)));
+    $('benefitOpsChart').innerHTML = visibleRows.length ? visibleRows.map((item) => {
+      const planWidth = Math.max(0, Math.min(100, item.planned / maxVolume * 100));
+      const actualWidth = Math.max(0, Math.min(100, (Number(item.actual) || 0) / maxVolume * 100));
+      const label = item.row.farmName || item.row.farmId;
+      return '<div class="benefit-ops-chart-row"><div class="benefit-ops-chart-label"><strong>' + esc(label) + '</strong><small>' + esc(item.row.rmu || '미배정') + ' · ' + esc(t('opsRequestAmount')) + ' ' + esc(numberText(item.requested)) + ' m³</small></div><div class="benefit-ops-chart-lines"><div><span>' + esc(t('opsChartPlan')) + '</span><i class="benefit-ops-bar plan" style="width:' + planWidth.toFixed(1) + '%"></i><b>' + esc(numberText(item.planned)) + '</b></div><div><span>' + esc(t('opsChartActual')) + '</span><i class="benefit-ops-bar actual" style="width:' + actualWidth.toFixed(1) + '%"></i><b>' + esc(item.actual === null || item.actual === undefined ? '—' : numberText(Number(item.actual))) + '</b></div></div></div>';
+    }).join('') : '<div class="benefit-empty">' + esc(t('opsChartEmpty')) + '</div>';
+    $('benefitOpsWorklist').innerHTML = visibleRows.length ? visibleRows.map((item) => {
+      const label = item.row.farmName || item.row.farmId;
+      const currentStatus = item.saved?.status || 'pending';
+      const actualValue = item.actual === null || item.actual === undefined ? '' : String(item.actual);
+      return '<article class="benefit-operation-card" data-operation-card="' + esc(item.id) + '">' +
+        '<div class="benefit-operation-top"><div><strong>' + esc(label) + '</strong><small>' + esc(item.row.rmu || '미배정') + ' · ' + esc(item.row.crop || '') + '</small></div><span class="benefit-state">' + esc(operationStatusText(currentStatus)) + '</span></div>' +
+        '<div class="benefit-operation-volumes"><span>' + esc(t('opsRequestAmount')) + '<b>' + esc(numberText(item.requested)) + ' m³</b></span><span>' + esc(t('opsPlannedAmount')) + '<b>' + esc(numberText(item.planned)) + ' m³</b></span></div>' +
+        '<div class="benefit-operation-fields"><label class="benefit-field"><span>' + esc(t('opsActualAmount')) + '</span><input type="number" min="0" step="0.1" inputmode="decimal" data-op-actual value="' + esc(actualValue) + '" placeholder="—"></label>' +
+        '<label class="benefit-field"><span>' + esc(t('opsStatus')) + '</span><select data-op-status>' + statusSelectOptions(currentStatus, 'operation') + '</select></label>' +
+        '<label class="benefit-field full"><span>' + esc(t('opsNote')) + '</span><input type="text" maxlength="240" data-op-note value="' + esc(item.saved?.note || '') + '"></label>' +
+        '<div class="benefit-card-actions benefit-field full"><button type="button" class="btn btn-primary btn-small" data-operation-save="' + esc(item.id) + '">' + esc(t('opsSave')) + '</button></div></div></article>';
+    }).join('') : '<div class="benefit-empty">' + esc(t('opsNoPlan')) + '</div>';
+  }
+  function renderRequests() {
+    const list = $('benefitRequestQueue');
+    if (!list) return;
+    const weeks = allocationWeeks(), weekNumber = Number($('benefitOpsWeek')?.value) || 1;
+    const planWeek = weeks.find((week, index) => (Number(week.index) || index + 1) === weekNumber);
+    const weekStart = planWeek?.startDate || '';
+    const rmu = $('benefitOpsRmu')?.value || 'all';
+    const requests = state.requests.filter((request) => Number(request.weekIndex) === weekNumber && (!weekStart || !request.weekStart || request.weekStart === weekStart) && (rmu === 'all' || (request.rmu || '미배정') === rmu)).sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+    $('benefitRequestCount').textContent = String(requests.filter((request) => ['pending', 'processing'].includes(request.status)).length);
+    if (!requests.length) { list.innerHTML = '<div class="benefit-empty">' + esc(t('requestQueueEmpty')) + '</div>'; return; }
+    list.innerHTML = requests.map((request) => {
+      const status = request.status || 'pending';
+      const delivered = request.deliveredM3 === null || request.deliveredM3 === undefined ? '' : String(request.deliveredM3);
+      return '<article class="benefit-request-card" data-request-card="' + esc(request.id) + '">' +
+        '<div class="benefit-operation-top"><div><strong>' + esc(request.farmName || request.farmId) + '</strong><small>' + esc(request.rmu || '미배정') + ' · ' + esc(formatDate((request.createdAt || '').slice(0, 10))) + '</small></div><span class="benefit-state">' + esc(requestStatusText(status)) + '</span></div>' +
+        '<p class="benefit-record-meta">' + esc(t('requestWeek')) + ': ' + esc(String(request.weekIndex || '—') + '주차') + (request.weekStart ? ' · ' + esc(formatDate(request.weekStart)) : '') + ' · ' + esc(t('requestVolume')) + ': ' + esc(numberText(Number(request.requestM3))) + ' m³</p>' +
+        '<p class="benefit-record-meta">' + esc(request.reason || '—') + '</p>' +
+        '<div class="benefit-operation-fields"><label class="benefit-field"><span>' + esc(t('requestStatus')) + '</span><select data-request-status>' + statusSelectOptions(status, 'request') + '</select></label>' +
+        '<label class="benefit-field"><span>' + esc(t('requestDelivered')) + '</span><input type="number" min="0" step="0.1" inputmode="decimal" data-request-delivered value="' + esc(delivered) + '" placeholder="—"></label>' +
+        '<label class="benefit-field full"><span>' + esc(t('requestOperatorNote')) + '</span><input type="text" maxlength="300" data-request-note value="' + esc(request.operatorNote || '') + '"></label>' +
+        '<div class="benefit-card-actions benefit-field full"><button type="button" class="btn btn-primary btn-small" data-request-save="' + esc(request.id) + '">' + esc(t('requestSave')) + '</button></div></div></article>';
+    }).join('');
+  }
+  function handleOperationSave(event) {
+    const button = event.target.closest('[data-operation-save]');
+    if (!button) return;
+    const card = button.closest('[data-operation-card]');
+    const id = button.dataset.operationSave;
+    const actualRaw = card.querySelector('[data-op-actual]').value.trim();
+    const status = card.querySelector('[data-op-status]').value;
+    const note = card.querySelector('[data-op-note]').value.trim();
+    const actual = actualRaw === '' ? null : Number(actualRaw);
+    if (actual !== null && (!Number.isFinite(actual) || actual < 0)) { announce(t('requiredError')); return; }
+    if (['complete', 'partial', 'not_delivered'].includes(status) && actual === null) { announce(t('opsNeedVolume')); return; }
+    if (status === 'partial' && actual === 0) { announce(t('opsNeedVolume')); return; }
+    if (status === 'not_delivered' && actual > 0) { announce(t('opsNeedVolume')); return; }
+    if (status === 'not_delivered' && !note) { announce(t('opsNoWaterReason')); return; }
+    const planWeeks = allocationWeeks(), weekNumber = Number($('benefitOpsWeek').value) || 1;
+    const planWeek = planWeeks.find((week, index) => (Number(week.index) || index + 1) === weekNumber);
+    const row = planWeek?.rows?.find((item) => operationId(planWeek.startDate, item.farmId) === id);
+    if (!row) { announce(t('opsNoPlan')); return; }
+    let record = state.operations.find((item) => item.id === id);
+    if (!record) {
+      record = { id, farmId: row.farmId, farmName: row.farmName, rmu: row.rmu, weekIndex: weekNumber, weekStart: planWeek.startDate || '', requestM3: row.requestM3, plannedM3: row.plannedM3, actualM3: null, status: 'pending', note: '', createdAt: new Date().toISOString(), history: [] };
+      state.operations.unshift(record);
+    }
+    record.actualM3 = actual;
+    record.status = status;
+    record.note = note.slice(0, 240);
+    record.updatedAt = new Date().toISOString();
+    addHistory(record, 'operator', 'updated water delivery', note);
+    if (!saveState()) return;
+    render();
+    announce(t('opsSaved'));
+  }
+  function handleRequestSubmit(event) {
+    event.preventDefault();
+    const farm = readFarms().find((item) => String(item.id) === $('benefitFarmerFarm').value);
+    if (!farm) { announce(t('requestFarmNeeded')); return; }
+    const weekIndex = Number($('benefitRequestWeek').value);
+    const amount = Number($('benefitRequestVolume').value);
+    if (!Number.isFinite(amount) || amount <= 0 || !weekIndex) { announce(t('requiredError')); return; }
+    const planWeek = allocationWeeks().find((week, index) => (Number(week.index) || index + 1) === weekIndex);
+    const request = {
+      id: newId('WREQ'), farmId: String(farm.id), farmName: farm.name || String(farm.id), rmu: farm.rmu || '미배정',
+      weekIndex, weekStart: planWeek?.startDate || '', requestM3: amount, reason: $('benefitRequestReason').value.trim().slice(0, 400),
+      status: 'pending', deliveredM3: null, operatorNote: '', createdAt: new Date().toISOString(), updatedAt: '', history: []
+    };
+    addHistory(request, 'farmer-view', 'submitted water request', request.reason);
+    state.requests.unshift(request);
+    if (!saveState()) { state.requests.shift(); return; }
+    event.target.reset();
+    render();
+    announce(t('requestSaved'));
+  }
+  function handleRequestQueueSave(event) {
+    const button = event.target.closest('[data-request-save]');
+    if (!button) return;
+    const card = button.closest('[data-request-card]');
+    const request = state.requests.find((item) => item.id === button.dataset.requestSave);
+    if (!request) return;
+    const status = card.querySelector('[data-request-status]').value;
+    const raw = card.querySelector('[data-request-delivered]').value.trim();
+    const delivered = raw === '' ? null : Number(raw);
+    const note = card.querySelector('[data-request-note]').value.trim();
+    if (delivered !== null && (!Number.isFinite(delivered) || delivered < 0)) { announce(t('requiredError')); return; }
+    if (['completed', 'partial'].includes(status) && delivered === null) { announce(t('opsNeedVolume')); return; }
+    if (status === 'partial' && delivered === 0) { announce(t('opsNeedVolume')); return; }
+    if (status === 'declined' && delivered > 0) { announce(t('opsNeedVolume')); return; }
+    request.status = status;
+    request.deliveredM3 = delivered;
+    request.operatorNote = note.slice(0, 300);
+    request.updatedAt = new Date().toISOString();
+    addHistory(request, 'operator', 'updated request', note);
+    if (!saveState()) return;
+    render();
+    announce(t('requestUpdated'));
+  }
   function renderOperator() {
     const select = $('benefitRmu');
     const old = select.value;
     fillSelect(select, RMUS.map((rmu) => ({ value: rmu, label: rmu })), t('selectRmu'), old);
+    renderOperations();
+    renderRequests();
     const list = $('benefitOperatorRecords');
-    list.innerHTML = state.records.length ? [...state.records].sort((a, b) => b.createdAt.localeCompare(a.createdAt)).map((record) => recordCard(record, 'operator')).join('') : `<div class="benefit-empty">${esc(t('noRecords'))}</div>`;
+    list.innerHTML = state.records.length ? [...state.records].sort((a, b) => b.createdAt.localeCompare(a.createdAt)).map((record) => recordCard(record, 'operator')).join('') : '<div class="benefit-empty">' + esc(t('noRecords')) + '</div>';
     previewValues();
   }
   function renderIncidents() {
@@ -370,6 +563,11 @@
     $('benefitExport').addEventListener('click', exportRecords);
     $('benefitFarmerFarm').addEventListener('change', renderFarmer);
     $('benefitFarmerRecords').addEventListener('click', handleFarmerAction);
+    $('benefitRequestForm').addEventListener('submit', handleRequestSubmit);
+    $('benefitOpsWeek').addEventListener('change', () => { renderOperations(); renderRequests(); });
+    $('benefitOpsRmu').addEventListener('change', () => { renderOperations(); renderRequests(); });
+    $('benefitOpsWorklist').addEventListener('click', handleOperationSave);
+    $('benefitRequestQueue').addEventListener('click', handleRequestQueueSave);
     $('benefitIncidentForm').addEventListener('submit', handleIncidentSubmit);
     $('benefitReviewQueue').addEventListener('click', handleReviewAction);
     $('benefitIncidentQueue').addEventListener('click', handleIncidentAction);
