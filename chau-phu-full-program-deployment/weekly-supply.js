@@ -77,7 +77,7 @@
       $('supplyDirectM3').value = '';
       $('supplyFlowM3h').value = '';
       $('supplyRuntimeHours').value = '';
-      $('supplyLossPct').value = '15';
+      $('supplyLossPct').value = '';
       $('supplyMethod').value = 'rmu_meter';
       updateMethodFields();
       return;
@@ -87,7 +87,7 @@
     $('supplyDirectM3').value = directMethod(record.method) ? String(record.availableM3) : '';
     $('supplyFlowM3h').value = record.flowM3h === undefined ? '' : String(record.flowM3h);
     $('supplyRuntimeHours').value = record.runtimeHours === undefined ? '' : String(record.runtimeHours);
-    $('supplyLossPct').value = record.lossPct === undefined ? '15' : String(record.lossPct);
+    $('supplyLossPct').value = record.lossPct === undefined ? '' : String(record.lossPct);
     updateMethodFields();
   }
   function renderSummary(weekStarts) {
