@@ -299,7 +299,7 @@
 <small class="climate-live-hint">2022-01-01~2026-11-10 내장 CSV(월별 평균 기반 계획자료)를 사용합니다. 최근 15일과 향후 16일은 Open-Meteo API로 갱신하고, 응답을 브라우저에 보존합니다. 그 이후 미래는 계획자료가 필요하며 작기 종료와 다릅니다.</small>
 </div>
 <div class="save-confirm-banner" hidden="" id="saveConfirmBanner" role="status"><strong id="saveConfirmText">농가 저장됨</strong><div><button class="btn btn-secondary btn-small" id="viewSavedOnMap" type="button">Tab 2에서 농가 보기 ↗</button><button class="btn btn-secondary btn-small" id="newFarmFromCalendar" type="button">다른 농가 등록 +</button></div></div><div class="status-strip"><span class="status-led"></span><span>2022년 이후 로컬 기후 DB를 우선 조회합니다.</span><span class="strip-dot">·</span><span>예보 기간 이후는 PLANNING_DATA_REQUIRED</span><span class="strip-dot">·</span><span>실제 취수량이 아닌 계획값</span></div><div class="metrics metrics-4" id="calendarMetrics"></div>
-<div class="card" id="balanceAllocationPanel"><div class="card-top card-top-responsive"><div><span class="section-kicker">BALANCED SCENARIO / 45·30·15·10</span><h2>균형 기준 주간 물 배분안</h2><p class="muted">각 주의 공급 한도 안에서 다음 배분 단위가 종합 평가점수를 가장 낮추는 농가를 선택합니다. 점수의 45·30·15·10은 물량 비율이 아니라 평가 가중치입니다.</p></div><label class="filter-label">요청량 대비 공급 가능량 (%) <input aria-label="배분 시뮬레이션 공급 가능량 비율" id="allocationSupplyPct" type="number" min="0" max="100" step="5" value="70"/></label></div><div class="metrics metrics-4" id="allocationMetrics"></div><div class="table-wrap" id="allocationSummary"></div><div class="table-wrap" id="allocationTable"></div><p class="table-caption">시뮬레이션 가정: 기본 공급 한도는 요청량의 70%이며 바꿀 수 있습니다. 실제 공급량·펌프 용량·수로 연결은 확인되지 않았습니다. 위험 자료가 없으면 항목별 2점(추정), 대기 중 미충족은 다음 주에 7일 추가, 유효급수는 요청량의 80%를 기준으로 계산합니다. 시간창 자료가 없어 정시 도착 여부는 판정하지 않습니다.</p></div>
+<div class="card" id="balanceAllocationPanel"><div class="card-top card-top-responsive"><div><span class="section-kicker">BALANCED SCENARIO / 45·30·15·10</span><h2>균형 기준 주간 물 배분안</h2><p class="muted">각 주의 공급 한도 안에서 다음 배분 단위가 종합 평가점수를 가장 낮추는 농가를 선택합니다. 점수의 45·30·15·10은 물량 비율이 아니라 평가 가중치입니다.</p></div><div class="controls"><button class="btn btn-secondary btn-small" id="seedDemosCalendar" type="button">시범 농가 54개 불러오기</button><label class="filter-label">요청량 대비 공급 가능량 (%) <input aria-label="배분 시뮬레이션 공급 가능량 비율" id="allocationSupplyPct" type="number" min="0" max="100" step="5" value="70"/></label></div></div><div class="metrics metrics-4" id="allocationMetrics"></div><div class="table-wrap" id="allocationSummary"></div><div class="table-wrap" id="allocationTable"></div><p class="table-caption">시뮬레이션 가정: 기본 공급 한도는 요청량의 70%이며 바꿀 수 있습니다. 실제 공급량·펌프 용량·수로 연결은 확인되지 않았습니다. 위험 자료가 없으면 항목별 2점(추정), 대기 중 미충족은 다음 주에 7일 추가, 유효급수는 요청량의 80%를 기준으로 계산합니다. 시간창 자료가 없어 정시 도착 여부는 판정하지 않습니다.</p></div>
 <div class="card"><div class="card-top card-top-responsive"><div><span class="section-kicker">WEEKLY FARM PLANNER</span><h2>농가별 주간 계획 취수량</h2></div><div class="controls"><label class="filter-label">시작일 <input aria-label="16주 캘린더 시작일" id="calendarStart" type="date" value="2024-01-01"/></label><label class="filter-label">구역 <select id="calendarZone"><option value="all">전체</option></select></label><label class="filter-label">표시 <select id="calendarView"><option value="intake">계획 취수량 m³</option><option value="etc">작물증발산 ETc mm</option><option value="stage">생육단계</option></select></label></div></div><div class="irrigation-guidance-intro" id="irrigationGuidanceIntro"><strong>벼 품종별 관개 의사결정 · 시범 매트릭스</strong>농가별 물수요 행 바로 아래에 분얼기·AWD 낙수·AWD 중단·얕은 배수·완전 배수를 주차별로 표시합니다.<small>제공된 4개 품종 그룹 표 기반 · 파종일을 1일차로 계산 · 실제 수위·토양·기상 조건을 검증한 현장 처방이 아닙니다. 표시 안내는 기존 취수량 공식이나 AWD 취수 차단에 자동 적용되지 않습니다.</small></div><div class="table-wrap" id="calendarTable"></div><div class="table-caption">—: 데이터 없음 / 미계산 · 0: 계산 결과 취수량 0 · 자료 없는 농가를 합계에서 0으로 처리하지 않습니다. · 품종별 관개 판단은 물수요 계산과 별도 정보입니다.</div></div>
 <div class="card"><div class="card-top"><div><span class="section-kicker">RMU AGGREGATION</span><h2>구역별 주간 취수 계획</h2></div><span class="small-label">FARM AGGREGATED ONLY</span></div><div class="table-wrap" id="rmuWeekTable"></div></div>
 <div class="card"><div class="card-top"><div><span class="section-kicker">WATER BALANCE</span><h2>계산 구조와 적용 한계</h2></div></div><div class="calculation-chain"><div>ETc = ET₀ × Kc<small>작물의 추정 증발산</small></div><b>→</b><div>순관개수요 = max(ETc − Pe, 0)<small>USDA-SCS 유효우량</small></div><b>→</b><div>계획 취수량 = 순수요 × 면적 ÷ (Ea × Ec)<small>면적변환: 1mm·ha = 10m³</small></div></div><div class="note-block"><strong>중요한 한계</strong><p>벼 담수 유지·침투·논물 저장량·초기 물대기·토양수분·실측 공급제약을 추가하지 않았습니다. AWD 건조기간의 취수량 0은 작동 검증용 가정이며, 현장 관개 지침이 아닙니다. 본 화면의 배분안은 입력 공급비율과 균형 기준으로 계산한 계획 시뮬레이션입니다. 실제 공급량·펌프 용량·수로 연결·급수 시간창이 확인되지 않아 현장 급수 지시로 사용할 수 없습니다.</p></div></div>
@@ -839,7 +839,7 @@
     const existing=farms.filter(f=>f.origin==='DEMO_ASSUMPTION');
     const real=farms.filter(f=>f.origin!=='DEMO_ASSUMPTION');
     if(existing.length&&!confirm(`기존 시범 농가 ${existing.length}개를 새 54개 데이터로 교체할까요? 실제 등록 농가 ${real.length}개는 유지됩니다.`))return;
-    const today=todayVietnam(),demo=[];
+    const demo=[];
     const orchard=['durian','mango','jackfruit'];
     for(let zoneIndex=0;zoneIndex<RMUS.length;zoneIndex++){
       const zone=RMUS[zoneIndex];
@@ -859,7 +859,7 @@
           name:`[시범] ${zone.id} 농가 ${String.fromCharCode(65+slot)}`,
           crop,variety,rmu:zone.id,
           area:Number((0.8+((zoneIndex*11+slot*7)%45)/10).toFixed(2)),
-          start:addDays(today,-28+slot*7),
+          start:addDays(calendarStart,-28+slot*7),
           irrigation:crop==='rice'?'surface':'drip',
           awd:crop==='rice'&&(zoneIndex+slot)%4===0,
           origin:'DEMO_ASSUMPTION',
@@ -1024,13 +1024,12 @@
     const at=(sorted.length-1)*p,lo=Math.floor(at),hi=Math.ceil(at);
     return sorted[lo]+(sorted[hi]-sorted[lo])*(at-lo);
   }
-  function allocationGini(values){
-    if(values.length<2)return 0;
-    const mean=values.reduce((a,b)=>a+b,0)/values.length;
-    if(mean<=1e-12)return 0;
-    let diff=0;
-    for(let i=0;i<values.length;i++)for(let j=0;j<values.length;j++)diff+=Math.abs(values[i]-values[j]);
-    return diff/(2*values.length*values.length*mean);
+  function allocationGini(sorted){
+    if(sorted.length<2)return 0;
+    const total=sorted.reduce((sum,value)=>sum+value,0);
+    if(total<=1e-12)return 0;
+    const weighted=sorted.reduce((sum,value,index)=>sum+(index+1)*value,0);
+    return Math.max(0,2*weighted/(sorted.length*total)-(sorted.length+1)/sorted.length);
   }
   function allocationEvaluation(rows){
     const requested=rows.reduce((s,r)=>s+r.request,0);
@@ -1068,7 +1067,8 @@
     if(!rows.length||available<=1e-9)return {rows,requested,available,metrics:allocationEvaluation(rows)};
     const step=Math.max(requested/240,.1);
     let remaining=available,iterations=0;
-    while(remaining>1e-7&&iterations++<245){
+    const maxIterations=Math.ceil(available/step)+rows.length+1;
+    while(remaining>1e-7&&iterations++<maxIterations){
       const budgetStep=Math.min(step,remaining);
       let bestIndex=-1,bestScore=Infinity,bestPriority=-Infinity;
       for(let i=0;i<rows.length;i++){
@@ -1285,6 +1285,7 @@
     $('farmForm').addEventListener('submit',submitFarm);
     $('cancelEdit').addEventListener('click',clearForm);
     $('seedDemos').addEventListener('click',seedDemoFarms);
+    $('seedDemosCalendar').addEventListener('click',seedDemoFarms);
     $('clearFarms').addEventListener('click',clearFarms);$('restoreBackup').addEventListener('change',ev=>restoreBackup(ev.target.files?.[0]));
     $('farmSearch').addEventListener('input',renderSetup);
     $('farmDirectory').addEventListener('click',ev=>{const btn=ev.target.closest('button[data-action]');if(!btn)return;const id=btn.dataset.id;if(btn.dataset.action==='edit')beginEdit(id);if(btn.dataset.action==='delete')removeFarm(id)});
