@@ -602,7 +602,6 @@
   const weekStart=(i)=>addDays(calendarStart,i*7);
   const dateShort=(d)=>d.slice(5).replace('-','.');
   const validDate=(s)=>/^\d{4}-\d{2}-\d{2}$/.test(s)&&!Number.isNaN(utc(s))&&iso(utc(s))===s;
-  const farmValid=(f)=>f&&typeof f.name==='string'&&typeof f.id==='string'&&CROPS[f.crop]&&VARIETIES[f.crop]?.includes(f.variety)&&RMUS.some(x=>x.id===f.rmu)&&number(f.area)>0&&Number.isFinite(number(f.area))&&validDate(f.start)&&['surface','drip','unknown'].includes(f.irrigation)&&gpsValid(f);
   function normalizeFarmRecord(f){const copy={...f},oldZone=/^RMU-\d{2}$/.test(String(copy.rmu||''))?copy.rmu:copy.legacyRmu;
     if(/^RMU-\d{2}$/.test(String(copy.rmu||''))){const assigned=copy.lat!==null&&copy.lat!==undefined&&copy.lon!==null&&copy.lon!==undefined?rmuForGps(copy.lat,copy.lon):null;copy.rmu=assigned;copy.legacyRmu=oldZone;copy.assignmentStatus=assigned?'GPS_AUTO_REASSIGNED':'NEEDS_REVIEW';}
     else if(!RMU_BY_ID.has(copy.rmu)){copy.rmu=null;copy.legacyRmu=oldZone||copy.legacyRmu||null;copy.assignmentStatus=copy.assignmentStatus||'NEEDS_REVIEW';}
