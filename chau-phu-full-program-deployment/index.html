@@ -234,13 +234,13 @@
 <label class="field">관개 방식 <span class="required">*</span><select id="irrigation" name="irrigation" required=""><option value="surface">표면/담수 관개 (벼, 효율 60%)</option><option value="drip">점적 관개 (과수, 효율 90%)</option><option value="unknown">미확인 — 계산 보류</option></select></label>
 <div class="field full geo-optional"><div class="optional-title">농가 GPS 좌표 <span>선택 입력</span></div><p>좌표를 입력한 농가만 지도에 개별 위치점으로 표시됩니다. 좌표가 없다면 구역별 농가 수로 표시합니다.</p><div class="geo-fields"><label class="field">위도 (Latitude)<input id="latitude" max="10.59" min="10.43" placeholder="예: 10.515" step="any" type="number"/></label><label class="field">경도 (Longitude)<input id="longitude" max="105.28" min="105.12" placeholder="예: 105.197" step="any" type="number"/></label></div></div>
 <label class="field full checkbox-field"><input id="awd" name="awd" type="checkbox"/><span><b>AWD 시범 건조기간 적용</b><small>벼에만 적용 · 생육 29~35일차 취수 0으로 가정 (실측·안전 권고 아님)</small></span></label>
-<details class="supply-risk-details"><summary>물 배분용 농업 위험 점검 (선택)</summary><p>현장 확인 후 0(낮음)~4(매우 높음)을 입력하세요. 미입력 항목은 중립 점수로 추정되며, 평가에 45% 비중으로 반영됩니다. 시범농가에 임의로 넣은 점수는 사용하지 않습니다. 이 점수는 농가의 급수 권리를 제한하는 용도가 아닙니다.</p><div class="supply-risk-grid"><label class="field">생육단계의 물부족 민감도<select id="riskGrowth"><option value="">미입력 · 추정</option><option value="0">0 · 낮음</option><option value="1">1 · 다소 낮음</option><option value="2">2 · 보통</option><option value="3">3 · 높음</option><option value="4">4 · 매우 높음</option></select></label><label class="field">토양의 물 보유·배수 취약도<select id="riskSoil"><option value="">미입력 · 추정</option><option value="0">0 · 낮음</option><option value="1">1 · 다소 낮음</option><option value="2">2 · 보통</option><option value="3">3 · 높음</option><option value="4">4 · 매우 높음</option></select></label><label class="field">현재 작황 피해·물부족 징후<select id="riskDamage"><option value="">미입력 · 추정</option><option value="0">0 · 낮음</option><option value="1">1 · 다소 낮음</option><option value="2">2 · 보통</option><option value="3">3 · 높음</option><option value="4">4 · 매우 높음</option></select></label><label class="field">대체 수원 부족 정도<select id="riskAlternative"><option value="">미입력 · 추정</option><option value="0">0 · 낮음</option><option value="1">1 · 다소 낮음</option><option value="2">2 · 보통</option><option value="3">3 · 높음</option><option value="4">4 · 매우 높음</option></select></label></div></details>
+<details class="supply-risk-details"><summary>물 배분용 농업 위험 점검 (선택)</summary><p>현장 확인 후 0(낮음)~4(매우 높음)을 입력하세요. 미입력 항목은 중립 점수로 추정되며, 평가에 45% 비중으로 반영됩니다. 시범 가정 점수는 전체 시연 모드에서만 사용하고, 실제 운영에서는 반영하지 않습니다. 이 점수는 농가의 급수 권리를 제한하는 용도가 아닙니다.</p><div class="supply-risk-grid"><label class="field">생육단계의 물부족 민감도<select id="riskGrowth"><option value="">미입력 · 추정</option><option value="0">0 · 낮음</option><option value="1">1 · 다소 낮음</option><option value="2">2 · 보통</option><option value="3">3 · 높음</option><option value="4">4 · 매우 높음</option></select></label><label class="field">토양의 물 보유·배수 취약도<select id="riskSoil"><option value="">미입력 · 추정</option><option value="0">0 · 낮음</option><option value="1">1 · 다소 낮음</option><option value="2">2 · 보통</option><option value="3">3 · 높음</option><option value="4">4 · 매우 높음</option></select></label><label class="field">현재 작황 피해·물부족 징후<select id="riskDamage"><option value="">미입력 · 추정</option><option value="0">0 · 낮음</option><option value="1">1 · 다소 낮음</option><option value="2">2 · 보통</option><option value="3">3 · 높음</option><option value="4">4 · 매우 높음</option></select></label><label class="field">대체 수원 부족 정도<select id="riskAlternative"><option value="">미입력 · 추정</option><option value="0">0 · 낮음</option><option value="1">1 · 다소 낮음</option><option value="2">2 · 보통</option><option value="3">3 · 높음</option><option value="4">4 · 매우 높음</option></select></label></div></details>
 </div>
 <div class="form-error" hidden="" id="formError" role="alert"></div><div aria-live="polite" class="farm-save-status" id="farmSaveStatus" role="status">농가 정보 입력 후 저장하면 Tab 2 지도와 Tab 3 캘린더를 함께 갱신합니다.</div>
 <div class="form-actions"><button class="btn btn-primary" id="submitFarm" type="submit">농가 저장하고 캘린더 보기 <span>↗</span></button><button class="btn btn-secondary" hidden="" id="cancelEdit" type="button">수정 취소</button></div>
 </form>
 </div><div class="right-stack"><div class="card preview-card"><div class="card-top"><div><span class="section-kicker">LIVE PREVIEW</span><h2>입력 미리보기</h2></div><span class="live-dot">실시간</span></div><div aria-hidden="true" class="preview-graphic"><div class="preview-river"></div><div class="preview-paddy"></div><div class="preview-pin">⌖</div></div><div class="preview-detail" id="formPreview"></div></div><div class="info-card"><div class="info-symbol">i</div><div><strong>실제 위치 정보는 아직 없습니다.</strong><p>위치 선택은 사진의 파란 분할선을 기준으로 나눈 18개 RMU 배정이며, 지도 좌표나 정확한 수로 연결로 간주하지 않습니다.</p></div></div></div></div>
-<div class="card list-card"><div class="card-top card-top-responsive"><div><span class="section-kicker">FARM DIRECTORY</span><h2>등록된 농가 <span class="count-inline" id="farmListCount">0</span></h2></div><div class="controls"><input aria-label="농가명 검색" id="farmSearch" placeholder="농가명 검색" type="search"/><label class="btn btn-secondary btn-small restore-button">농가 백업 복원<input accept=".json,application/json" hidden="" id="restoreBackup" type="file"/></label><button class="btn btn-secondary btn-small" id="seedDemos" type="button">새 54개 균형 기준 시범 농가 불러오기</button><button class="btn btn-danger-quiet btn-small" id="clearFarms" type="button">전체 삭제</button></div></div><div class="directory" id="farmDirectory"></div></div>
+<div class="card list-card"><div class="card-top card-top-responsive"><div><span class="section-kicker">FARM DIRECTORY</span><h2>등록된 농가 <span class="count-inline" id="farmListCount">0</span></h2></div><div class="controls"><input aria-label="농가명 검색" id="farmSearch" placeholder="농가명 검색" type="search"/><label class="btn btn-secondary btn-small restore-button">농가 백업 복원<input accept=".json,application/json" hidden="" id="restoreBackup" type="file"/></label><button class="btn btn-secondary btn-small" id="seedDemos" type="button">새 54개 시범 농가 불러오기</button><button class="btn btn-danger-quiet btn-small" id="clearFarms" type="button">전체 삭제</button></div></div><div class="directory" id="farmDirectory"></div></div>
 </section>
 <section class="page" id="page-map">
 <div class="page-heading"><div><div class="eyebrow">SPATIAL OVERVIEW <span>/ TAB 02</span></div><h1>수로·농가 통합 지도<span class="title-period">.</span></h1><p>사진의 파란 분할선을 옮긴 18개 RMU와 등록 농가·수자원 시설 근거를 함께 살펴봅니다.</p></div><span class="mode-pill">18개 RMU · 사진 기준 경계</span></div>
@@ -302,9 +302,9 @@
 <small class="climate-live-hint">2022-01-01~2026-11-10 내장 CSV(월별 평균 기반 계획자료)를 사용합니다. 최근 15일과 향후 16일은 Open-Meteo API로 갱신하고, 응답을 브라우저에 보존합니다. 그 이후 미래는 계획자료가 필요하며 작기 종료와 다릅니다.</small>
 </div>
 <div class="save-confirm-banner" hidden="" id="saveConfirmBanner" role="status"><strong id="saveConfirmText">농가 저장됨</strong><div><button class="btn btn-secondary btn-small" id="viewSavedOnMap" type="button">Tab 2에서 농가 보기 ↗</button><button class="btn btn-secondary btn-small" id="newFarmFromCalendar" type="button">다른 농가 등록 +</button></div></div><div class="status-strip"><span class="status-led"></span><span>2022년 이후 로컬 기후 DB를 우선 조회합니다.</span><span class="strip-dot">·</span><span>예보 기간 이후는 PLANNING_DATA_REQUIRED</span><span class="strip-dot">·</span><span>실제 취수량이 아닌 계획값</span></div><div class="metrics metrics-4" id="calendarMetrics"></div>
-<div class="card supply-data-panel" id="weeklySupplyPanel"><div class="card-top card-top-responsive"><div><span class="section-kicker">WEEKLY SUPPLY CAPACITY</span><h2>RMU별 주간 공급 가능량</h2><p class="muted">각 RMU에 이번 주 실제로 도달시킬 수 있는 순공급량을 등록합니다. 자료가 없는 구역은 0으로 간주하지 않고 배분 계산을 보류합니다.</p></div><div class="supply-record-tools"><label>표시 <select id="supplySummaryMode"><option value="week">주별</option><option value="month">월별 합계</option></select></label><button class="btn btn-secondary btn-small" id="exportWeeklySupply" type="button">공급자료 백업</button><label class="btn btn-secondary btn-small" for="importWeeklySupply" style="cursor:pointer">공급자료 가져오기<input accept=".json,application/json" id="importWeeklySupply" type="file" hidden=""/></label></div></div><div class="supply-entry-grid"><label class="field">주차<select id="supplyWeek"></select></label><label class="field">RMU<select id="supplyRmu"></select></label><label class="field">자료 산정 방법<select id="supplyMethod"><option value="rmu_meter">RMU 인입부 유량계 합계</option><option value="canal_meter">수로 유량 계측 후 주간 합산</option><option value="pump_runtime">검증 유량 × 펌프 가동시간</option><option value="gate_curve">현장 보정 수문 곡선 × 개방시간</option><option value="agency_plan">운영기관 주간 공급 계획</option><option value="history_estimate">과거 기록 기반 추정</option></select></label><div class="field" id="supplyDirectFields"><label class="field">주간 공급 가능량 (m³)<input id="supplyDirectM3" type="number" min="0" step="0.1" inputmode="decimal" placeholder="계량 또는 계획값"/></label><span class="field-hint">직접 계량값, 기관 계획량 또는 과거 기록 추정값을 입력합니다.</span></div><div class="supply-method-grid" id="supplyCalculationFields" hidden=""><label class="field">유량 (m³/h)<input id="supplyFlowM3h" type="number" min="0" step="0.1" inputmode="decimal" placeholder="현장 검증 유량"/></label><label class="field">주간 실제/예정 가동시간 (h)<input id="supplyRuntimeHours" type="number" min="0" step="0.1" inputmode="decimal" placeholder="운영기록 시간"/></label><label class="field">수로 손실 추정 (%)<input id="supplyLossPct" type="number" min="0" max="80" step="1" inputmode="decimal" placeholder="계측/근거 있는 손실률" required=""/></label></div><label class="field">자료 근거 / 계량 위치 / 기록 번호<input id="supplyEvidence" maxlength="240" placeholder="예: RMU 유입부 계량기, 2026-11-25 운영대장"/></label></div><div class="supply-calc-preview" id="supplyCalculationPreview" aria-live="polite"></div><div class="supply-entry-actions"><button class="btn btn-primary btn-small" id="saveWeeklySupply" type="button">이 RMU·주차 공급량 저장</button><p class="supply-entry-help">펌프·수문 계산: 검증 유량 × 해당 주 가동시간 × (1−수로손실률)</p></div><p class="supply-form-status" id="supplyFormStatus" role="status">입력 자료는 이 브라우저에 저장됩니다. 백업 파일로 다른 기기에 옮길 수 있습니다.</p><div class="table-wrap" id="supplySummary"></div><div class="supply-source-note"><strong>수위 자료와 공급량의 차이</strong><br/>MRC Tân Châu·Châu Đốc 큰 하천 수위는 수원 상황 참고자료입니다. 수위만으로 RMU 유입량(m³)을 알 수 없으며, 현장 수위-유량 곡선과 수문 상태·펌프 가동기록·수로 손실을 함께 확인해야 합니다. 한 펌프가 여러 RMU를 공급하면 중복계산을 막도록 각 RMU에 실제 배분 가능한 순공급량을 입력해 주세요. 월별 합계는 화면의 주간 공급기록을 주차 시작월 기준으로 합산합니다.</div></div>
-<div class="card" id="balanceAllocationPanel"><div class="card-top card-top-responsive"><div><span class="section-kicker">BALANCED SCENARIO / 45·30·15·10</span><h2>균형 기준 주간 물 배분안</h2><p class="muted">공급량과 농가 수요가 확인된 RMU 안에서만 계산합니다. 45·30·15·10 평가 가중치로 농업 위험·대기·공평성·80% 미충족을 함께 낮추고, 공급 부족 시 최소 배분을 보호합니다.</p></div><div class="controls"><button class="btn btn-secondary btn-small" id="seedDemosCalendar" type="button">시범 농가 54개 불러오기</button></div></div><div class="metrics metrics-4" id="allocationMetrics"></div><div class="table-wrap" id="allocationSummary"></div><div class="table-wrap" id="allocationTable"></div><p class="table-caption">분배 계산은 RMU별 주간 공급량을 넘지 않습니다. 공급자료가 없거나 농가 수요가 일부 미산출된 RMU는 배분안을 보류합니다. 공급이 입력되면 계산 가능한 모든 농가에 요청량의 최대 10%를 먼저 비례 배분하고, 남은 물량은 45·30·15·10 기준으로 분배합니다. 공급이 총 요청량의 10%보다 적으면 가능한 공급량을 모두에게 비례 배분합니다. 물수요는 평년기후 추정이 포함된 계획치이며 현장 취수 실측과 다릅니다.</p></div>
-<div class="card"><div class="card-top card-top-responsive"><div><span class="section-kicker">WEEKLY FARM PLANNER</span><h2>농가별 주간 계획 취수량</h2></div><div class="controls"><label class="filter-label">시작일 <input aria-label="16주 캘린더 시작일" id="calendarStart" type="date" value="2024-01-01"/></label><label class="filter-label">구역 <select id="calendarZone"><option value="all">전체</option></select></label><label class="filter-label">표시 <select id="calendarView"><option value="intake">계획 취수량 m³</option><option value="etc">작물증발산 ETc mm</option><option value="stage">생육단계</option></select></label></div></div><div class="irrigation-guidance-intro" id="irrigationGuidanceIntro"><strong>벼 품종별 관개 의사결정 · 시범 매트릭스</strong>농가별 물수요 행 바로 아래에 분얼기·AWD 낙수·AWD 중단·얕은 배수·완전 배수를 주차별로 표시합니다.<small>제공된 4개 품종 그룹 표 기반 · 파종일을 1일차로 계산 · 실제 수위·토양·기상 조건을 검증한 현장 처방이 아닙니다. 표시 안내는 기존 취수량 공식이나 AWD 취수 차단에 자동 적용되지 않습니다.</small></div><div class="table-wrap" id="calendarTable"></div><div class="table-caption">—: 데이터 없음 / 미계산 · 0: 계산 결과 취수량 0 · 자료 없는 농가를 합계에서 0으로 처리하지 않습니다. · 품종별 관개 판단은 물수요 계산과 별도 정보입니다.</div></div>
+<div class="card supply-data-panel" id="weeklySupplyPanel"><div class="card-top card-top-responsive"><div><span class="section-kicker">WEEKLY SUPPLY CAPACITY</span><h2>RMU별 주간 공급 가능량</h2><p class="muted">각 RMU에 이번 주 실제로 도달시킬 수 있는 순공급량을 등록합니다. 자료가 없는 구역은 0으로 간주하지 않고 배분 계산을 보류합니다.</p></div><div class="supply-record-tools"><button class="btn btn-secondary btn-small" id="useActualSupply" type="button" hidden>실제 공급기록으로 전환</button><label>표시 <select id="supplySummaryMode"><option value="week">주별</option><option value="month">월별 합계</option></select></label><button class="btn btn-secondary btn-small" id="exportWeeklySupply" type="button">공급자료 백업</button><label class="btn btn-secondary btn-small" for="importWeeklySupply" style="cursor:pointer">공급자료 가져오기<input accept=".json,application/json" id="importWeeklySupply" type="file" hidden=""/></label></div></div><div class="demo-supply-notice" id="demoSupplyNotice" hidden><b>시연 공급량 · 실측 아님</b><span>아래의 수량과 유량은 배분 화면을 보여주기 위한 시나리오 가정입니다. 실제 RMU 공급 기록은 별도 보존됩니다.</span></div><div class="supply-entry-grid"><label class="field">주차<select id="supplyWeek"></select></label><label class="field">RMU<select id="supplyRmu"></select></label><label class="field">자료 산정 방법<select id="supplyMethod"><option value="rmu_meter">RMU 인입부 유량계 합계</option><option value="canal_meter">수로 유량 계측 후 주간 합산</option><option value="canal_velocity">수로 단면적 × 평균 유속</option><option value="pump_runtime">검증 유량 × 펌프 가동시간</option><option value="gate_curve">현장 보정 수문 곡선 × 개방시간</option><option value="agency_plan">운영기관 주간 공급 계획</option><option value="history_estimate">과거 기록 기반 추정</option></select></label><div class="field" id="supplyDirectFields"><label class="field">주간 공급 가능량 (m³)<input id="supplyDirectM3" type="number" min="0" step="0.1" inputmode="decimal" placeholder="계량 또는 계획값"/></label><span class="field-hint">직접 계량값, 기관 계획량 또는 과거 기록 추정값을 입력합니다.</span></div><div class="supply-method-grid" id="supplyCalculationFields" hidden=""><label class="field" id="supplyFlowField">유량 (m³/h)<input id="supplyFlowM3h" type="number" min="0" step="0.1" inputmode="decimal" placeholder="현장 검증 유량"/></label><div class="supply-velocity-fields" id="supplyVelocityFields" hidden=""><label class="field">유효 단면적 (m²)<input id="supplyAreaM2" type="number" min="0" step="0.01" inputmode="decimal" placeholder="불규칙 단면은 구간별 면적 합"/></label><label class="field">평균 유속 (m/s)<input id="supplyVelocityMs" type="number" min="0" step="0.01" inputmode="decimal" placeholder="유속계/부자 측정"/></label></div><label class="field">주간 실제/예정 가동시간 (h)<input id="supplyRuntimeHours" type="number" min="0" step="0.1" inputmode="decimal" placeholder="운영기록 시간"/></label><label class="field">수로 손실 추정 (%)<input id="supplyLossPct" type="number" min="0" max="80" step="1" inputmode="decimal" placeholder="계측/근거 있는 손실률" required=""/></label></div><label class="field">자료 근거 / 계량 위치 / 기록 번호<input id="supplyEvidence" maxlength="240" placeholder="예: RMU 유입부 계량기, 2026-11-25 운영대장"/></label></div><div class="supply-calc-preview" id="supplyCalculationPreview" aria-live="polite"></div><div class="supply-entry-actions"><button class="btn btn-primary btn-small" id="saveWeeklySupply" type="button">이 RMU·주차 공급량 저장</button><p class="supply-entry-help">유량·시간 계산: (단면적 × 평균 유속 × 3,600 또는 현장 검증 유량) × 주간 가동시간 × (1−근거 있는 손실률)</p></div><p class="supply-form-status" id="supplyFormStatus" role="status">입력 자료는 이 브라우저에 저장됩니다. 백업 파일로 다른 기기에 옮길 수 있습니다.</p><div class="table-wrap" id="supplySummary"></div><div class="supply-source-note"><strong>유량을 파악하는 순서</strong><ol><li><b>가장 직접적:</b> RMU 인입부 유량계의 주간 누적값 또는 검침 시작·종료 차이.</li><li><b>펌프:</b> 실제 양정에서 검증한 토출유량(m³/h) × 해당 주 가동시간. 명판 최대유량 대신 현장 계측값을 씁니다.</li><li><b>수로:</b> 단면적 × 평균 유속으로 Q(m³/s)를 계산한 뒤 3,600을 곱해 m³/h로 환산하고 통수시간을 곱합니다. 단면이 고르지 않으면 구간별 면적×유속을 합산합니다.</li><li><b>수문·운영자료:</b> 현장 유량으로 보정한 수문 곡선 × 개방시간, 또는 운영기관 주간 공급 계획. 과거 평균은 추정치로 구분합니다.</li></ol><b>수위만으로는 RMU 유량을 알 수 없습니다.</b> Tân Châu·Châu Đốc 수위는 메콩강 본류의 참고자료이며, <a href="https://monitoring.mrcmekong.org/" target="_blank" rel="noopener">MRC 실시간 관측</a>과 <a href="https://www.mrcmekong.org/data-and-information-systems-and-services/" target="_blank" rel="noopener">MRC 데이터 포털</a>에서 하천 수위·유량 자료를 확인할 수 있습니다. 이 자료는 RMU 유입량과 구분해야 합니다. 수위-유량 곡선을 만들려면 같은 지점에서 반복 유량 측정과 수위 기록이 필요합니다. <a href="https://www.usgs.gov/mission-areas/water-resources/science/streamgaging-basics" target="_blank" rel="noopener">USGS 단면적×유속 설명</a> · <a href="https://www.usgs.gov/hydroacoustics/mid-section-measurements" target="_blank" rel="noopener">USGS 구간별 측정</a> · <a href="https://www.mrcmekong.org/publications/development-and-update-of-water-level-and-discharge-rating-curves-for-the-mekong-mainstream/" target="_blank" rel="noopener">MRC 수위-유량 곡선 기술자료</a>. 한 펌프가 여러 RMU를 공급하면 RMU별 실제 배분 가능 순공급량으로 나눠 중복 합산을 막습니다. 월별 합계는 주차 시작월 기준입니다.</div></div>
+<div class="card" id="balanceAllocationPanel"><div class="card-top card-top-responsive"><div><span class="section-kicker">BALANCED SCENARIO / 45·30·15·10</span><h2>균형 기준 주간 물 배분안</h2><p class="muted">농가별 주간 계획 취수량을 요청량으로 놓고, RMU별 공급 가능량 안에서 위험 45%·대기 30%·공평성 15%·유효성 10% 기준으로 배분합니다.</p></div><div class="controls"><button class="btn btn-primary btn-small" id="loadAllocationDemo" type="button">전체 시연 시나리오 불러오기</button><button class="btn btn-secondary btn-small" id="seedDemosCalendar" type="button">시범 농가만 불러오기</button></div></div><div class="demo-allocation-notice" id="allocationScenarioNotice" hidden><b>시연 시나리오</b><span>배분 대상은 RMU마다 3개씩 만든 시범농가 54개입니다. 요청량은 강우 차감 후 주간 계획 취수량입니다. 공급 유량 28–54 m³/h, 주간 가동 12–24시간, 손실률 15%는 시연 가정이며 현장 실측값이 아닙니다. 실제 등록 농가와 실제 공급기록은 보존됩니다.</span></div><div class="allocation-visual"><div class="allocation-visual-head"><div><b>RMU별 요청 · 공급 · 배분</b><small id="allocationVisualCaption"></small></div><label>주차 <select id="allocationVisualWeek"></select></label></div><div class="allocation-legend"><span><i class="legend-allocation"></i>배분계획</span><span><i class="legend-capacity"></i>공급 가능량 한도</span></div><div class="allocation-grid" id="rmuAllocationChart"></div></div><div class="metrics metrics-4" id="allocationMetrics"></div><div class="table-wrap" id="allocationSummary"></div><div class="table-wrap" id="allocationTable"></div><p class="table-caption">분배 계산은 RMU별 주간 공급량을 넘지 않습니다. 공급자료가 없거나 농가 수요가 일부 미산출된 RMU는 배분안을 보류합니다. 공급이 입력되면 계산 가능한 모든 농가에 요청량의 최대 10%를 먼저 비례 배분하고, 남은 물량은 45·30·15·10 기준으로 분배합니다. 공급이 총 요청량의 10%보다 적으면 가능한 공급량을 모두에게 비례 배분합니다. 물수요는 평년기후 추정이 포함된 계획치이며 현장 취수 실측과 다릅니다.</p></div>
+<div class="card"><div class="card-top card-top-responsive"><div><span class="section-kicker">WEEKLY FARM PLANNER</span><h2>농가별 주간 계획 취수량</h2></div><div class="controls"><label class="filter-label">시작일 <input aria-label="16주 캘린더 시작일" id="calendarStart" type="date" value="2024-01-01"/></label><label class="filter-label">구역 <select id="calendarZone"><option value="all">전체</option></select></label><label class="filter-label">표시 <select id="calendarView"><option value="intake">계획 취수량 m³</option><option value="balance">강우 반영 물수지 m³</option><option value="etc">작물증발산 ETc mm</option><option value="stage">생육단계</option></select></label></div></div><div class="irrigation-guidance-intro" id="irrigationGuidanceIntro"><strong>벼 품종별 관개 의사결정 · 시범 매트릭스</strong>농가별 물수요 행 바로 아래에 분얼기·AWD 낙수·AWD 중단·얕은 배수·완전 배수를 주차별로 표시합니다.<small>제공된 4개 품종 그룹 표 기반 · 파종일을 1일차로 계산 · 실제 수위·토양·기상 조건을 검증한 현장 처방이 아닙니다. 표시 안내는 기존 취수량 공식이나 AWD 취수 차단에 자동 적용되지 않습니다.</small></div><div class="table-wrap" id="calendarTable"></div><div class="table-caption">—: 데이터 없음 / 미계산 · 0: 계산 결과 취수량 0 · 자료 없는 농가를 합계에서 0으로 처리하지 않습니다. · 품종별 관개 판단은 물수요 계산과 별도 정보입니다.</div></div>
 <div class="card"><div class="card-top"><div><span class="section-kicker">RMU AGGREGATION</span><h2>구역별 주간 취수 계획</h2></div><span class="small-label">FARM AGGREGATED ONLY</span></div><div class="table-wrap" id="rmuWeekTable"></div></div>
 <div class="card"><div class="card-top"><div><span class="section-kicker">WATER BALANCE</span><h2>계산 구조와 적용 한계</h2></div></div><div class="calculation-chain"><div>ETc = ET₀ × Kc<small>작물의 추정 증발산</small></div><b>→</b><div>순관개수요 = max(ETc − Pe, 0)<small>USDA-SCS 유효우량</small></div><b>→</b><div>계획 취수량 = 순수요 × 면적 ÷ (Ea × Ec)<small>면적변환: 1mm·ha = 10m³</small></div></div><div class="note-block"><strong>중요한 한계</strong><p>벼 담수 유지·침투·논물 저장량·초기 물대기·토양수분을 추가해야 수요 추정이 개선됩니다. AWD 건조기간의 취수량 0은 작동 검증용 가정이며 현장 관개 지침이 아닙니다. 배분안은 RMU별 주간 공급자료와 계산 가능한 수요가 확인된 구역에 한해 45·30·15·10 위험·대기·공평성·미충족 기준으로 계산합니다. Tân Châu·Châu Đốc 큰 하천 수위만으로 RMU에 도달하는 물의 m³를 환산하지 않습니다. RMU 공급기록이 없는 곳은 배분을 보류하고, 공급량·펌프 용량·수로 연결·급수 시간창이 현장에서 확인되기 전에는 현장 급수 지시로 사용하지 마세요.</p></div></div>
 </section>
@@ -739,7 +739,7 @@
   const dateShort=(d)=>d.slice(5).replace('-','.');
   const validDate=(s)=>/^\d{4}-\d{2}-\d{2}$/.test(s)&&!Number.isNaN(utc(s))&&iso(utc(s))===s;
   function normalizeFarmRecord(f){const copy={...f},oldZone=/^RMU-\d{2}$/.test(String(copy.rmu||''))?copy.rmu:copy.legacyRmu;
-    if(/^RMU-\d{2}$/.test(String(copy.rmu||''))){const assigned=copy.lat!==null&&copy.lat!==undefined&&copy.lon!==null&&copy.lon!==undefined?rmuForGps(copy.lat,copy.lon):null;copy.rmu=assigned;copy.legacyRmu=oldZone;copy.assignmentStatus=assigned?'GPS_AUTO_REASSIGNED':'NEEDS_REVIEW';}
+    if(/^RMU-\d{2}$/.test(String(copy.rmu||''))){const hasGps=copy.lat!==null&&copy.lat!==undefined&&copy.lon!==null&&copy.lon!==undefined,assigned=hasGps?rmuForGps(copy.lat,copy.lon):null;if(assigned){copy.rmu=assigned;copy.legacyRmu=oldZone;copy.assignmentStatus='GPS_AUTO_REASSIGNED';}else if(hasGps){copy.rmu=null;copy.legacyRmu=oldZone;copy.assignmentStatus='NEEDS_REVIEW';}else{copy.rmu=oldZone;copy.assignmentStatus=copy.assignmentStatus||'ASSIGNED';}}
     else if(!RMU_BY_ID.has(copy.rmu)){copy.rmu=null;copy.legacyRmu=oldZone||copy.legacyRmu||null;copy.assignmentStatus=copy.assignmentStatus||'NEEDS_REVIEW';}
     else copy.assignmentStatus=copy.assignmentStatus||'ASSIGNED';
     return copy;
@@ -816,10 +816,10 @@
   function computeWeek(f,index){
     const key=dataset.meta.version+'|'+climateMode+'|'+apiVersion+'|'+calendarStart+'|'+JSON.stringify(f)+'|'+index;
     if(WEEK_CACHE.has(key))return WEEK_CACHE.get(key);
-    const out={status:'pre',volume:null,etc:0,net:0,days:7,activeDays:0,dryDays:0,climateDays:0,missingDays:0,
+    const out={status:'pre',volume:null,etc:0,net:0,grossPlannedM3:0,effectiveRainCreditM3:0,days:7,activeDays:0,dryDays:0,climateDays:0,missingDays:0,
       cropStatus:'CROP_PRE_SOWING',climateStatus:'CLIMATE_UNAVAILABLE',climateSources:[],stage:'파종 전',period:weekStart(index),notes:[],et0Mean:null,rainfall:null,kcMean:null};
     const ea=efficiency(f),ec=conveyance(),monthCache={};let hasMissing=false,hasActive=false,hasEnded=false,hasPre=false;
-    let net=0,etc=0,planned=0,dryDays=0,stageLabel='',incompleteMonthlyRain=false;
+    let net=0,etc=0,planned=0,grossPlanned=0,effectiveRainCredit=0,dryDays=0,stageLabel='',incompleteMonthlyRain=false;
     let et0Sum=0,rainSum=0,kcSum=0;const sources=new Set();
     for(let d=0;d<7;d++){
       const dt=addDays(out.period,d),p=dailyProfile(f,dt);
@@ -844,9 +844,9 @@
       etc+=p.etC;const dailyNet=Math.max(0,p.etC-pe);net+=dailyNet;
       const dry=Boolean(f.awd&&f.crop==='rice'&&p.age>=28&&p.age<=34);
       if(dry){dryDays++;continue}
-      if(ea&&ec&&ea>0&&ec>0)planned+=(dailyNet*10*f.area)/(ea*ec);
+      if(ea&&ec&&ea>0&&ec>0){const volumeFactor=10*f.area/(ea*ec);grossPlanned+=(p.etC*volumeFactor);effectiveRainCredit+=(Math.min(p.etC,pe)*volumeFactor);planned+=(dailyNet*volumeFactor);}
     }
-    out.etc=etc;out.net=net;out.dryDays=dryDays;
+    out.etc=etc;out.net=net;out.grossPlannedM3=grossPlanned;out.effectiveRainCreditM3=effectiveRainCredit;out.dryDays=dryDays;
     out.stage=stageLabel||(hasEnded?'작기 종료':'파종 전');out.cropStatus=hasActive?'CROP_ACTIVE':hasEnded?'CROP_ENDED':'CROP_PRE_SOWING';
     out.climateStatus=out.activeDays&&out.climateDays===out.activeDays&&!incompleteMonthlyRain?'CLIMATE_COMPLETE':out.climateDays?'CLIMATE_PARTIAL':'CLIMATE_UNAVAILABLE';
     out.climateSources=Array.from(sources);out.et0Mean=out.climateDays?et0Sum/out.climateDays:null;
@@ -971,10 +971,10 @@
   }
   function removeFarm(id){const f=farms.find(x=>x.id===id);if(!f)return;if(!confirm(`'${f.name}' 농가를 삭제할까요?`))return;
     farms=farms.filter(x=>x.id!==id);if(editingId===id)clearForm();persistFarms();refresh();toast('농가를 삭제했습니다. 관련 합계를 갱신했습니다.');}
-  function seedDemoFarms(){
+  function seedDemoFarms(confirmReplace=true){
     const existing=farms.filter(f=>f.origin==='DEMO_ASSUMPTION');
     const real=farms.filter(f=>f.origin!=='DEMO_ASSUMPTION');
-    if(existing.length&&!confirm(`기존 시범 농가 ${existing.length}개를 새 54개 데이터로 교체할까요? 실제 등록 농가 ${real.length}개는 유지됩니다.`))return;
+    if(confirmReplace&&existing.length&&!confirm(`기존 시범 농가 ${existing.length}개를 새 54개 데이터로 교체할까요? 실제 등록 농가 ${real.length}개는 유지됩니다.`))return false;
     const demo=[];
     const orchard=['durian','mango','jackfruit'];
     for(let zoneIndex=0;zoneIndex<RMUS.length;zoneIndex++){
@@ -1001,6 +1001,7 @@
           origin:'DEMO_ASSUMPTION',
           assignmentStatus:'DEMO_ASSIGNED',
           allocationRisk:risk,
+          allocationRiskSource:'DEMO_SCENARIO',
           allocationWaitDays:(zoneIndex*3+slot*8)%29
         });
       }
@@ -1008,8 +1009,20 @@
     farms=[...real,...demo];
     persistFarms();clearForm();refresh();
     toast(`새 시범 농가 ${demo.length}개를 RMU마다 3개씩 불러왔습니다. 기존 시범 데이터만 교체했습니다.`);
+    return true;
   }
   function clearFarms(){if(!farms.length){toast('삭제할 농가가 없습니다.');return}if(!confirm(`등록된 ${farms.length}개 농가를 모두 삭제할까요? 복원하려면 백업 JSON이 필요합니다.`))return;farms=[];persistFarms();clearForm();refresh();toast('전체 농가 데이터가 삭제되었습니다.');}
+  function loadAllocationDemo(){
+    const existing=farms.filter(f=>f.origin==='DEMO_ASSUMPTION'),real=farms.filter(f=>f.origin!=='DEMO_ASSUMPTION');
+    if(existing.length&&!confirm(`기존 시범 농가 ${existing.length}개를 새 54개 시연 시나리오로 교체할까요? 실제 등록 농가 ${real.length}개와 실제 공급기록은 보존됩니다.`))return;
+    calendarStart='2026-05-01';$('calendarStart').value=calendarStart;calendarZone='all';$('calendarZone').value='all';$('calendarView').value='balance';
+    climateMode='csv';$('climateMode').value='csv';WEEK_CACHE.clear();apiRequestId++;if(apiAbort)apiAbort.abort();
+    if(!seedDemoFarms(false))return;
+    const weekStarts=Array.from({length:WEEK_COUNT},(_,week)=>weekStart(week));
+    window.MekongWeeklySupply?.loadDemo(weekStarts);
+    navigate('calendar');renderCalendar();
+    toast('시연 농가의 강우 차감 계획량을 요청량으로 보고 18개 RMU 배분을 계산했습니다. 공급량은 실측이 아닌 시연 가정입니다.');
+  }
   function renderSetup(){let {cards,planted,nZone,needsRmu}=summary();
     $('setupMetrics').innerHTML=metric('등록된 농가',asNumber(cards)+'개','사용자 입력 + 시범 농가','♧')+metric('등록 경작면적',asNumber(planted)+' ha','등록 농가 합계 · 공식 면적 아님','▤')+metric('RMU 배정',asNumber(nZone)+' / 18',needsRmu?`재배정 대기 ${needsRmu}개`:'사진 기준 구역 분류','⌖');
     $('farmListCount').textContent=cards;
@@ -1145,11 +1158,12 @@
   const DEFAULT_RISK_SCORES={growth:2,soil:2,damage:2,alternative:2};
   const RISK_FIELDS=Object.keys(DEFAULT_RISK_SCORES);
   function allocationRiskProfile(farm){
-    const syntheticDemo=farm.origin==='DEMO_ASSUMPTION'&&farm.allocationRiskSource!=='USER_ASSESSED';
+    const demoScenario=farm.origin==='DEMO_ASSUMPTION'&&farm.allocationRiskSource==='DEMO_SCENARIO'&&window.MekongWeeklySupply?.isDemoMode();
+    const syntheticDemo=farm.origin==='DEMO_ASSUMPTION'&&farm.allocationRiskSource!=='USER_ASSESSED'&&!demoScenario;
     const source=syntheticDemo?{}:(farm.allocationRisk||farm.riskAssessment||farm.riskProfile||{});
     const missingRisk=value=>value===''||value===undefined||value===null||!Number.isFinite(Number(value));
     const unassessed=RISK_FIELDS.every(k=>missingRisk(source[k]));
-    const estimated=syntheticDemo||RISK_FIELDS.some(k=>missingRisk(source[k]));
+    const estimated=syntheticDemo||demoScenario||RISK_FIELDS.some(k=>missingRisk(source[k]));
     const scores=Object.fromEntries(RISK_FIELDS.map(k=>{
       const raw=source[k],value=missingRisk(raw)?DEFAULT_RISK_SCORES[k]:Number(raw);
       return [k,Math.max(0,Math.min(4,value))];
@@ -1157,7 +1171,7 @@
     const score=100*(.35*scores.growth+.30*scores.soil+.25*scores.damage+.10*scores.alternative)/4;
     const grade=unassessed?'미평가':score<20?'일반':score<40?'주의':score<60?'높음':score<80?'매우 높음':'긴급';
     const multiplier=score<20?1:score<40?1.5:score<60?2:score<80?2.5:3;
-    return {scores,score,grade,multiplier,estimated,unassessed};
+    return {scores,score,grade,multiplier,estimated,unassessed,demoScenario};
   }
   function allocationPercentile(sorted,p){
     if(!sorted.length)return 0;
@@ -1275,18 +1289,25 @@
         available+=plan.capacity;
         knownDemand+=plan.requested;
         rows.push(...plan.rows);
-        const isMeasured=['rmu_meter','canal_meter'].includes(supplyRecord.method);
-        rmuPlans.push({rmu,requested:plan.requested,available:plan.capacity,allocated:plan.rows.reduce((sum,row)=>sum+row.allocated,0),method:supplyRecord.method,grade:isMeasured?'현장 계량 입력':supplyRecord.method==='agency_plan'?'운영 계획':'계산·과거자료 추정',evidence:supplyRecord.evidence||''});
+        const isMeasured=['rmu_meter','canal_meter','canal_velocity'].includes(supplyRecord.method);
+        const grade=supplyRecord.method==='canal_velocity'?'현장 계측 계산':isMeasured?'현장 계량 입력':supplyRecord.method==='agency_plan'?'운영 계획':'계산·과거자료 추정';
+        rmuPlans.push({rmu,requested:plan.requested,available:plan.capacity,allocated:plan.rows.reduce((sum,row)=>sum+row.allocated,0),method:supplyRecord.method,grade,evidence:supplyRecord.evidence||''});
         for(const row of plan.rows){
           const success=row.allocated>=row.request*.8-1e-7;
           waits.set(row.farm.id,success?0:Math.min(WEEK_COUNT*7,row.waitDays+7));
         }
       }
-      weeks.push({rows,requested:knownDemand,requestTotal,available,unknownDemand,heldDemand,unknownGroups:[...unknownGroups],incompleteGroups:[...incompleteGroups],incompleteDemandCells,rmuPlans,metrics:allocationEvaluation(rows),complete:unknownGroups.size===0&&incompleteGroups.size===0});
+      const allocationByRmu=RMUS.map(zone=>{
+        const demandRows=groups.get(zone.id)||[];
+        const supplyRecord=window.MekongWeeklySupply?.get(weekDate,zone.id)||null;
+        const rmuRows=rows.filter(row=>row.farm.rmu===zone.id);
+        return {rmu:zone.id,requested:demandRows.reduce((sum,item)=>sum+item.value.volume,0),available:supplyRecord?Number(supplyRecord.availableM3):null,allocated:rmuRows.reduce((sum,row)=>sum+row.allocated,0),known:Boolean(supplyRecord),held:incompleteGroups.has(zone.id),method:supplyRecord?.method||'',hasDemand:demandRows.length>0||incompleteGroups.has(zone.id)};
+      });
+      weeks.push({rows,requested:knownDemand,requestTotal,available,unknownDemand,heldDemand,unknownGroups:[...unknownGroups],incompleteGroups:[...incompleteGroups],incompleteDemandCells,rmuPlans,allocationByRmu,metrics:allocationEvaluation(rows),complete:unknownGroups.size===0&&incompleteGroups.size===0});
     }
     return weeks;
   }
-  function renderBalanceAllocation(filtered,plans){
+  function renderBalanceAllocation(filtered,plans,visualPlans=plans){
     const totalRequested=plans.reduce((sum,plan)=>sum+plan.requestTotal,0);
     const totalKnownRequested=plans.reduce((sum,plan)=>sum+plan.requested,0);
     const totalAvailable=plans.reduce((sum,plan)=>sum+plan.available,0);
@@ -1297,9 +1318,13 @@
     const registeredGroupWeeks=plans.reduce((sum,plan)=>sum+plan.rmuPlans.length,0);
     const missingGroupWeeks=plans.reduce((sum,plan)=>sum+plan.unknownGroups.length,0);
     const heldGroupWeeks=activeGroupWeeks-registeredGroupWeeks;
-    const measuredSupply=plans.reduce((sum,plan)=>sum+plan.rmuPlans.filter(item=>['rmu_meter','canal_meter'].includes(item.method)).reduce((part,item)=>part+item.available,0),0);
+    const measuredSupply=plans.reduce((sum,plan)=>sum+plan.rmuPlans.filter(item=>['rmu_meter','canal_meter','canal_velocity'].includes(item.method)).reduce((part,item)=>part+item.available,0),0);
     const zeroAllocation=plans.reduce((sum,plan)=>sum+plan.rows.filter(row=>row.allocated<=1e-9).length,0);
     $('allocationMetrics').innerHTML=metric('계산 가능한 RMU·주',`${registeredGroupWeeks} / ${activeGroupWeeks}` ,`공급/수요 확인 보류 ${heldGroupWeeks}개 · 공급 미등록 ${missingGroupWeeks}개`,'◷')+metric('16주 공급 가능량',`${asNumber(totalAvailable)} m³`,`현장 계량 입력 ${asNumber(measuredSupply)} m³ · 기타는 계획/추정`,'↓')+metric('산출 요청량',`${asNumber(totalRequested)} m³`,`공급자료가 있는 RMU ${asNumber(totalKnownRequested)} m³`,'≈')+metric('배분 0 m³',`${zeroAllocation}건`,`계산 보류 ${asNumber(totalUnknownDemand+totalHeldDemand)} m³ · 수요 미산출 ${totalIncompleteDemandCells}건`,'!');
+
+    const demoNotice=$('allocationScenarioNotice');
+    if(demoNotice)demoNotice.hidden=!window.MekongWeeklySupply?.isDemoMode();
+    renderAllocationVisual(visualPlans);
 
     const percent=value=>Number.isFinite(value)?`${(value*100).toFixed(1)}%`:'—';
     const summaryRows=[
@@ -1324,7 +1349,7 @@
       const risk=allocationRiskProfile(farm);
       const first=plans[0].rows.find(row=>row.farm.id===farm.id);
       const wait=first?.waitDays??Math.max(0,Math.min(WEEK_COUNT*7,Number(farm.allocationWaitDays)||0));
-      const detail=`${risk.grade} ${asNumber(risk.score)}점 · ${risk.multiplier.toFixed(1)}배${risk.estimated?' · 추정':''} · 대기 ${wait}일`;
+      const detail=`${risk.grade} ${asNumber(risk.score)}점 · ${risk.multiplier.toFixed(1)}배${risk.demoScenario?' · 시연 가정':risk.estimated?' · 추정':''} · 대기 ${wait}일`;
       const cells=Array.from({length:WEEK_COUNT},(_,week)=>{
         const plan=plans[week],entry=plan.rows.find(row=>row.farm.id===farm.id),demand=values[week];
         if(entry){
@@ -1344,17 +1369,39 @@
     }).join('');
     $('allocationTable').innerHTML=`<table class="calendar-table"><thead>${head}</thead><tbody>${rows}</tbody></table>`;
   }
+  function renderAllocationVisual(plans){
+    const select=$('allocationVisualWeek'),chart=$('rmuAllocationChart'),caption=$('allocationVisualCaption');
+    if(!select||!chart||!caption)return;
+    const previous=Number(select.value)||0;
+    select.innerHTML=plans.map((plan,index)=>`<option value="${index}">${index+1}주차 · ${dateShort(weekStart(index))}</option>`).join('');
+    const selected=Math.min(plans.length-1,Math.max(0,previous));select.value=String(selected);
+    const plan=plans[selected];
+    if(!plan){chart.innerHTML='<div class="empty-state">표시할 배분 자료가 없습니다.</div>';caption.textContent='';return;}
+    const totalRequest=plan.allocationByRmu.reduce((sum,item)=>sum+item.requested,0);
+    const totalAllocated=plan.allocationByRmu.reduce((sum,item)=>sum+item.allocated,0);
+    const knownCapacity=plan.allocationByRmu.filter(item=>item.known).reduce((sum,item)=>sum+item.available,0);
+    caption.textContent=`${selected+1}주차 · 요청 ${asNumber(totalRequest)} m³ · 공급자료 ${asNumber(knownCapacity)} m³ · 배분계획 ${asNumber(totalAllocated)} m³. 막대는 요청량을 기준으로 배분률을 표시합니다.`;
+    chart.innerHTML=plan.allocationByRmu.map(item=>{
+      const ratio=item.requested>0?Math.max(0,Math.min(100,item.allocated/item.requested*100)):0;
+      const marker=item.known&&item.requested>0?`<i class="allocation-capacity-marker" style="left:${Math.max(0,Math.min(100,item.available/item.requested*100))}%" title="공급 가능량 ${asNumber(item.available)} m³"></i>`:'';
+      const state=item.held?'수요 미산출로 RMU 배분 보류':item.requested<=0?(item.hasDemand?'계획 취수량 0 m³':'계획 수요 없음'):!item.known?'공급자료 없음 · 계산 보류':item.available>item.requested?'요청량 충족 · 공급 여유 '+asNumber(item.available-item.requested)+' m³':'공급량 한도 안에서 배분';
+      const supply=item.known?asNumber(item.available)+' m³':'자료 없음';
+      return `<article class="allocation-rmu-card ${item.held?'is-held':''}"><div class="allocation-rmu-heading"><b>${escapeHTML(item.rmu)}</b><strong>${item.requested>0?Math.round(ratio)+'%':'—'}</strong></div><div class="allocation-bar" role="img" aria-label="${escapeHTML(item.rmu)} 요청량 대비 배분 ${Math.round(ratio)}퍼센트"><span class="allocation-bar-fill" style="width:${ratio}%"></span>${marker}</div><div class="allocation-rmu-values"><span>요청 <b>${asNumber(item.requested)} m³</b></span><span>공급 <b>${supply}</b></span><span>배분 <b>${asNumber(item.allocated)} m³</b></span></div><small>${escapeHTML(state)}</small></article>`;
+    }).join('');
+  }
   function renderCalendar(){const {sums}=summary();const strip=document.querySelector('.status-strip');strip.innerHTML=`<span class="status-led"></span><span>캘린더: ${escapeHTML(calendarStart)} — ${escapeHTML(addDays(calendarStart,111))}</span><span class="strip-dot">·</span><span>출처: ${climateMode==='api'?'내장 CSV + 최근 API 갱신':'내장 CSV (오프라인)'}</span><span class="strip-dot">·</span><span>월별 평년기후 계획 추정 포함 · 실제 취수량 계측값 아님</span>`;
     displayClimateStatus();$('calendarMetrics').innerHTML=metric('등록 농가',farms.length+'개','농가 기준 집계','♧')+metric('계산 가능 셀',sums.valid+'개','계획용 기후자료가 모두 있는 7일만 합산','✓')+metric('계획 취수량 합계',sums.valid?asNumber(sums.known)+' m³':'—','계산 가능한 셀만 · 모델 계산량, 실측 아님','◉')+metric('미계산/부분 셀',sums.missing+'개','0으로 대체하지 않음','!');
     const field=$('calendarView').value;
     const filtered=sums.weeks.filter(({farm})=>calendarZone==='all'||farmInZone(farm,calendarZone));
     const supplyDates=Array.from({length:WEEK_COUNT},(_,week)=>weekStart(week));
     window.MekongWeeklySupply?.render(supplyDates);
-    const allocationPlan=simulateBalanceAllocation(filtered);
-    const globalAllocationPlan=calendarZone==='all'?allocationPlan:simulateBalanceAllocation(sums.weeks);
-    window.__MEKONG_ALLOCATION_PLAN__={startDate:calendarStart,supplyMode:'rmu-weekly-records',weeks:globalAllocationPlan.map((plan,week)=>({index:week+1,startDate:weekStart(week),completeSupplyData:plan.complete,availableM3:plan.available,unknownDemandM3:plan.unknownDemand,unknownRmus:plan.unknownGroups,incompleteRmus:plan.incompleteGroups,incompleteDemandCells:plan.incompleteDemandCells,supplyByRmu:plan.rmuPlans,rows:plan.rows.map(row=>({farmId:String(row.farm.id),farmName:row.farm.name||String(row.farm.id),rmu:row.farm.rmu||'미배정',crop:CROPS[row.farm.crop]||row.farm.crop,requestM3:row.request,plannedM3:row.allocated,waitDays:row.waitDays||0}))}))};
+    const allocationSource=window.MekongWeeklySupply?.isDemoMode()?sums.weeks.filter(({farm})=>farm.origin==='DEMO_ASSUMPTION'):sums.weeks;
+    const allocationFiltered=allocationSource.filter(({farm})=>calendarZone==='all'||farmInZone(farm,calendarZone));
+    const allocationPlan=simulateBalanceAllocation(allocationFiltered);
+    const globalAllocationPlan=calendarZone==='all'?allocationPlan:simulateBalanceAllocation(allocationSource);
+    window.__MEKONG_ALLOCATION_PLAN__={startDate:calendarStart,supplyMode:window.MekongWeeklySupply?.isDemoMode()?'demo-assumption-rmu-weekly':'rmu-weekly-records',requestMode:window.MekongWeeklySupply?.isDemoMode()?'planned-weekly-intake-after-effective-rain':'registered-farm-demand',weeks:globalAllocationPlan.map((plan,week)=>({index:week+1,startDate:weekStart(week),completeSupplyData:plan.complete,availableM3:plan.available,unknownDemandM3:plan.unknownDemand,unknownRmus:plan.unknownGroups,incompleteRmus:plan.incompleteGroups,incompleteDemandCells:plan.incompleteDemandCells,supplyByRmu:plan.rmuPlans,rows:plan.rows.map(row=>({farmId:String(row.farm.id),farmName:row.farm.name||String(row.farm.id),rmu:row.farm.rmu||'미배정',crop:CROPS[row.farm.crop]||row.farm.crop,requestM3:row.request,plannedM3:row.allocated,waitDays:row.waitDays||0}))}))};
     window.MekongBenefit?.render();
-    renderBalanceAllocation(filtered,allocationPlan);
+    renderBalanceAllocation(allocationFiltered,allocationPlan,globalAllocationPlan);
     const heads=`<tr><th>농가 / 구역</th>${Array.from({length:WEEK_COUNT},(_,w)=>`<th class="week">${w+1}주차<small>${dateShort(weekStart(w))}</small></th>`).join('')}</tr>`;
     $('calendarTable').innerHTML=`<table class="calendar-table"><thead>${heads}</thead><tbody>${filtered.length?filtered.map(({farm,values})=>`<tr data-calendar-farm-id="${escapeHTML(farm.id)}" class="${farm.id===savedFarmId?'recently-saved-row':''}"><td><b>${escapeHTML(farm.name)}</b><span class="cell-note">${escapeHTML(farmZoneLabel(farm))}${!farm.rmu&&farm.legacyRmu?` · 기존 ${escapeHTML(farm.legacyRmu)} · 재배정 필요`:''} · ${escapeHTML(CROPS[farm.crop])}</span></td>${values.map(v=>cellHTML(v,field)).join('')}</tr>${farm.crop==='rice'?irrigationDecisionRow(farm):''}`).join(''):`<tr><td colspan="17" class="empty-state">${farms.length?'이 RMU에 등록된 농가가 없습니다.':'농가를 먼저 등록하세요.'}</td></tr>`}</tbody></table>`;
     let zoneIds=calendarZone==='all'?[...RMU_IDS,...(farms.some(f=>!f.rmu)?[UNASSIGNED_ZONE]:[])]:[calendarZone];
@@ -1375,6 +1422,7 @@
     if(inactive)return `<td class="week-cell preplant" title="${escapeHTML(v.stage)}">—<span class="cell-note">${v.status==='pre'?'파종 전':'작기 종료'}</span></td>`;
     if(field==='stage')return `<td class="week-cell stage-cell has-water" title="${escapeHTML(v.stage)}">${escapeHTML(v.stage)}</td>`;
     if(field==='etc')return `<td class="week-cell ${v.etc?'has-water':'is-dry'}" title="${escapeHTML(v.stage)} · Kc 적용${planningClimate?' · 평년기후 추정':''}">${asNumber(v.etc)}${planningClimate?'<span class="cell-note">평년기후 기반 ETc 추정</span>':''}</td>`;
+    if(field==='balance'){const gross=v.grossPlannedM3||0,rain=Math.min(gross,v.effectiveRainCreditM3||0),irrigation=Math.max(0,v.volume||0),rainPct=gross>0?rain/gross*100:0;return `<td class="week-cell rain-balance-cell" title="${escapeHTML(v.stage)} · ETc에서 USDA-SCS 유효강우 ${asNumber(rain)} m³를 차감 · 계획 관개 요청량 ${asNumber(irrigation)} m³${planningClimate?' · 평년기후 추정':''}"><div class="rain-balance-track" aria-hidden="true"><span class="rain-credit-bar" style="width:${rainPct}%"></span><span class="irrigation-need-bar" style="width:${Math.max(0,100-rainPct)}%"></span></div><b>${asNumber(irrigation)} m³</b><span class="cell-note">관개 요청 · 강우 −${asNumber(rain)} m³${planningClimate?' · 평년기후 추정':''}</span></td>`;}
     const planNote=planningClimate?'평년기후 기반 계획량 · 실측 취수량 아님':'산정 계획량 · 실측 취수량 아님';
     return `<td class="week-cell ${v.volume?'has-water':'is-dry'}" title="${escapeHTML(v.stage)}; ${escapeHTML(v.notes.join('; '))}; ${planNote}">${formatVolume(v.volume)}${v.dryDays?`<span class="cell-note">AWD ${v.dryDays}일</span>`:''}<span class="cell-note">${planNote}</span></td>`;
   }
@@ -1402,8 +1450,8 @@
   function download(blob,filename){const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=filename;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),800)}
   async function restoreBackup(file){if(!file)return;try{if(file.size>3_000_000)throw Error('파일이 너무 큽니다.');const parsed=JSON.parse(await file.text());if(!['mekong-suksuk-farms/v3','mekong-suksuk-farms/v4'].includes(parsed.schema)||!Array.isArray(parsed.farms))throw Error('지원하지 않는 백업 형식입니다.');const restored=parsed.farms.map(normalizeFarmRecord);if(restored.length>2000||restored.some(f=>!farmValid(f)))throw Error('일부 농가 데이터가 올바르지 않습니다.');const ids=restored.map(f=>f.id);if(new Set(ids).size!==ids.length)throw Error('중복 농가 ID가 있습니다.');const needsReview=restored.filter(f=>!f.rmu).length;if(!confirm(`백업의 ${restored.length}개 농가로 현재 ${farms.length}개 농가를 교체할까요?${needsReview?`\nRMU 재배정 대기 ${needsReview}개 농가는 기존 RMU 기록을 보존합니다.`:''}`))return;farms=restored;persistFarms();clearForm();refresh();toast(`${farms.length}개 농가를 복원했습니다.${needsReview?` RMU 재배정 대기 ${needsReview}개`:''}`)}catch(e){toast('복원 실패: '+e.message)}finally{$('restoreBackup').value=''}}
   function exportBackup(){const file={schema:'mekong-suksuk-farms/v4',createdAt:new Date().toISOString(),farms,climateSource:dataset.meta.sourceFile};download(new Blob([JSON.stringify(file,null,2)],{type:'application/json'}),'mekong_farms_backup.json');toast('등록 농가 백업(v4)을 내보냈습니다.');}
-  function exportWeekly(){const head=['farm_id','farm_name','source_type','crop','variety','rmu','legacy_rmu','rmu_assignment_status','area_ha','start_date','week_index','week_start','week_end','stage','status','etc_mm','net_requirement_mm','planned_intake_m3','active_days','awd_dry_days','crop_status','climate_status','climate_days','et0_mean_mm','rainfall_mm','kc_mean','climate_sources','rice_irrigation_phase','rice_irrigation_decisions','rice_decision_source'];const rows=[head];
-    for(const f of farms)for(let w=0;w<WEEK_COUNT;w++){const v=computeWeek(f,w);rows.push([f.id,f.name,f.origin,f.crop,f.variety,f.rmu||'UNASSIGNED',f.legacyRmu||'',f.assignmentStatus||'',f.area,f.start,w+1,v.period,addDays(v.period,6),v.stage,v.status,v.status==='valid'||v.status==='dry'?v.etc:'',v.status==='valid'||v.status==='dry'?v.net:'',v.volume===null?'':v.volume,v.activeDays,v.dryDays,v.cropStatus,v.climateStatus,v.climateDays,v.et0Mean??'',v.rainfall??'',v.kcMean??'',v.climateSources.join('+'),f.crop==='rice'?irrigationDecisionWeek(f,w).phase:'',f.crop==='rice'?irrigationDecisionWeek(f,w).changes.map(x=>`${x.day}일차 ${x.action}`).join(' / '):'',f.crop==='rice'?'USER_PROVIDED_RICE_AWD_MATRIX_NON_OPERATIONAL':'']);}
+  function exportWeekly(){const head=['farm_id','farm_name','source_type','crop','variety','rmu','legacy_rmu','rmu_assignment_status','area_ha','start_date','week_index','week_start','week_end','stage','status','etc_mm','net_requirement_mm','effective_rain_credit_m3','gross_irrigation_demand_m3','planned_intake_m3','active_days','awd_dry_days','crop_status','climate_status','climate_days','et0_mean_mm','rainfall_mm','kc_mean','climate_sources','rice_irrigation_phase','rice_irrigation_decisions','rice_decision_source'];const rows=[head];
+    for(const f of farms)for(let w=0;w<WEEK_COUNT;w++){const v=computeWeek(f,w);rows.push([f.id,f.name,f.origin,f.crop,f.variety,f.rmu||'UNASSIGNED',f.legacyRmu||'',f.assignmentStatus||'',f.area,f.start,w+1,v.period,addDays(v.period,6),v.stage,v.status,v.status==='valid'||v.status==='dry'?v.etc:'',v.status==='valid'||v.status==='dry'?v.net:'',v.volume===null?'':v.effectiveRainCreditM3,v.volume===null?'':v.grossPlannedM3,v.volume===null?'':v.volume,v.activeDays,v.dryDays,v.cropStatus,v.climateStatus,v.climateDays,v.et0Mean??'',v.rainfall??'',v.kcMean??'',v.climateSources.join('+'),f.crop==='rice'?irrigationDecisionWeek(f,w).phase:'',f.crop==='rice'?irrigationDecisionWeek(f,w).changes.map(x=>`${x.day}일차 ${x.action}`).join(' / '):'',f.crop==='rice'?'USER_PROVIDED_RICE_AWD_MATRIX_NON_OPERATIONAL':'']);}
     exportCSV(rows,'mekong_weekly_water_demand.csv');toast('16주 농가별 계산 CSV를 내보냈습니다.');}
   function parseCSV(text){
     const result=[];let i=0,c='',row=[],quoted=false;
@@ -1484,6 +1532,7 @@
     $('cancelEdit').addEventListener('click',clearForm);
     $('seedDemos').addEventListener('click',seedDemoFarms);
     $('seedDemosCalendar').addEventListener('click',seedDemoFarms);
+    $('loadAllocationDemo').addEventListener('click',loadAllocationDemo);
     $('clearFarms').addEventListener('click',clearFarms);$('restoreBackup').addEventListener('change',ev=>restoreBackup(ev.target.files?.[0]));
     $('farmSearch').addEventListener('input',renderSetup);
     $('farmDirectory').addEventListener('click',ev=>{const btn=ev.target.closest('button[data-action]');if(!btn)return;const id=btn.dataset.id;if(btn.dataset.action==='edit')beginEdit(id);if(btn.dataset.action==='delete')removeFarm(id)});
@@ -1503,6 +1552,7 @@
     $('calendarZone').addEventListener('change',ev=>{calendarZone=ev.target.value;renderCalendar()});
     $('calendarStart').addEventListener('change',ev=>{if(!validDate(ev.target.value)){toast('유효한 캘린더 시작일을 입력하세요.');ev.target.value=calendarStart;return;}calendarStart=ev.target.value;WEEK_CACHE.clear();refresh();loadClimateForCalendar()});
     $('calendarView').addEventListener('change',renderCalendar);
+    $('allocationVisualWeek').addEventListener('change',renderCalendar);
     window.MekongWeeklySupply?.bind(renderCalendar);
     $('exportWeekly').addEventListener('click',exportWeekly);
     $('exportBackup').addEventListener('click',exportBackup);
@@ -1516,7 +1566,7 @@
     $('importClimateDB').addEventListener('change',e=>importClimateDB(e.target.files?.[0]));
     $('exportClimateDB').addEventListener('click',exportClimateDB);
   }
-  function init(){loadPersisted();loadEmbeddedClimateArchive();readApiCache();calendarStart=todayVietnam();updateSelects();$('calendarStart').value=calendarStart;events();clearForm();refresh();navigate('setup');loadLocalServerArchive();refreshRecentClimate(false);
+  function init(){loadPersisted();loadEmbeddedClimateArchive();readApiCache();const resumeDemo=window.MekongWeeklySupply?.isDemoMode()&&farms.some(f=>f.origin==='DEMO_ASSUMPTION');calendarStart=resumeDemo?'2026-05-01':todayVietnam();if(resumeDemo){climateMode='csv';$('climateMode').value='csv';$('calendarView').value='balance';}updateSelects();$('calendarStart').value=calendarStart;events();clearForm();refresh();navigate('setup');loadLocalServerArchive();refreshRecentClimate(false);
     window.__MEKONG_TEST__={get farms(){return structuredClone(farms)},get dataset(){return structuredClone(dataset)},get api(){return {mode:climateMode,phase:apiPhase,coverage:climateCoverage(),days:structuredClone(apiClimate),diagnostics:structuredClone(climateDiagnostics),storeError:climateStoreError}},setClimateMode(mode){$('climateMode').value=mode;$('climateMode').dispatchEvent(new Event('change',{bubbles:true}))},computeWeek:(f,i)=>computeWeek(f,i),get summary(){return summary()},navigate,getClimateForDate:(d)=>structuredClone(getClimateForDate(d)),get climateStore(){return {coverage:{...ClimateStore.coverage},overlayCount:Object.keys(apiClimate).length,archiveCount:Object.keys(ClimateStore.daily).length,storedDays:Object.keys(apiClimate).sort()}},refreshRecentClimate};
   }
   init();
