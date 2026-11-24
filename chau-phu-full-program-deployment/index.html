@@ -346,7 +346,7 @@
   function rmuForGps(lat,lon){if(!Number.isFinite(Number(lat))||!Number.isFinite(Number(lon)))return null;return RMUS.find(zone=>pointInPolygon([Number(lon),Number(lat)],zone.geoPolygon))?.id||null;}
   const farmInZone=(farm,zone)=>zone===UNASSIGNED_ZONE?!farm.rmu:farm.rmu===zone;
   const farmZoneLabel=(farm)=>farm.rmu||'미배정';
-  const WEEK_COUNT=16;const WEEK_COUNT=16;
+  const WEEK_COUNT=16;
   const DAY=86400000;
   const names=['농가 A','농가 B','농가 C','농가 D','농가 E','농가 F','농가 G','농가 H','농가 I','농가 J','농가 K','농가 L','농가 M','농가 N','농가 O','농가 P','농가 Q','농가 R','농가 S'];
   let dataset=baseDataset, rawCSV=null, farms=[], editingId=null, activeZone='RMU-01', page='setup', calendarZone='all', calendarStart=baseDataset.meta.start;
