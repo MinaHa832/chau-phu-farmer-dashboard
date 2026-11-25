@@ -25,6 +25,7 @@
     if (weatherNav?.querySelector('.nav-icon')?.nextElementSibling) weatherNav.querySelector('.nav-icon').nextElementSibling.textContent = '기상';
     const exportButton = $('exportBackup');
     if (exportButton) exportButton.dataset.platformAudience = 'operator';
+    ensureReferenceMapLink();
 
     const calendarNav = nav.querySelector('[data-page="calendar"]');
     const farmerNav = document.createElement('button');
@@ -74,6 +75,20 @@
       }
       if (button.dataset.page === 'benefit' && activeMode === 'farmer') window.MekongBenefit?.setRole?.('farmer');
     }, true);
+  }
+
+  function ensureReferenceMapLink() {
+    const map = $('interactiveMap');
+    const note = map?.closest('.map-raster-panel')?.querySelector('.map-footnote');
+    if (!note || note.querySelector('[data-original-reference-map]')) return;
+    const link = document.createElement('a');
+    link.href = './data/chau-phu-admin-reference.jpg';
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    link.dataset.originalReferenceMap = 'true';
+    link.textContent = '원본 Châu Phú 참고지도 확대 ↗';
+    link.setAttribute('aria-label', 'Châu Phú 행정 경계·도로·수로 원본 참고지도 확대');
+    note.append(document.createTextNode(' '), link);
   }
 
   function updateMonitorHeading(mode) {
