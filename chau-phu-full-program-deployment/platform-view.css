@@ -1,0 +1,46 @@
+.platform-mode-switch{display:inline-flex;align-items:center;gap:4px;padding:4px;border:1px solid #dce7de;border-radius:11px;background:#f6faf7;color:#687a6e;font-size:11px;white-space:nowrap}
+.platform-mode-switch>span{padding:0 5px 0 7px;font-weight:700}
+.platform-mode-switch button{border:0;border-radius:7px;background:transparent;color:#587365;padding:7px 10px;font-size:11px;font-weight:750}
+.platform-mode-switch button[aria-pressed="true"]{background:#195c49;color:#fff;box-shadow:0 1px 3px #0f342222}
+body[data-platform-mode="farmer"] .nav-link[data-platform-audience="operator"],body[data-platform-mode="operator"] .nav-link[data-platform-audience="farmer"]{display:none}
+body[data-platform-mode="farmer"] [data-platform-audience="operator"]{display:none!important}
+body[data-platform-mode="farmer"] .benefit-role-switch{display:none}
+body[data-platform-mode="farmer"] .top-scope{display:none}
+body[data-monitor-mode="weather"] .water-resources-overview{display:none}
+.top-actions{gap:12px}
+.water-resources-overview{display:grid;grid-template-columns:minmax(250px,.8fr) minmax(0,1.35fr);gap:18px;margin:0 0 22px;align-items:stretch}
+.water-resources-overview .card{margin:0;padding:20px 22px}
+.water-region-map{display:block;width:100%;max-height:360px;object-fit:contain;background:#f7f8f4;border:1px solid #e2e9e2;border-radius:10px}
+.water-history-controls,.farmer-dashboard-controls{display:flex;align-items:end;gap:12px;flex-wrap:wrap;margin:8px 0 14px}
+.water-history-controls label,.farmer-dashboard-controls label{display:grid;gap:6px;color:#506d5d;font-size:11px;font-weight:750;min-width:130px}
+.water-history-controls select,.farmer-dashboard-controls select{min-height:40px;border:1px solid #d5e3d8;border-radius:8px;background:#fff;color:#234b3a;padding:8px 10px;font:inherit}
+.water-history-status{min-height:22px;color:#637b6b;font-size:11px;line-height:1.6}
+.water-history-chart{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;margin-top:9px}
+.water-month-cell{min-width:0;padding:9px 8px;border:1px solid #e4ece5;border-radius:9px;background:#fbfcfa}
+.water-month-head{display:flex;justify-content:space-between;gap:5px;color:#738478;font-size:10px}
+.water-month-value{margin-top:9px;color:#255d48;font-size:12px;font-weight:800;font-variant-numeric:tabular-nums}
+.water-month-track{height:6px;margin-top:7px;background:#e9efea;border-radius:99px;overflow:hidden}
+.water-month-fill{display:block;height:100%;min-width:2px;background:#368d6d;border-radius:99px}
+.water-month-fill.rain{background:#4a9bc0}
+.water-month-empty{grid-column:1/-1;padding:24px 12px;border:1px dashed #d9e4da;border-radius:10px;color:#79877d;font-size:12px;text-align:center}
+.farmer-view-note{display:flex;gap:10px;align-items:flex-start;margin-bottom:16px;padding:13px 16px;border:1px solid #d7e8dc;border-radius:11px;background:#f0f7f1;color:#526e5a;font-size:11px;line-height:1.6}
+.farmer-view-note strong{flex:none;color:#285b40;font-size:12px}
+.farmer-dashboard-controls{margin:0 0 18px}
+.farmer-dashboard-controls label{min-width:220px}
+.farmer-summary-metrics{margin-bottom:18px}
+.farmer-plan-card{margin-bottom:16px}
+.farmer-weeks-chart{display:grid;gap:10px}
+.farmer-week-row{display:grid;grid-template-columns:82px minmax(0,1fr) 150px;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid #edf1ed}
+.farmer-week-label{color:#60776a;font-size:11px;font-weight:750;white-space:nowrap}
+.farmer-week-bars{display:grid;gap:5px}
+.farmer-week-track{height:8px;border-radius:99px;background:#eff2ef;overflow:hidden}
+.farmer-week-track i{display:block;height:100%;border-radius:99px;background:#47a47b}
+.farmer-week-track.allocation i{background:#21745f}
+.farmer-week-values{display:flex;justify-content:flex-end;gap:8px;color:#526d5d;font-size:10px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.farmer-week-values b{color:#23553e}
+.farmer-chart-legend{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 8px;color:#708176;font-size:10px}
+.farmer-chart-legend span{display:inline-flex;align-items:center;gap:5px}
+.farmer-chart-legend i{width:8px;height:8px;border-radius:50%;background:#47a47b}.farmer-chart-legend i.allocation{background:#21745f}
+.farmer-view-actions{display:flex;gap:10px;flex-wrap:wrap}
+@media(max-width:1050px){.water-resources-overview{grid-template-columns:minmax(0,1fr)}.water-region-map{max-height:420px}}
+@media(max-width:760px){.topbar{height:auto;min-height:72px;align-items:flex-start;padding-top:12px;padding-bottom:12px;flex-wrap:wrap}.top-actions{width:100%;justify-content:space-between;flex-wrap:wrap}.platform-mode-switch{order:-1}.water-history-chart{grid-template-columns:repeat(3,minmax(0,1fr))}.farmer-week-row{grid-template-columns:68px minmax(0,1fr);gap:8px}.farmer-week-values{grid-column:2;justify-content:flex-start}.farmer-view-note{display:grid}.farmer-view-note strong{flex:none}}
