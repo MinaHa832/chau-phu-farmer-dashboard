@@ -158,6 +158,11 @@
       panel.hidden = panel.dataset.benefitView !== activeRole;
     });
   }
+  function setRole(role) {
+    if (!['farmer', 'operator', 'reviewer'].includes(role)) return;
+    activeRole = role;
+    renderRoles();
+  }
   function recordCard(record, context) {
     const calc = calculate(record);
     const comparable = isComparable(record);
@@ -575,7 +580,11 @@
     $('benefitIncidentQueue').addEventListener('click', handleIncidentAction);
     document.querySelectorAll('[data-benefit-zone-select]').forEach((select) => fillSelect(select, RMUS.map((rmu) => ({ value: rmu, label: rmu })), t('selectRmu'), select.value));
     render();
-    window.MekongBenefit = { render, getState: () => JSON.parse(JSON.stringify(state)) };
+    window.MekongBenefit = { render, setRole, getState: () => JSON.parse(JSON.stringify(state)) };
+    if (!document.querySelector('script[data-platform-view]')) {
+      const style = document.createElement('link'); style.rel = 'stylesheet'; style.href = './platform-view.css'; document.head.append(style);
+      const script = document.createElement('script'); script.src = './platform-view.js'; script.dataset.platformView = 'true'; document.body.append(script);
+    }
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true }); else init();
 })();
