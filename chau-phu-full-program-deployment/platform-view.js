@@ -78,9 +78,8 @@
   }
 
   function ensureReferenceMapLink() {
-    const map = $('interactiveMap');
-    const note = map?.closest('.map-raster-panel')?.querySelector('.map-footnote');
-    if (!note || note.querySelector('[data-original-reference-map]')) return;
+    const sourceLine = $('atlasSourceLink')?.parentElement;
+    if (!sourceLine || sourceLine.querySelector('[data-original-reference-map]')) return;
     const link = document.createElement('a');
     link.href = './data/chau-phu-admin-reference.jpg';
     link.target = '_blank';
@@ -88,7 +87,7 @@
     link.dataset.originalReferenceMap = 'true';
     link.textContent = '원본 Châu Phú 참고지도 확대 ↗';
     link.setAttribute('aria-label', 'Châu Phú 행정 경계·도로·수로 원본 참고지도 확대');
-    note.append(document.createTextNode(' '), link);
+    sourceLine.append(link);
   }
 
   function updateMonitorHeading(mode) {
