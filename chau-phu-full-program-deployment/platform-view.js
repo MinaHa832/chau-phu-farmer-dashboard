@@ -273,7 +273,8 @@
     renderFarmer();
     let savedMode = 'operator';
     try { savedMode = localStorage.getItem(MODE_KEY) || 'operator'; } catch (_) {}
-    setMode(savedMode, { navigate: savedMode === 'farmer' });
+    if(window.MekongPortal) window.MekongPortal.init();
+    else setMode(savedMode, { navigate: savedMode === 'farmer' });
   }
 
   window.MekongPlatformView = { setMode, renderFarmer, openFarmerRequests };
