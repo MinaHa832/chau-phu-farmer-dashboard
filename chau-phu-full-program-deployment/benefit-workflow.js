@@ -41,8 +41,12 @@
     }
   };
 
-  let language = 'ko';
-  try { language = localStorage.getItem('mekong-suksuk.benefit-language') || 'ko'; } catch (_) {}
+  dict.en = window.MekongI18n?.benefitEnglish || {};
+  dict.ko.operatorReportPrivacy='신고 유형과 처리 상태만 표시합니다. 신고 원문과 식별 정보는 현장 관리자가 확인합니다.';
+  dict.vi.operatorReportPrivacy='Chỉ hiển thị loại và trạng thái. Quản lý hiện trường xem báo cáo gốc và thông tin định danh.';
+  Object.keys(dict.ko).forEach(key => window.MekongI18n?.add(dict.ko[key],dict.vi[key]||dict.ko[key],dict.en[key]||dict.ko[key]));
+  let language = window.MekongI18n?.language || 'ko';
+  if(!window.MekongI18n) try { language = localStorage.getItem('mekong-suksuk.benefit-language') || 'ko'; } catch (_) {}
   let activeRole = 'operator';
   let state = loadState();
   const t = (key) => (dict[language] || dict.ko)[key] || dict.ko[key] || key;
@@ -70,16 +74,16 @@
   function numberText(value, digits) {
     if (!Number.isFinite(value)) return '—';
     const fractionDigits = Number.isFinite(digits) ? digits : (value !== 0 && Math.abs(value) < 1 ? 3 : 1);
-    return new Intl.NumberFormat(language === 'vi' ? 'vi-VN' : 'ko-KR', { maximumFractionDigits: fractionDigits }).format(value);
+    return new Intl.NumberFormat(language === 'vi' ? 'vi-VN' : language === 'en' ? 'en-GB' : 'ko-KR', { maximumFractionDigits: fractionDigits }).format(value);
   }
   function moneyText(value) {
     if (!Number.isFinite(value)) return t('notCalculated');
     const sign = value < 0 ? '−' : '';
-    return `${sign}${new Intl.NumberFormat(language === 'vi' ? 'vi-VN' : 'ko-KR', { maximumFractionDigits: 0 }).format(Math.abs(value))} VND`;
+    return `${sign}${new Intl.NumberFormat(language === 'vi' ? 'vi-VN' : language === 'en' ? 'en-GB' : 'ko-KR', { maximumFractionDigits: 0 }).format(Math.abs(value))} VND`;
   }
   function formatDate(value) {
     if (!value) return '—';
-    try { return new Intl.DateTimeFormat(language === 'vi' ? 'vi-VN' : 'ko-KR', { dateStyle: 'medium' }).format(new Date(`${value}T00:00:00`)); }
+    try { return new Intl.DateTimeFormat(language === 'vi' ? 'vi-VN' : language === 'en' ? 'en-GB' : 'ko-KR', { dateStyle: 'medium' }).format(new Date(`${value}T00:00:00`)); }
     catch (_) { return value; }
   }
   function readFarms() {
@@ -141,9 +145,9 @@
     if (options.some((option) => option.value === previous)) select.value = previous;
   }
   function applyStaticText() {
-    document.querySelectorAll('#page-benefit [data-i18n]').forEach((node) => { node.textContent = t(node.dataset.i18n); });
-    document.querySelectorAll('#page-benefit [data-i18n-placeholder]').forEach((node) => { node.placeholder = t(node.dataset.i18nPlaceholder); });
-    document.querySelectorAll('#page-benefit [data-benefit-language]').forEach((button) => {
+    document.querySelectorAll('#content [data-i18n]').forEach((node) => { node.textContent = t(node.dataset.i18n); });
+    document.querySelectorAll('#content [data-i18n-placeholder]').forEach((node) => { node.placeholder = t(node.dataset.i18nPlaceholder); });
+    document.querySelectorAll('#content [data-benefit-language]').forEach((button) => {
       button.setAttribute('aria-pressed', String(button.dataset.benefitLanguage === language));
     });
   }
@@ -184,9 +188,9 @@
   }
   function renderFarmer() {
     fillWeekChoices('benefitRequestWeek', t('requestWeek'), $('benefitRequestWeek')?.value || '1');
-    const farms = readFarms();
+    const farms = window.MekongPortal?.scopeFarms(readFarms()) || readFarms();
     const select = $('benefitFarmerFarm');
-    const old = select.value;
+    const old = window.MekongPortal?.farmId || select.value;
     fillSelect(select, farms.map((farm) => ({ value: String(farm.id), label: (farm.name || farm.id) + (farm.rmu ? ' · ' + farm.rmu : ' · 미배정') })), farms.length ? t('selectFarm') : t('noFarm'), old);
     const selected = farms.find((farm) => String(farm.id) === select.value);
     const output = $('benefitFarmerRecords');
@@ -264,6 +268,14 @@
       return '<article class="benefit-request-farmer-card"><div class="benefit-record-top"><div><strong>' + esc(week + '주차' + date) + '</strong><small>' + esc(request.rmu || '미배정') + ' · ' + esc(formatDate((request.createdAt || '').slice(0, 10))) + '</small></div><span class="benefit-state">' + esc(requestStatusText(request.status)) + '</span></div><p class="benefit-record-meta">' + esc(t('requestVolume')) + ': ' + esc(numberText(Number(request.requestM3))) + ' m³' + (request.deliveredM3 !== null && request.deliveredM3 !== undefined ? ' · ' + esc(t('requestDelivered')) + ': ' + esc(numberText(Number(request.deliveredM3))) + ' m³' : '') + '</p><p class="benefit-record-meta">' + esc(request.reason || '—') + '</p></article>';
     }).join('');
   }
+  function deliveryFor(weekStart, farmId) {
+    const operation = state.operations.find(item => item.weekStart === weekStart && String(item.farmId) === String(farmId));
+    if(operation && operation.actualM3 !== null && operation.actualM3 !== undefined) return {actualM3: Number(operation.actualM3), status: operation.status || 'pending'};
+    const requests = state.requests.filter(item => item.weekStart === weekStart && String(item.farmId) === String(farmId));
+    const delivered = requests.filter(item => ['completed','partial'].includes(item.status) && item.deliveredM3 !== null && item.deliveredM3 !== undefined);
+    if(delivered.length) return {actualM3: delivered.reduce((n,item)=>n+Number(item.deliveredM3),0), status:requests.some(item=>['pending','processing','partial'].includes(item.status))?'partial':'complete'};
+    return {actualM3:null,status:requests.some(item=>item.status==='processing')?'in_progress':'pending'};
+  }
   function renderOperations() {
     const weeks = allocationWeeks();
     const weekSelect = $('benefitOpsWeek');
@@ -274,18 +286,19 @@
     const weekNumber = Number(weekSelect.value) || 1;
     const planWeek = weeks.find((week, index) => (Number(week.index) || index + 1) === weekNumber) || null;
     const startDate = planWeek?.startDate || '';
-    const allRows = Array.isArray(planWeek?.rows) ? planWeek.rows : [];
+    const allRows = (Array.isArray(planWeek?.rows) ? planWeek.rows : []).filter(row => window.MekongPortal?.allows(row) ?? true);
     const visibleRows = allRows.filter((row) => rmuSelect.value === 'all' || (row.rmu || '미배정') === rmuSelect.value).map((row) => {
       const id = operationId(startDate, row.farmId);
       const saved = state.operations.find((item) => item.id === id);
       const planned = saved && saved.plannedM3 !== null && saved.plannedM3 !== undefined && Number.isFinite(Number(saved.plannedM3)) ? Number(saved.plannedM3) : Number(row.plannedM3) || 0;
       const requested = saved && saved.requestM3 !== null && saved.requestM3 !== undefined && Number.isFinite(Number(saved.requestM3)) ? Number(saved.requestM3) : Number(row.requestM3) || 0;
-      return { id, row, saved, planned, requested, actual: saved?.actualM3 };
+      const delivery = deliveryFor(startDate,row.farmId);
+      return { id, row, saved, planned, requested, actual: delivery.actualM3, deliveryStatus:delivery.status };
     });
     const plannedTotal = visibleRows.reduce((sum, item) => sum + item.planned, 0);
     const actualEntries = visibleRows.filter((item) => item.actual !== null && item.actual !== undefined && Number.isFinite(Number(item.actual))).length;
     const actualTotal = visibleRows.reduce((sum, item) => sum + (Number.isFinite(Number(item.actual)) ? Number(item.actual) : 0), 0);
-    const processed = visibleRows.filter((item) => ['complete', 'partial', 'not_delivered'].includes(item.saved?.status)).length;
+    const processed = visibleRows.filter((item) => ['complete', 'partial', 'not_delivered'].includes(item.deliveryStatus)).length;
     $('benefitOpsMetrics').innerHTML =
       '<div class="benefit-mini-metric"><span>' + esc(t('opsMetricFarms')) + '</span><strong>' + visibleRows.length + '</strong></div>' +
       '<div class="benefit-mini-metric"><span>' + esc(t('opsMetricPlanned')) + '</span><strong>' + esc(numberText(plannedTotal)) + ' m³</strong></div>' +
@@ -300,7 +313,7 @@
     }).join('') : '<div class="benefit-empty">' + esc(t('opsChartEmpty')) + '</div>';
     $('benefitOpsWorklist').innerHTML = visibleRows.length ? visibleRows.map((item) => {
       const label = item.row.farmName || item.row.farmId;
-      const currentStatus = item.saved?.status || 'pending';
+      const currentStatus = item.deliveryStatus || 'pending';
       const actualValue = item.actual === null || item.actual === undefined ? '' : String(item.actual);
       return '<article class="benefit-operation-card" data-operation-card="' + esc(item.id) + '">' +
         '<div class="benefit-operation-top"><div><strong>' + esc(label) + '</strong><small>' + esc(item.row.rmu || '미배정') + ' · ' + esc(item.row.crop || '') + '</small></div><span class="benefit-state">' + esc(operationStatusText(currentStatus)) + '</span></div>' +
@@ -318,7 +331,7 @@
     const planWeek = weeks.find((week, index) => (Number(week.index) || index + 1) === weekNumber);
     const weekStart = planWeek?.startDate || '';
     const rmu = $('benefitOpsRmu')?.value || 'all';
-    const requests = state.requests.filter((request) => Number(request.weekIndex) === weekNumber && (!weekStart || !request.weekStart || request.weekStart === weekStart) && (rmu === 'all' || (request.rmu || '미배정') === rmu)).sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+    const requests = state.requests.filter((request) => (window.MekongPortal?.allows(request) ?? true) && Number(request.weekIndex) === weekNumber && (!weekStart || !request.weekStart || request.weekStart === weekStart) && (rmu === 'all' || (request.rmu || '미배정') === rmu)).sort((a, b) => b.createdAt.localeCompare(a.createdAt));
     $('benefitRequestCount').textContent = String(requests.filter((request) => ['pending', 'processing'].includes(request.status)).length);
     if (!requests.length) { list.innerHTML = '<div class="benefit-empty">' + esc(t('requestQueueEmpty')) + '</div>'; return; }
     list.innerHTML = requests.map((request) => {
@@ -350,7 +363,7 @@
     if (status === 'not_delivered' && !note) { announce(t('opsNoWaterReason')); return; }
     const planWeeks = allocationWeeks(), weekNumber = Number($('benefitOpsWeek').value) || 1;
     const planWeek = planWeeks.find((week, index) => (Number(week.index) || index + 1) === weekNumber);
-    const row = planWeek?.rows?.find((item) => operationId(planWeek.startDate, item.farmId) === id);
+    const row = planWeek?.rows?.find((item) => operationId(planWeek.startDate, item.farmId) === id && (window.MekongPortal?.allows(item) ?? true));
     if (!row) { announce(t('opsNoPlan')); return; }
     let record = state.operations.find((item) => item.id === id);
     if (!record) {
@@ -363,7 +376,7 @@
     record.updatedAt = new Date().toISOString();
     addHistory(record, 'operator', 'updated water delivery', note);
     if (!saveState()) return;
-    render();
+    render(); window.dispatchEvent(new CustomEvent('mekong:records-updated'));
     announce(t('opsSaved'));
   }
   function handleRequestSubmit(event) {
@@ -383,7 +396,7 @@
     state.requests.unshift(request);
     if (!saveState()) { state.requests.shift(); return; }
     event.target.reset();
-    render();
+    render(); window.dispatchEvent(new CustomEvent('mekong:records-updated'));
     announce(t('requestSaved'));
   }
   function handleRequestQueueSave(event) {
@@ -391,7 +404,7 @@
     if (!button) return;
     const card = button.closest('[data-request-card]');
     const request = state.requests.find((item) => item.id === button.dataset.requestSave);
-    if (!request) return;
+    if (!request || !(window.MekongPortal?.allows(request) ?? true) || window.MekongPortal?.role === 'farmer') return;
     const status = card.querySelector('[data-request-status]').value;
     const raw = card.querySelector('[data-request-delivered]').value.trim();
     const delivered = raw === '' ? null : Number(raw);
@@ -406,7 +419,7 @@
     request.updatedAt = new Date().toISOString();
     addHistory(request, 'operator', 'updated request', note);
     if (!saveState()) return;
-    render();
+    render(); window.dispatchEvent(new CustomEvent('mekong:records-updated'));
     announce(t('requestUpdated'));
   }
   function renderOperator() {
@@ -416,16 +429,18 @@
     renderOperations();
     renderRequests();
     const list = $('benefitOperatorRecords');
-    list.innerHTML = state.records.length ? [...state.records].sort((a, b) => b.createdAt.localeCompare(a.createdAt)).map((record) => recordCard(record, 'operator')).join('') : '<div class="benefit-empty">' + esc(t('noRecords')) + '</div>';
+    const scopedRecords = state.records.filter(record => window.MekongPortal?.allows(record) ?? true);
+    list.innerHTML = scopedRecords.length ? [...scopedRecords].sort((a, b) => b.createdAt.localeCompare(a.createdAt)).map((record) => recordCard(record, 'operator')).join('') : '<div class="benefit-empty">' + esc(t('noRecords')) + '</div>';
     previewValues();
   }
   function renderIncidents() {
     const list = $('benefitIncidentQueue');
-    if (!state.incidents.length) { list.innerHTML = `<div class="benefit-empty">${esc(t('noIncidents'))}</div>`; return; }
-    list.innerHTML = [...state.incidents].sort((a, b) => b.createdAt.localeCompare(a.createdAt)).map((incident) => {
+    const incidents = state.incidents.filter(incident => window.MekongPortal?.allows(incident) ?? true);
+    if (!incidents.length) { list.innerHTML = `<div class="benefit-empty">${esc(t('noIncidents'))}</div>`; return; }
+    list.innerHTML = [...incidents].sort((a, b) => b.createdAt.localeCompare(a.createdAt)).map((incident) => {
       const status = incident.status === 'closed' ? t('closed') : incident.status === 'investigating' ? t('investigating') : t('open');
       const label = t(incident.typeKey || 'issueOther');
-      return `<article class="benefit-record-card"><div class="benefit-record-top"><div><strong>${esc(label)}</strong><small>${esc(incident.rmu)} · ${esc(formatDate(incident.createdAt.slice(0, 10)))}</small></div><span class="benefit-state">${esc(status)}</span></div><p>${esc(incident.details)}</p><p class="benefit-record-meta">${esc(t('reviewNote'))}: ${esc(incident.reviewNote || '—')}</p><div class="benefit-actions">${incident.status === 'open' ? `<button class="btn btn-secondary btn-small" data-incident-action="investigating" data-id="${esc(incident.id)}">${esc(t('investigate'))}</button>` : ''}${incident.status !== 'closed' ? `<button class="btn btn-secondary btn-small" data-incident-action="closed" data-id="${esc(incident.id)}">${esc(t('closeIncident'))}</button>` : ''}</div></article>`;
+      return `<article class="benefit-record-card"><div class="benefit-record-top"><div><strong>${esc(label)}</strong><small>${esc(incident.rmu)} · ${esc(formatDate(incident.createdAt.slice(0, 10)))}</small></div><span class="benefit-state">${esc(status)}</span></div><p>${esc(window.MekongPortal?.role === 'operator' ? t('operatorReportPrivacy') : incident.details)}</p><p class="benefit-record-meta">${esc(t('reviewNote'))}: ${esc(incident.reviewNote || '—')}</p><div class="benefit-actions">${window.MekongPortal?.role === 'operator' ? '' : `${incident.status === 'open' ? `<button class="btn btn-secondary btn-small" data-incident-action="investigating" data-id="${esc(incident.id)}">${esc(t('investigate'))}</button>` : ''}${incident.status !== 'closed' ? `<button class="btn btn-secondary btn-small" data-incident-action="closed" data-id="${esc(incident.id)}">${esc(t('closeIncident'))}</button>` : ''}`}</div></article>`;
     }).join('');
   }
   function renderReviewer() {
@@ -446,6 +461,7 @@
     renderFarmer();
     renderOperator();
     renderReviewer();
+    window.MekongPortal?.afterBenefitRender();
   }
   function addHistory(record, role, action, note) {
     record.history = Array.isArray(record.history) ? record.history : [];
@@ -521,7 +537,7 @@
     } else {
       record.status = 'revision'; addHistory(record, 'reviewer-view', 'revision requested / held', note);
     }
-    saveState(); render(); announce(t('reviewSaved'));
+    saveState(); render(); window.dispatchEvent(new CustomEvent('mekong:records-updated')); announce(t('reviewSaved'));
   }
   function handleIncidentSubmit(event) {
     event.preventDefault();
@@ -529,21 +545,21 @@
     if (!details) { announce(t('requiredError')); return; }
     const incident = {
       id: newId('ISSUE'), rmu: $('benefitIssueRmu').value || '미배정', typeKey: $('benefitIssueType').value,
-      details: details.slice(0, 1500), reviewNote: '', status: 'open', createdAt: new Date().toISOString(), history: [{ role: 'farmer-view', action: 'reported', at: new Date().toISOString() }]
+      reporterFarmId: window.MekongPortal?.farmId || '', reporterRole: window.MekongPortal?.role || 'farmer', details: details.slice(0, 1500), reviewNote: '', status: 'open', createdAt: new Date().toISOString(), history: [{ role: 'farmer-view', action: 'reported', at: new Date().toISOString() }]
     };
     state.incidents.unshift(incident);
     if (!saveState()) { state.incidents.shift(); return; }
-    event.target.reset(); render(); announce(t('reportSaved'));
+    event.target.reset(); render(); window.dispatchEvent(new CustomEvent('mekong:records-updated')); announce(t('reportSaved'));
   }
   function handleIncidentAction(event) {
     const button = event.target.closest('[data-incident-action]');
     if (!button) return;
     const incident = state.incidents.find((item) => item.id === button.dataset.id);
-    if (!incident) return;
+    if (!incident || (window.MekongPortal && window.MekongPortal.role !== 'manager')) return;
     incident.status = button.dataset.incidentAction;
     incident.reviewNote = language === 'vi' ? 'Đã cập nhật trạng thái trong bản trình diễn.' : '시연 화면에서 검토 상태를 변경했습니다.';
     incident.history.push({ role: 'reviewer-view', action: incident.status, at: new Date().toISOString() });
-    saveState(); render(); announce(t('reviewSaved'));
+    saveState(); render(); window.dispatchEvent(new CustomEvent('mekong:records-updated')); announce(t('reviewSaved'));
   }
   function exportRecords() {
     const columns = ['cycle_label','rmu','service_area','baseline_start','baseline_end','current_start','current_end','baseline_water_m3','actual_water_m3','water_delta_m3','baseline_kwh','actual_kwh','electricity_delta_vnd','baseline_fuel_l','actual_fuel_l','fuel_delta_vnd','status','demo'];
@@ -559,6 +575,7 @@
   function init() {
     document.querySelectorAll('[data-benefit-language]').forEach((button) => button.addEventListener('click', () => {
       language = button.dataset.benefitLanguage === 'vi' ? 'vi' : 'ko';
+      window.MekongI18n?.setLanguage(language);
       try { localStorage.setItem('mekong-suksuk.benefit-language', language); } catch (_) {}
       render();
     }));
@@ -580,7 +597,7 @@
     $('benefitIncidentQueue').addEventListener('click', handleIncidentAction);
     document.querySelectorAll('[data-benefit-zone-select]').forEach((select) => fillSelect(select, RMUS.map((rmu) => ({ value: rmu, label: rmu })), t('selectRmu'), select.value));
     render();
-    window.MekongBenefit = { render, setRole, getState: () => JSON.parse(JSON.stringify(state)) };
+    window.MekongBenefit = { render, setRole, deliveryFor, setLanguage(value) { language = ['ko','vi','en'].includes(value) ? value : 'ko'; render(); }, getState: () => JSON.parse(JSON.stringify(state)) };
     if (!document.querySelector('script[data-platform-view]')) {
       const style = document.createElement('link'); style.rel = 'stylesheet'; style.href = './platform-view.css'; document.head.append(style);
       const script = document.createElement('script'); script.src = './platform-view.js'; script.dataset.platformView = 'true'; document.body.append(script);
