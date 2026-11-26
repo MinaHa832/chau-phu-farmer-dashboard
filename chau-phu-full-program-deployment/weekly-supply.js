@@ -483,5 +483,5 @@
     $('supplySummaryMode')?.addEventListener('change', () => renderSummary([...document.querySelectorAll('#supplyWeek option')].map((option) => option.value)));
     updateDemoControls();
   }
-  window.MekongWeeklySupply = { records: () => activeRecords().map((record) => ({ ...record })), get, render, bind, loadDemo, loadStageScenario, useActualSupply, stageStartDate: () => stageScenarioInfo?.startDate || stageDemoRecords[0]?.weekStart || null, isDemoMode: () => demoMode || stageDemoMode, isStageDemoMode: () => stageDemoMode };
+  window.MekongWeeklySupply = { sharedMode:()=>stageDemoMode?'stage-demo':demoMode?'demo':'actual',replaceShared(items,mode){records=[];demoRecords=[];stageDemoRecords=[];demoMode=mode==='demo';stageDemoMode=mode==='stage-demo';if(stageDemoMode)stageDemoRecords=items;else if(demoMode)demoRecords=items;else records=items;}, records: () => activeRecords().map((record) => ({ ...record })), get, render, bind, loadDemo, loadStageScenario, useActualSupply, stageStartDate: () => stageScenarioInfo?.startDate || stageDemoRecords[0]?.weekStart || null, isDemoMode: () => demoMode || stageDemoMode, isStageDemoMode: () => stageDemoMode };
 })();

@@ -9,7 +9,7 @@
     manager: ['map','schedule','algorithm','weather','water','requests','reports','benefits'],
     operator: ['map','schedule','requests','water','weather','reports','benefits']
   };
-  const ICONS = {setup:'◫',map:'◇',schedule:'▦',algorithm:'≋',water:'≈',weather:'☀',requests:'▤',reports:'⚑',benefits:'₫',calendar:'▦',data:'◉'};
+  const ICONS = {setup:'◫',map:'◇',schedule:'▦',algorithm:'≋',water:'≈',weather:'☀',requests:'▤',reports:'⚑',benefits:'₫',calendar:'▦',data:'◉',accounts:'♙'};
   let role = 'entry', page = '', farmId = read('mekong-suksuk.farmer-demo-farm.v1'), rmu = read('mekong-suksuk.pump-rmu.v1') || 'RMU-01';
   let weekIndex = 0, coreRouting = false, initialized = false, rendering = false;
   const t = key => window.MekongI18n.t(key);
@@ -35,6 +35,7 @@
   function scopeFarms(items) {return filterForRole(items,role,farmId,rmu);}
   function allows(item) {return recordAllowed(item,role,farmId,rmu,selectedFarm()?.rmu);}
   function labelFor(id) {
+    if(id==='accounts')return window.MekongCloud.t('accounts');
     if(id==='map') return t(role==='manager'?'allMap':'myMap');
     if(id==='schedule') return t(role==='manager'?'allSchedule':'mySchedule');
     if(id==='reports') return t(role==='farmer'?'reportPage':role==='operator'?'reportUpdates':'reviewReports');
@@ -60,7 +61,7 @@
     const entry=document.createElement('section'); entry.id='portalEntry'; entry.className='portal-entry'; entry.setAttribute('aria-label','Choose your workspace'); document.body.prepend(entry);
     const toolbar=document.createElement('div'); toolbar.id='portalToolbar'; toolbar.className='portal-toolbar'; document.querySelector('.top-actions').prepend(toolbar);
     const context=document.createElement('div'); context.id='portalContext'; context.className='portal-context'; $('content').prepend(context);
-    for(const id of ['schedule','requests','reports','benefits']) {
+    for(const id of ['schedule','requests','reports','benefits','accounts']) {
       const el=document.createElement('section'); el.className='page'; el.id='page-portal-'+id;
       el.innerHTML=heading(id,'','')+`<div id="portal${id[0].toUpperCase()+id.slice(1)}Content"></div>`;
       $('content').append(el);
@@ -109,8 +110,9 @@
     let control='';
     if(role==='farmer') control=`<label for="portalFarmSelect">${t('selectedFarm')}<select id="portalFarmSelect">${farms().map(f=>`<option value="${esc(f.id)}"${String(f.id)===farmId?' selected':''}>${esc(window.MekongI18n.displayName(f.name))} · ${esc(f.rmu||t('unassigned'))}</option>`).join('')}</select></label>`;
     if(role==='operator') control=`<label for="portalRmuSelect">${t('assignedRmu')}<select id="portalRmuSelect">${RMUS.map(id=>`<option${id===rmu?' selected':''}>${id}</option>`).join('')}</select></label>`;
-    $('portalContext').innerHTML=`<div class="portal-context-title"><span class="portal-role-badge">${t(role)}</span><strong>${esc(scope)}</strong><small>${scopeFarms(farms()).length} ${t('farmsUnit')}</small></div>${control}<span class="portal-demo-badge">${t('demoWorkspace')}</span>`;
-    $('portalToolbar').innerHTML=`${languageSelect('portalAppLanguage')}<button type="button" class="btn btn-secondary btn-small" data-switch-role>${t('changeRole')}</button>`;
+    $('portalContext').innerHTML=`<div class="portal-context-title"><span class="portal-role-badge">${t(role)}</span><strong>${esc(scope)}</strong><small>${scopeFarms(farms()).length} ${t('farmsUnit')}</small></div>${control}<span class="portal-demo-badge">${window.MekongCloud?.enabled?window.MekongCloud.t('lockedRole'):t('demoWorkspace')}</span>`;
+    $('portalToolbar').innerHTML=`${languageSelect('portalAppLanguage')}<button type="button" class="btn btn-secondary btn-small" data-switch-role>${window.MekongCloud?.enabled?window.MekongCloud.t('signOut'):t('changeRole')}</button>`;
+    if(window.MekongCloud?.enabled){for(const id of ['portalFarmSelect','portalRmuSelect'])if($(id))$(id).disabled=true;}
     document.querySelector('.workspace-title').textContent=t(role);
     document.querySelectorAll('[data-portal-scope-label]').forEach(n=>n.textContent=scope);
   }
@@ -130,6 +132,7 @@
     for(const id of ['mapFarmFilter','calendarZone']) {
       const select=$(id);if(select){select.disabled=!manager;if(!manager&&scoped&&select.value!==scoped){select.value=scoped;select.dispatchEvent(new Event('change',{bubbles:true}));}}
     }
+    if(window.MekongCloud?.enabled){$('rmu').disabled=role==='farmer';}
     const allowedButtons=['exportBackup','restoreBackup','seedDemos','clearFarms','seedDemosCalendar','mapAddFarm','newFarmInZone'];
     allowedButtons.forEach(id=>{const node=$(id);if(node){const target=node.type==='file'?node.closest('label'):node;target.dataset.portalBulk='true';target.hidden=!manager;}});
     $('farmSearch').hidden=!manager;
@@ -139,7 +142,9 @@
       n.classList.toggle('portal-outside-rmu',!!outside);n.setAttribute('tabindex',outside?'-1':'0');
     });
     if(!staff) $('benefitRequestSubmit').disabled=!farmId;
+    document.querySelectorAll('#farmDirectory [data-action="delete"]').forEach(n=>n.hidden=!manager);
     $('exportBackup').hidden=!manager;
+    if(window.MekongCloud?.enabled)for(const id of ['clearFarms','restoreBackup','importWeeklySupply','benefitLoadDemo']){const n=$(id);if(n)n.disabled=true;}
     if(!manager) $('balanceAllocationPanel').hidden=true;
   }
   function afterBenefitRender() {
@@ -169,7 +174,7 @@
     } else {
       document.querySelectorAll('.page').forEach(n=>n.classList.toggle('active',n.id==='page-portal-'+page));
       const title=$('page-portal-'+page).querySelector('[data-portal-page-title]');title.textContent=labelFor(page);
-      $('page-portal-'+page).querySelector('[data-portal-page-description]').textContent=t(page+'Description');
+      $('page-portal-'+page).querySelector('[data-portal-page-description]').textContent=page==='accounts'?window.MekongCloud.t('accountsDescription'):t(page+'Description');
       if(page==='schedule')renderSchedule();
       window.MekongBenefit.setRole(role==='farmer'?'farmer':'operator');
       window.MekongBenefit.render();
@@ -180,8 +185,9 @@
     window.MekongI18n.translate();
   }
   function enter(nextRole) {
+    if(window.MekongCloud?.enabled){if(!window.MekongCloud.approved){window.MekongCloud.showGate();return;}nextRole=window.MekongCloud.profile.role;}
     if(!MENUS[nextRole])return;
-    role=nextRole;ensureSelection();
+    role=nextRole;if(window.MekongCloud?.enabled){farmId=String(window.MekongCloud.profile.farmId||'');rmu=window.MekongCloud.profile.rmu||rmu;}ensureSelection();
     if(role==='manager') for(const id of ['mapFarmFilter','calendarZone','benefitOpsRmu']) {const select=$(id);select.disabled=false;select.value='all';select.dispatchEvent(new Event('change',{bubbles:true}));}
     save('mekong-suksuk.portal-role.v2',role);
     document.body.dataset.portalRole=role;
@@ -193,6 +199,7 @@
     $('portalContext').setAttribute('tabindex','-1');$('portalContext').focus({preventScroll:true});
   }
   function showEntry() {
+    if(window.MekongCloud?.enabled){window.MekongCloud.showGate();return;}
     role='entry';page='';history.replaceState(null,'',location.pathname);document.body.dataset.portalRole='entry';$('portalEntry').hidden=false;renderEntry();
     requestAnimationFrame(()=>$('portalEntry').querySelector('[data-enter-role]')?.focus());
   }
@@ -257,29 +264,26 @@
     afterBenefitRender();
     if(page&&!CORE_PAGES.has(page)&&page!=='algorithm'){
       $('page-portal-'+page).querySelector('[data-portal-page-title]').textContent=labelFor(page);
-      $('page-portal-'+page).querySelector('[data-portal-page-description]').textContent=t(page+'Description');
+      $('page-portal-'+page).querySelector('[data-portal-page-description]').textContent=page==='accounts'?window.MekongCloud.t('accountsDescription'):t(page+'Description');
     }
     $('breadcrumb').textContent=labelFor(page);
   }
   function changeScope() {
+    if(window.MekongCloud?.enabled){farmId=String(window.MekongCloud.profile?.farmId||'');rmu=window.MekongCloud.profile?.rmu||'';refreshDisplays();return;}
     save('mekong-suksuk.farmer-demo-farm.v1',farmId);save('mekong-suksuk.pump-rmu.v1',rmu);
     const oldPage=page;
     coreRouting=true;try{window.__MEKONG_TEST__.refresh();}finally{coreRouting=false;}
     window.MekongBenefit.render();navigate(oldPage,{focus:false});
   }
-  function init() {
+  async function init() {
     if(initialized)return;
     ensureDom();initialized=true;
-    if(!farms().length) {
-      // An empty browser gets the existing 54-farm demo. Existing farms/supply are never replaced.
-      if(!window.MekongWeeklySupply?.records().length) window.__MEKONG_TEST__.loadAllocationDemo();
-      else window.__MEKONG_TEST__.seedDemoFarms(false);
-    }
     ensureSelection();renderEntry();
     document.addEventListener('click',event=>{
       const target=event.target.closest('button,[data-enter-role],[data-portal-page],[data-demo-scenario],[data-zone-id]');if(!target)return;
+      if(target.id==='cancelEdit'&&window.MekongCloud?.enabled&&role==='farmer'){event.preventDefault();event.stopImmediatePropagation();window.__MEKONG_TEST__.editFarm(farmId);return;}
       if(target.dataset.enterRole){event.preventDefault();enter(target.dataset.enterRole);return;}
-      if(target.hasAttribute('data-switch-role')){showEntry();return;}
+      if(target.hasAttribute('data-switch-role')){if(window.MekongCloud?.enabled)window.MekongCloud.logout();else showEntry();return;}
       if(target.dataset.portalPage){event.preventDefault();event.stopImmediatePropagation();navigate(target.dataset.portalPage);return;}
       if(target.hasAttribute('data-demo-scenario')){event.preventDefault();window.__MEKONG_TEST__.loadAllocationDemo(true);navigate('algorithm');return;}
       if(target.dataset.scheduleRequest){
@@ -304,7 +308,14 @@
     window.addEventListener('mekong:language-changed',()=>{window.MekongBenefit.setLanguage(lang());refreshDisplays();});
     window.addEventListener('storage',event=>{if(event.key?.startsWith('mekong-suksuk.'))refreshDisplays();});
     $('integratedDashboardFrame')?.addEventListener('load',()=>window.MekongI18n.syncFrame());
-    window.MekongI18n.start();const params=new URLSearchParams(location.search),requested=params.get('role');if(MENUS[requested]){enter(requested);if(requested==='manager'&&params.get('scenario')==='demo')window.__MEKONG_TEST__.loadAllocationDemo(true);if(params.get('page'))navigate(params.get('page'));}else showEntry();
+    window.MekongI18n.start();
+    if(await window.MekongCloud?.init())return;
+    if(!farms().length) {
+      // An empty browser gets the existing 54-farm demo. Existing farms/supply are never replaced.
+      if(!window.MekongWeeklySupply?.records().length) window.__MEKONG_TEST__.loadAllocationDemo();
+      else window.__MEKONG_TEST__.seedDemoFarms(false);
+    }
+    const params=new URLSearchParams(location.search),requested=params.get('role');if(MENUS[requested]){enter(requested);if(requested==='manager'&&params.get('scenario')==='demo')window.__MEKONG_TEST__.loadAllocationDemo(true);if(params.get('page'))navigate(params.get('page'));}else showEntry();
   }
-  window.MekongPortal={filterForRole,recordAllowed,init,route,navigate,scopeFarms,allows,afterBenefitRender,refresh:refreshDisplays,get role(){return role;},selectFarm(id){farmId=String(id);save('mekong-suksuk.farmer-demo-farm.v1',farmId);},get farmId(){return farmId;},get rmu(){return scopeRmu();}};
+  window.MekongPortal={filterForRole,recordAllowed,init,route,navigate,scopeFarms,allows,afterBenefitRender,refresh:refreshDisplays,get role(){return role;},acceptSession(p){if(!MENUS.manager.includes('accounts'))MENUS.manager.push('accounts');farmId=String(p.farmId||'');rmu=p.rmu||rmu;if(role!==p.role){enter(p.role);const requested=new URLSearchParams(location.search).get('page');if(requested)navigate(requested);if(p.role==='farmer'&&farms()[0])window.__MEKONG_TEST__.editFarm(farms()[0].id);}else refreshDisplays();},lockSession(){role='entry';page='';document.body.dataset.portalRole='entry';},selectFarm(id){if(window.MekongCloud?.enabled&&String(id)!==String(window.MekongCloud.profile?.farmId))return;farmId=String(id);save('mekong-suksuk.farmer-demo-farm.v1',farmId);},get farmId(){return farmId;},get rmu(){return scopeRmu();}};
 })();

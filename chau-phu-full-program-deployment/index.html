@@ -486,7 +486,7 @@
   const WEEK_COUNT=16;
   const DAY=86400000;
   const names=['농가 A','농가 B','농가 C','농가 D','농가 E','농가 F','농가 G','농가 H','농가 I','농가 J','농가 K','농가 L','농가 M','농가 N','농가 O','농가 P','농가 Q','농가 R','농가 S'];
-  let dataset=baseDataset, rawCSV=null, farms=[], editingId=null, activeZone='RMU-01', page='setup', calendarZone='all', calendarStart=baseDataset.meta.start;
+  let dataset=baseDataset, rawCSV=null, farms=[], editingId=null, editingVersion=0, activeZone='RMU-01', page='setup', calendarZone='all', calendarStart=baseDataset.meta.start;
   let mapFarmFilter='all', selectedFacilityId='C02', savedFarmId=null, lastSaveDurable=false;
   // v10 climate-only upgrade. Farm DB / Crop rules / Water engine / Tab 2 and Tab 3 retained from v9.
   // The embedded CSV is planning climatology (monthly means repeated per day), NOT daily observations.
@@ -924,7 +924,7 @@
     if(!f.name)return '농가명을 입력하세요. 입력 항목이 비어 있어 저장하지 않았습니다.';
     if(!CROPS[f.crop])return '올바른 작물을 선택하세요.';
     if(!VARIETIES[f.crop].includes(f.variety))return '품종을 선택하세요.';
-    if(!RMUS.some(x=>x.id===f.rmu))return '임시 관리구역(RMU-01~08)을 선택해야 저장할 수 있습니다.';
+    if(!RMUS.some(x=>x.id===f.rmu))return '관리구역(RMU-01~18)을 선택해야 저장할 수 있습니다.';
     if(!Number.isFinite(f.area)||f.area<=0||f.area>10000)return '면적은 0보다 크고 10,000ha 이하여야 합니다.';
     if(!validDate(f.start))return '파종/생육 시작일을 올바르게 입력하세요.';
     if((f.lat===null)!==(f.lon===null)||!gpsValid(f))return '위도·경도는 둘 다 비우거나 함께 입력하세요. 지도 범위 내 좌표만 허용합니다.';
@@ -942,8 +942,13 @@
   }}
   function clearForm(){editingId=null;$('formTitle').textContent='새 농가 등록';$('formBadge').textContent='NEW';$('submitFarm').innerHTML='농가 저장하고 캘린더 보기 <span>↗</span>';$('cancelEdit').hidden=true;
     $('farmForm').reset();$('latitude').value='';$('longitude').value='';$('crop').value='rice';updateVariety();$('rmu').value='';$('irrigation').value='surface';$('start').value=todayVietnam();$('area').value='1.00';clearError();preview();}
-  function submitFarm(evt){evt.preventDefault();try{
+  async function submitFarm(evt){evt.preventDefault();try{
     const f=getFormData(),err=validate(f);if(err){showError(err);return}
+    if(window.MekongCloud?.enabled){
+      const original=farms.find(x=>x.id===f.id);$('submitFarm').disabled=true;
+      try{await window.MekongCloud.command('farm.upsert',f,editingId?editingVersion:0);$('farmSaveStatus').textContent=window.MekongCloud.t('saved');toast(window.MekongCloud.t('saved'));}
+      catch(e){showError(window.MekongCloud.message(e));}finally{$('submitFarm').disabled=false;}return;
+    }
     const updating=Boolean(editingId);
     if(updating){const idx=farms.findIndex(x=>x.id===editingId);if(idx<0){showError('수정 대상 농가를 찾지 못했습니다.');return}farms[idx]=f}
     else{farms.push(f)}
@@ -965,15 +970,16 @@
     toast(msg);
   }catch(e){showError('저장 과정에서 오류가 발생했습니다: '+e.message);console.error('save farm failed',e)}
   }
-  function persistFarms(){const durable=safeWrite(STORE_FARMS,JSON.stringify(farms));WEEK_CACHE.clear();return durable} 
+  function persistFarms(){if(window.MekongCloud?.enabled)return false;const durable=safeWrite(STORE_FARMS,JSON.stringify(farms));WEEK_CACHE.clear();return durable}
   function beginEdit(id){const f=farms.find(x=>x.id===id);if(!f)return;
-    editingId=f.id;$('formTitle').textContent='농가 정보 수정';$('formBadge').textContent='EDITING';$('submitFarm').innerHTML='수정 사항 저장하고 캘린더 보기 <span>↗</span>';$('cancelEdit').hidden=false;
+    editingId=f.id;editingVersion=f._version||0;$('formTitle').textContent='농가 정보 수정';$('formBadge').textContent='EDITING';$('submitFarm').innerHTML='수정 사항 저장하고 캘린더 보기 <span>↗</span>';$('cancelEdit').hidden=false;
     $('farmName').value=f.name;$('crop').value=f.crop;updateVariety(f.variety);$('variety').value=f.variety;$('rmu').value=f.rmu;$('area').value=f.area;$('start').value=f.start;$('latitude').value=f.lat??'';$('longitude').value=f.lon??'';$('irrigation').value=f.irrigation;$('awd').checked=Boolean(f.awd);const savedRisk=f.origin==='DEMO_ASSUMPTION'&&f.allocationRiskSource!=='USER_ASSESSED'?{}:(f.allocationRisk||{});$('riskGrowth').value=savedRisk.growth??'';$('riskSoil').value=savedRisk.soil??'';$('riskDamage').value=savedRisk.damage??'';$('riskAlternative').value=savedRisk.alternative??'';clearError();preview();navigate('setup');
     $('farmName').focus();window.scrollTo({top:0,behavior:'smooth'});
   }
-  function removeFarm(id){const f=farms.find(x=>x.id===id);if(!f)return;if(!confirm(`'${f.name}' 농가를 삭제할까요?`))return;
+  async function removeFarm(id){if(window.MekongCloud?.enabled){const original=farms.find(x=>x.id===id);try{await window.MekongCloud.command('farm.delete',{id},original?._version||0);}catch(e){toast(window.MekongCloud.message(e));}return;}const f=farms.find(x=>x.id===id);if(!f)return;if(!confirm(`'${f.name}' 농가를 삭제할까요?`))return;
     farms=farms.filter(x=>x.id!==id);if(editingId===id)clearForm();persistFarms();refresh();toast('농가를 삭제했습니다. 관련 합계를 갱신했습니다.');}
   function seedDemoFarms(confirmReplace=true){
+    if(window.MekongCloud?.enabled){toast(window.MekongCloud.t('noReplace'));return true;}
     const existing=farms.filter(f=>f.origin==='DEMO_ASSUMPTION');
     const real=farms.filter(f=>f.origin!=='DEMO_ASSUMPTION');
     if(confirmReplace&&existing.length&&!confirm(`기존 시범 농가 ${existing.length}개를 새 54개 데이터로 교체할까요? 실제 등록 농가 ${real.length}개는 유지됩니다.`))return false;
@@ -1013,7 +1019,7 @@
     toast(`새 시범 농가 ${demo.length}개를 RMU마다 3개씩 불러왔습니다. 기존 시범 데이터만 교체했습니다.`);
     return true;
   }
-  function clearFarms(){if(!farms.length){toast('삭제할 농가가 없습니다.');return}if(!confirm(`등록된 ${farms.length}개 농가를 모두 삭제할까요? 복원하려면 백업 JSON이 필요합니다.`))return;farms=[];persistFarms();clearForm();refresh();toast('전체 농가 데이터가 삭제되었습니다.');}
+  function clearFarms(){if(window.MekongCloud?.enabled){toast(window.MekongCloud.t('noReplace'));return;}if(!farms.length){toast('삭제할 농가가 없습니다.');return}if(!confirm(`등록된 ${farms.length}개 농가를 모두 삭제할까요? 복원하려면 백업 JSON이 필요합니다.`))return;farms=[];persistFarms();clearForm();refresh();toast('전체 농가 데이터가 삭제되었습니다.');}
   function loadAllocationDemo(skipConfirmation=false){
     const existing=farms.filter(f=>f.origin==='DEMO_ASSUMPTION'),real=farms.filter(f=>f.origin!=='DEMO_ASSUMPTION');
     if(!skipConfirmation&&existing.length&&!confirm(`기존 시범 농가 ${existing.length}개를 새 54개 시연 시나리오로 교체할까요? 실제 등록 농가 ${real.length}개와 실제 공급기록은 보존됩니다.`))return;
@@ -1418,6 +1424,7 @@
     const allocationPlan=simulateBalanceAllocation(allocationFiltered);
     const globalAllocationPlan=calendarZone==='all'?allocationPlan:simulateBalanceAllocation(allocationSource);
     window.__MEKONG_ALLOCATION_PLAN__={startDate:calendarStart,supplyMode:window.MekongWeeklySupply?.isDemoMode()?'demo-assumption-rmu-weekly':'rmu-weekly-records',requestMode:window.MekongWeeklySupply?.isDemoMode()?'planned-weekly-intake-after-effective-rain':'registered-farm-demand',weeks:globalAllocationPlan.map((plan,week)=>({index:week+1,startDate:weekStart(week),completeSupplyData:plan.complete,availableM3:plan.available,unknownDemandM3:plan.unknownDemand,unknownRmus:plan.unknownGroups,incompleteRmus:plan.incompleteGroups,incompleteDemandCells:plan.incompleteDemandCells,supplyByRmu:plan.rmuPlans,rows:plan.rows.map(row=>({farmId:String(row.farm.id),farmName:row.farm.name||String(row.farm.id),rmu:row.farm.rmu||'미배정',crop:CROPS[row.farm.crop]||row.farm.crop,requestM3:row.request,plannedM3:row.allocated,waitDays:row.waitDays||0}))}))};
+    if(window.MekongCloud?.enabled)window.__MEKONG_ALLOCATION_PLAN__=window.MekongCloud.allocationPlan(window.__MEKONG_ALLOCATION_PLAN__);
     window.MekongBenefit?.render();
     window.dispatchEvent(new CustomEvent("mekong:allocation-updated"));
     renderBalanceAllocation(allocationFiltered,allocationPlan,globalAllocationPlan);
@@ -1587,7 +1594,7 @@
     $('exportClimateDB').addEventListener('click',exportClimateDB);
   }
   function init(){loadPersisted();loadEmbeddedClimateArchive();readApiCache();const resumeStageDemo=window.MekongWeeklySupply?.isStageDemoMode();const resumeDemo=window.MekongWeeklySupply?.isDemoMode()&&farms.some(f=>f.origin==='DEMO_ASSUMPTION');calendarStart=resumeStageDemo?(window.MekongWeeklySupply?.stageStartDate()||todayVietnam()):resumeDemo?'2026-05-01':todayVietnam();if(resumeDemo&&!resumeStageDemo){climateMode='csv';$('climateMode').value='csv';$('calendarView').value='balance';}updateSelects();$('calendarStart').value=calendarStart;events();clearForm();refresh();navigate('setup');loadLocalServerArchive();refreshRecentClimate(false);
-    window.__MEKONG_TEST__={get farms(){return structuredClone(farms)},get dataset(){return structuredClone(dataset)},get api(){return {mode:climateMode,phase:apiPhase,coverage:climateCoverage(),days:structuredClone(apiClimate),diagnostics:structuredClone(climateDiagnostics),storeError:climateStoreError}},setClimateMode(mode){$('climateMode').value=mode;$('climateMode').dispatchEvent(new Event('change',{bubbles:true}))},computeWeek:(f,i)=>computeWeek(f,i),get summary(){return summary()},navigate,getClimateForDate:(d)=>structuredClone(getClimateForDate(d)),get climateStore(){return {coverage:{...ClimateStore.coverage},overlayCount:Object.keys(apiClimate).length,archiveCount:Object.keys(ClimateStore.daily).length,storedDays:Object.keys(apiClimate).sort()}},refreshRecentClimate,refresh,seedDemoFarms,loadAllocationDemo};
+    window.__MEKONG_TEST__={editFarm:beginEdit,replaceSharedFarms(items,planning={}){farms=items.map(normalizeFarmRecord).filter(farmValid);if(planning.calendarStart){calendarStart=planning.calendarStart;$('calendarStart').value=calendarStart;}if(planning.climateMode){climateMode=planning.climateMode;$('climateMode').value=climateMode;}if(planning.dataset){dataset=planning.dataset;rawCSV=planning.rawCSV||null;}WEEK_CACHE.clear();refresh();},sharedPlanning(){return {calendarStart,climateMode,dataset:rawCSV?dataset:null,rawCSV};},get farms(){return structuredClone(farms)},get dataset(){return structuredClone(dataset)},get api(){return {mode:climateMode,phase:apiPhase,coverage:climateCoverage(),days:structuredClone(apiClimate),diagnostics:structuredClone(climateDiagnostics),storeError:climateStoreError}},setClimateMode(mode){$('climateMode').value=mode;$('climateMode').dispatchEvent(new Event('change',{bubbles:true}))},computeWeek:(f,i)=>computeWeek(f,i),get summary(){return summary()},navigate,getClimateForDate:(d)=>structuredClone(getClimateForDate(d)),get climateStore(){return {coverage:{...ClimateStore.coverage},overlayCount:Object.keys(apiClimate).length,archiveCount:Object.keys(ClimateStore.daily).length,storedDays:Object.keys(apiClimate).sort()}},refreshRecentClimate,refresh,seedDemoFarms,loadAllocationDemo};
   }
   init();
 })();
@@ -1770,5 +1777,5 @@
   const bytes=Uint8Array.from(atob(embedded),c=>c.charCodeAt(0));frame.srcdoc=new TextDecoder('utf-8').decode(bytes);
  }else{frame.src='dashboard/index.html';}
 })();
-</script><script src="./portal-i18n.js"></script><script src="./portal-translations.js"></script><script src="./role-portals.js"></script><script src="./benefit-workflow.js"></script>
+</script><script src="./portal-i18n.js"></script><script src="./portal-translations.js"></script><link rel="stylesheet" href="./shared-portal.css"><script src="./shared-portal.js"></script><script src="./role-portals.js"></script><script src="./benefit-workflow.js"></script>
 </body></html>

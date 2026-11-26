@@ -60,6 +60,7 @@
     return emptyState();
   }
   function saveState() {
+    if(window.MekongCloud?.enabled){announce(window.MekongCloud.t('error'));return false;}
     try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); return true; }
     catch (_) { announce(t('storageError')); return false; }
   }
@@ -87,6 +88,7 @@
     catch (_) { return value; }
   }
   function readFarms() {
+    if(window.MekongCloud?.enabled)return window.__MEKONG_TEST__?.farms||[];
     for (const key of FARM_KEYS) {
       try {
         const parsed = JSON.parse(localStorage.getItem(key) || 'null');
@@ -265,7 +267,7 @@
     list.innerHTML = requests.map((request) => {
       const week = Number(request.weekIndex) || 1;
       const date = request.weekStart ? ' · ' + formatDate(request.weekStart) : '';
-      return '<article class="benefit-request-farmer-card"><div class="benefit-record-top"><div><strong>' + esc(week + '주차' + date) + '</strong><small>' + esc(request.rmu || '미배정') + ' · ' + esc(formatDate((request.createdAt || '').slice(0, 10))) + '</small></div><span class="benefit-state">' + esc(requestStatusText(request.status)) + '</span></div><p class="benefit-record-meta">' + esc(t('requestVolume')) + ': ' + esc(numberText(Number(request.requestM3))) + ' m³' + (request.deliveredM3 !== null && request.deliveredM3 !== undefined ? ' · ' + esc(t('requestDelivered')) + ': ' + esc(numberText(Number(request.deliveredM3))) + ' m³' : '') + '</p><p class="benefit-record-meta">' + esc(request.reason || '—') + '</p></article>';
+      return '<article class="benefit-request-farmer-card"><div class="benefit-record-top"><div><strong>' + esc(week + '주차' + date) + '</strong><small>' + esc(request.rmu || '미배정') + ' · ' + esc(formatDate((request.createdAt || '').slice(0, 10))) + '</small></div><span class="benefit-state">' + esc(requestStatusText(request.status)) + '</span></div><p class="benefit-record-meta">' + esc(t('requestVolume')) + ': ' + esc(numberText(Number(request.requestM3))) + ' m³' + (request.deliveredM3 !== null && request.deliveredM3 !== undefined ? ' · ' + esc(t('requestDelivered')) + ': ' + esc(numberText(Number(request.deliveredM3))) + ' m³' : '') + '</p><p class="benefit-record-meta">' + esc(request.reason || '—') + '</p>' + (request.operatorNote ? '<p class="benefit-record-meta"><strong>' + esc(t('requestOperatorNote')) + ':</strong> ' + esc(request.operatorNote) + '</p>' : '') + '</article>';
     }).join('');
   }
   function deliveryFor(weekStart, farmId) {
@@ -347,7 +349,7 @@
         '<div class="benefit-card-actions benefit-field full"><button type="button" class="btn btn-primary btn-small" data-request-save="' + esc(request.id) + '">' + esc(t('requestSave')) + '</button></div></div></article>';
     }).join('');
   }
-  function handleOperationSave(event) {
+  async function handleOperationSave(event) {
     const button = event.target.closest('[data-operation-save]');
     if (!button) return;
     const card = button.closest('[data-operation-card]');
@@ -365,6 +367,7 @@
     const planWeek = planWeeks.find((week, index) => (Number(week.index) || index + 1) === weekNumber);
     const row = planWeek?.rows?.find((item) => operationId(planWeek.startDate, item.farmId) === id && (window.MekongPortal?.allows(item) ?? true));
     if (!row) { announce(t('opsNoPlan')); return; }
+    if(window.MekongCloud?.enabled)return sharedSave('operation.upsert',{id,farmId:row.farmId,weekStart:planWeek.startDate,weekIndex:weekNumber,requestM3:row.requestM3,plannedM3:row.plannedM3,actualM3:actual,status,note},state.operations.find(x=>x.id===id)?._version||0,button,'opsSaved');
     let record = state.operations.find((item) => item.id === id);
     if (!record) {
       record = { id, farmId: row.farmId, farmName: row.farmName, rmu: row.rmu, weekIndex: weekNumber, weekStart: planWeek.startDate || '', requestM3: row.requestM3, plannedM3: row.plannedM3, actualM3: null, status: 'pending', note: '', createdAt: new Date().toISOString(), history: [] };
@@ -379,7 +382,7 @@
     render(); window.dispatchEvent(new CustomEvent('mekong:records-updated'));
     announce(t('opsSaved'));
   }
-  function handleRequestSubmit(event) {
+  async function handleRequestSubmit(event) {
     event.preventDefault();
     const farm = readFarms().find((item) => String(item.id) === $('benefitFarmerFarm').value);
     if (!farm) { announce(t('requestFarmNeeded')); return; }
@@ -392,6 +395,7 @@
       weekIndex, weekStart: planWeek?.startDate || '', requestM3: amount, reason: $('benefitRequestReason').value.trim().slice(0, 400),
       status: 'pending', deliveredM3: null, operatorNote: '', createdAt: new Date().toISOString(), updatedAt: '', history: []
     };
+    if(window.MekongCloud?.enabled){request.id=event.target.dataset.sharedRequestId||(event.target.dataset.sharedRequestId=crypto.randomUUID());return sharedSave('request.create',request,0,$('benefitRequestSubmit'),'requestSaved',()=>{event.target.reset();delete event.target.dataset.sharedRequestId;});}
     addHistory(request, 'farmer-view', 'submitted water request', request.reason);
     state.requests.unshift(request);
     if (!saveState()) { state.requests.shift(); return; }
@@ -399,7 +403,7 @@
     render(); window.dispatchEvent(new CustomEvent('mekong:records-updated'));
     announce(t('requestSaved'));
   }
-  function handleRequestQueueSave(event) {
+  async function handleRequestQueueSave(event) {
     const button = event.target.closest('[data-request-save]');
     if (!button) return;
     const card = button.closest('[data-request-card]');
@@ -413,6 +417,7 @@
     if (['completed', 'partial'].includes(status) && (delivered === null || delivered <= 0)) { announce(t('opsNeedVolume')); return; }
     if (status === 'declined' && delivered > 0) { announce(t('opsNeedVolume')); return; }
     if (status === 'declined' && !note) { announce(t('requestDeclineReason')); return; }
+    if(window.MekongCloud?.enabled)return sharedSave('request.update',{id:request.id,status,deliveredM3:delivered,operatorNote:note},request._version,button,'requestUpdated');
     request.status = status;
     request.deliveredM3 = delivered;
     request.operatorNote = note.slice(0, 300);
@@ -455,6 +460,7 @@
   }
   function render() {
     applyStaticText();
+    if(window.MekongCloud?.enabled)document.querySelectorAll('[data-i18n=local]').forEach(n=>n.textContent=window.MekongCloud.t('connected'));
     const issueRmu = $('benefitIssueRmu');
     if (issueRmu) fillSelect(issueRmu, RMUS.map((rmu) => ({ value: rmu, label: rmu })), t('selectRmu'), issueRmu.value);
     renderRoles();
@@ -467,7 +473,7 @@
     record.history = Array.isArray(record.history) ? record.history : [];
     record.history.push({ at: new Date().toISOString(), role, action, note: String(note || '').slice(0, 600) });
   }
-  function handleRecordSubmit(event) {
+  async function handleRecordSubmit(event) {
     event.preventDefault();
     const baselineWater = numberFrom('benefitBaselineWater');
     const actualWater = numberFrom('benefitActualWater');
@@ -488,6 +494,7 @@
       operatorNote: $('benefitOperatorNote').value.trim(), status: 'awaiting_farmer', demo: false,
       createdAt: new Date().toISOString(), history: []
     };
+    if(window.MekongCloud?.enabled)return sharedSave('benefit.create',record,0,event.target.querySelector('[type=submit]'),'savedMessage',()=>event.target.reset());
     addHistory(record, 'operator', 'recorded', record.operatorNote);
     state.records.unshift(record);
     if (!saveState()) { state.records.shift(); return; }
@@ -496,6 +503,7 @@
     render(); announce(t('savedMessage'));
   }
   function loadDemo() {
+    if(window.MekongCloud?.enabled){announce(window.MekongCloud.t('noReplace'));return;}
     state.records = state.records.filter((record) => !record.demo);
     const record = {
       id: 'BEN-DEMO-SEASON', cycleLabel: language === 'vi' ? 'Ví dụ minh họa · vụ so sánh' : '예시 시나리오 · 동일 작기 비교',
@@ -512,12 +520,13 @@
     if (!saveState()) { state.records.shift(); return; }
     render(); announce(t('demoBadge'));
   }
-  function handleFarmerAction(event) {
+  async function handleFarmerAction(event) {
     const button = event.target.closest('[data-farmer-action]');
     if (!button) return;
     const record = state.records.find((item) => item.id === button.dataset.id);
     if (!record || record.status === 'verified') return;
     const note = document.querySelector(`[data-farmer-note="${CSS.escape(record.id)}"]`)?.value?.trim() || '';
+    if(window.MekongCloud?.enabled)return sharedSave('benefit.confirm',{id:record.id,status:button.dataset.farmerAction==='confirm'?'farmer_confirmed':'disputed',note},record._version,button,button.dataset.farmerAction==='confirm'?'confirmedMessage':'disputedMessage');
     if (button.dataset.farmerAction === 'confirm') {
       record.status = 'farmer_confirmed'; addHistory(record, 'farmer-view', 'confirmed delivery record', note); announce(t('confirmedMessage'));
     } else {
@@ -525,12 +534,13 @@
     }
     saveState(); render();
   }
-  function handleReviewAction(event) {
+  async function handleReviewAction(event) {
     const button = event.target.closest('[data-review-action]');
     if (!button) return;
     const record = state.records.find((item) => item.id === button.dataset.id);
     if (!record || record.status === 'verified') return;
     const note = document.querySelector(`[data-review-note="${CSS.escape(record.id)}"]`)?.value?.trim() || '';
+    if(window.MekongCloud?.enabled)return sharedSave('benefit.review',{id:record.id,status:button.dataset.reviewAction==='verify'?'verified':'revision',note},record._version,button,'reviewSaved');
     if (button.dataset.reviewAction === 'verify') {
       if (!canVerify(record)) { announce(t('approveBlocked')); return; }
       record.status = 'verified'; addHistory(record, 'reviewer-view', 'verified', note);
@@ -539,7 +549,7 @@
     }
     saveState(); render(); window.dispatchEvent(new CustomEvent('mekong:records-updated')); announce(t('reviewSaved'));
   }
-  function handleIncidentSubmit(event) {
+  async function handleIncidentSubmit(event) {
     event.preventDefault();
     const details = $('benefitIssueDetails').value.trim();
     if (!details) { announce(t('requiredError')); return; }
@@ -547,19 +557,27 @@
       id: newId('ISSUE'), rmu: $('benefitIssueRmu').value || '미배정', typeKey: $('benefitIssueType').value,
       reporterFarmId: window.MekongPortal?.farmId || '', reporterRole: window.MekongPortal?.role || 'farmer', details: details.slice(0, 1500), reviewNote: '', status: 'open', createdAt: new Date().toISOString(), history: [{ role: 'farmer-view', action: 'reported', at: new Date().toISOString() }]
     };
+    if(window.MekongCloud?.enabled)return sharedSave('incident.create',incident,0,event.target.querySelector('[type=submit]'),'reportSaved',()=>event.target.reset());
     state.incidents.unshift(incident);
     if (!saveState()) { state.incidents.shift(); return; }
     event.target.reset(); render(); window.dispatchEvent(new CustomEvent('mekong:records-updated')); announce(t('reportSaved'));
   }
-  function handleIncidentAction(event) {
+  async function handleIncidentAction(event) {
     const button = event.target.closest('[data-incident-action]');
     if (!button) return;
     const incident = state.incidents.find((item) => item.id === button.dataset.id);
     if (!incident || (window.MekongPortal && window.MekongPortal.role !== 'manager')) return;
+    if(window.MekongCloud?.enabled)return sharedSave('incident.update',{id:incident.id,status:button.dataset.incidentAction,note:''},incident._version,button,'reviewSaved');
     incident.status = button.dataset.incidentAction;
     incident.reviewNote = language === 'vi' ? 'Đã cập nhật trạng thái trong bản trình diễn.' : '시연 화면에서 검토 상태를 변경했습니다.';
     incident.history.push({ role: 'reviewer-view', action: incident.status, at: new Date().toISOString() });
     saveState(); render(); window.dispatchEvent(new CustomEvent('mekong:records-updated')); announce(t('reviewSaved'));
+  }
+  async function sharedSave(action,data,version,button,success,after){
+    if(button)button.disabled=true;
+    try{await window.MekongCloud.command(action,data,version||0);after?.();announce(t(success));}
+    catch(e){announce(window.MekongCloud.message(e));}
+    finally{if(button)button.disabled=false;}
   }
   function exportRecords() {
     const columns = ['cycle_label','rmu','service_area','baseline_start','baseline_end','current_start','current_end','baseline_water_m3','actual_water_m3','water_delta_m3','baseline_kwh','actual_kwh','electricity_delta_vnd','baseline_fuel_l','actual_fuel_l','fuel_delta_vnd','status','demo'];
@@ -597,7 +615,7 @@
     $('benefitIncidentQueue').addEventListener('click', handleIncidentAction);
     document.querySelectorAll('[data-benefit-zone-select]').forEach((select) => fillSelect(select, RMUS.map((rmu) => ({ value: rmu, label: rmu })), t('selectRmu'), select.value));
     render();
-    window.MekongBenefit = { render, setRole, deliveryFor, setLanguage(value) { language = ['ko','vi','en'].includes(value) ? value : 'ko'; render(); }, getState: () => JSON.parse(JSON.stringify(state)) };
+    window.MekongBenefit = {replaceSharedState(next,redraw=true){state={...emptyState(),...next};if(redraw)render();}, render, setRole, deliveryFor, setLanguage(value) { language = ['ko','vi','en'].includes(value) ? value : 'ko'; render(); }, getState: () => JSON.parse(JSON.stringify(state)) };
     if (!document.querySelector('script[data-platform-view]')) {
       const style = document.createElement('link'); style.rel = 'stylesheet'; style.href = './platform-view.css'; document.head.append(style);
       const script = document.createElement('script'); script.src = './platform-view.js'; script.dataset.platformView = 'true'; document.body.append(script);
