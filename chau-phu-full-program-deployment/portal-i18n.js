@@ -202,7 +202,7 @@ RMU 18개 경계|Ranh giới 18 RMU|18 RMU boundaries
 ● 관측 · 자료 지연 구분|Quan trắc · phân biệt dữ liệu trễ|Observations · delayed data identified
 ● 예보 · 과거 기상 추정|Dự báo · ước tính thời tiết quá khứ|Forecast · historical weather estimates
 강우량과 7일 기상예보, 과거 날씨 추정, 30년 월평균 기후자료를 확인합니다.|Xem mưa, dự báo 7 ngày, thời tiết quá khứ và khí hậu trung bình 30 năm.|View rainfall, 7-day forecasts, past-weather estimates and 30-year monthly climate normals.
-시범지역 행정 경계와 관측소 위치, MRC 수위·강우 및 연도별 추이를 확인합니다.|Xem ranh thí điểm, vị trí trạm, mực nước, mưa và xu thế MRC theo năm.|View pilot boundaries, station locations and yearly MRC water-level and rainfall trends.
+관측소 위치와 MRC 수위·강우 관측정보를 확인합니다.|Xem vị trí trạm và số liệu quan trắc mực nước, lượng mưa MRC.|View station locations and MRC water-level and rainfall observations.
 16주 생육·물수요 캘린더|Lịch sinh trưởng và nhu cầu nước 16 tuần|16-week growth and water demand calendar
 농가별 주간 계획 취수량|Lượng nước lấy theo tuần của nông hộ|Weekly planned intake by farm
 구역별 주간 취수 계획|Kế hoạch lấy nước theo khu|Weekly intake plan by area

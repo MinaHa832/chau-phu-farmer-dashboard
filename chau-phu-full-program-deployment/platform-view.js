@@ -46,23 +46,13 @@
     farmerPage.innerHTML = '<div class="page-heading"><div><div class="eyebrow">FARMER VIEW <span>/ WEEKLY PLAN</span></div><h1 id="farmerPageTitle">내 주간 물 계획<span class="title-period">.</span></h1><p>선택한 농가의 주간 물 필요량과 배분 계획, 강우 반영 내역을 확인합니다.</p></div><span class="mode-pill">농민 화면 · 시연용 농가 선택</span></div><div class="farmer-view-note"><strong>농가를 선택해 확인하세요.</strong><span>현재는 시연용 화면 전환이며 로그인과 농가별 접근 권한은 연결되지 않았습니다. 요청은 같은 브라우저의 운영자 화면에 저장됩니다.</span></div><div class="farmer-dashboard-controls"><label for="farmerFarmSelect">농가 선택<select id="farmerFarmSelect"></select></label><label for="farmerWeekSelect">확인 주차<select id="farmerWeekSelect"></select></label><button class="btn btn-secondary btn-small" id="farmerOpenRequests" type="button">급수 요청·기록 보기 ↗</button></div><div class="metrics metrics-4 farmer-summary-metrics" id="farmerSummaryMetrics" aria-live="polite"></div><div class="card farmer-plan-card"><div class="card-top"><div><span class="section-kicker">WEEKLY WATER PLAN</span><h2 id="farmerPlanTitle">주간 물 계획</h2><p class="muted" id="farmerPlanStatus">등록된 농가 자료를 불러오는 중입니다.</p></div><span class="small-label" id="farmerPlanRmu">RMU —</span></div><div class="farmer-weeks-chart" id="farmerWeeksChart" aria-label="8주 계획 취수량과 배분량"></div><p class="table-caption">계획 취수량은 생육·기후·유효강우 계산값입니다. 배분량은 현재 공급자료를 반영한 시범 계획으로, 실제 급수량과 다를 수 있습니다.</p></div><div class="farmer-view-actions"><button class="btn btn-primary" id="farmerRequestWater" type="button">급수 요청 등록 ↗</button><button class="btn btn-secondary" id="farmerViewWeather" type="button">기상 확인 ↗</button><button class="btn btn-secondary" id="farmerViewWater" type="button">수자원 확인 ↗</button></div>';
     content.prepend(farmerPage);
 
-    const monitorPage = $('page-monitor');
-    const frameShell = monitorPage?.querySelector('.monitor-frame-shell');
-    if (monitorPage && frameShell && !$('waterResourcesOverview')) {
-      const overview = document.createElement('div'); overview.className = 'water-resources-overview'; overview.id = 'waterResourcesOverview';
-      overview.innerHTML = '<div class="card water-region-card"><div class="card-top"><div><span class="section-kicker">PILOT AREA / ADMINISTRATIVE REFERENCE</span><h2>시범지역 행정 경계</h2><p class="muted">Châu Phú · An Giang 시범지역 참고 지도와 사진 기준 18개 RMU</p></div><span class="small-label">2025 지도 참고</span></div><img class="water-region-map" src="./data/chau-phu-rmu18-basemap.svg" alt="Châu Phú 시범지역 행정 경계 및 사진 기준 18개 RMU 지도"><p class="table-caption">행정 경계 참고도이며 공식 측량·급수 관할 경계가 아닙니다. RMU 경계는 사용자 사진을 옮긴 추정선입니다.</p></div><div class="card water-history-card"><div class="card-top"><div><span class="section-kicker">YEARLY OBSERVATIONS</span><h2>관측소별 연도 수위·강우</h2><p class="muted">연결된 MRC 관측 이력을 월별 평균으로 요약합니다.</p></div><span class="small-label" id="waterHistorySource">관측 자료 조회 전</span></div><div class="water-history-controls"><label for="waterHistoryStation">관측소<select id="waterHistoryStation"><option value="039801">Châu Đốc</option><option value="019803">Tân Châu</option><option value="980601">Vàm Nao</option></select></label><label for="waterHistoryYear">연도<select id="waterHistoryYear"><option value="">자료 불러오는 중</option></select></label><label for="waterHistoryMetric">항목<select id="waterHistoryMetric"><option value="waterLevel_m">월 평균 수위 (m)</option><option value="rainFall24H_mm">월 평균 24시간 강우 (mm)</option></select></label><button class="btn btn-secondary btn-small" id="waterHistoryRefresh" type="button">관측자료 새로고침 ↻</button></div><div class="water-history-status" id="waterHistoryStatus" role="status" aria-live="polite">연도별 관측자료를 불러옵니다.</div><div class="water-history-chart" id="waterHistoryChart" aria-label="월별 평균 관측값"></div></div>';
-      frameShell.before(overview);
-    }
-
     const oldSetMode = window.mekongSetDashboardMode;
     window.mekongSetDashboardMode = (mode) => {
       document.body.dataset.monitorMode = mode === 'weather' ? 'weather' : 'water';
       oldSetMode?.(mode);
       updateMonitorHeading(mode);
-      window.MekongWaterHistory?.load();
     };
     $('integratedDashboardFrame')?.addEventListener('load', () => updateMonitorHeading(document.body.dataset.monitorMode || 'water'));
-    const waterScript = document.createElement('script'); waterScript.src = './water-history.js'; document.body.append(waterScript);
 
     nav.addEventListener('click', (event) => {
       const button = event.target.closest('[data-page]');
@@ -96,7 +86,7 @@
     if (heading) heading.textContent = weather ? '기상' : '수자원';
     if (description) description.textContent = weather
       ? '강우량과 7일 기상예보, 과거 날씨 추정, 30년 월평균 기후자료를 확인합니다.'
-      : '시범지역 행정 경계와 관측소 위치, MRC 수위·강우 및 연도별 추이를 확인합니다.';
+      : '관측소 위치와 MRC 수위·강우 관측정보를 확인합니다.';
     if (pill) pill.textContent = weather ? '● 예보 · 과거 기상 추정' : '● 관측 · 자료 지연 구분';
   }
 
