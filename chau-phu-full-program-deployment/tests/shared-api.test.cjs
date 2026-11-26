@@ -31,3 +31,13 @@ test('logout removes cookies and partial configuration fails closed',async()=>{
  assert.equal((await call('/api/session?action=status')).body.enabled,true);
  assert.equal((await call('/api/shared')).response.status,503);process.env.SUPABASE_PUBLISHABLE_KEY=value;
 });
+test('confirmation and recovery callbacks return to the validated requesting site',async()=>{
+ for(const action of ['signup','recover']){
+  const result=await call('/api/session?action='+action,{data:{email:'pending@example.test',password:'test-password-123'}});
+  assert.equal(result.response.status,200);assert.equal(result.body.checkEmail,true);
+  assert.equal(fixture.authRequests.at(-1).searchParams.get('redirect_to'),fixture.url+'/');
+ }
+ const count=fixture.authRequests.length;
+ assert.equal((await call('/api/session?action=recover',{origin:'https://attacker.example',data:{email:'pending@example.test'}})).response.status,403);
+ assert.equal(fixture.authRequests.length,count);
+});

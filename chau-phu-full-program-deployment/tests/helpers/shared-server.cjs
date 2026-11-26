@@ -13,6 +13,7 @@ async function startServer(port=0){
  create function auth.uid() returns uuid language sql as $$select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid$$;`);
  await db.exec(fs.readFileSync(path.join(root,'supabase/migrations/202611260001_shared_portal.sql'),'utf8'));
  await db.exec(fs.readFileSync(path.join(root,'supabase/seed.sql'),'utf8'));
+ const authRequests=[];
  const users={};for(const [i,role] of ['manager','farmer','operator','outside','pending'].entries()){
   const id=`00000000-0000-4000-8000-${String(i+1).padStart(12,'0')}`;users[role]={id,email:role+'@example.test',email_confirmed_at:'2026-11-26T00:00:00Z'};
   await db.query('insert into auth.users(id,email) values($1,$2)',[id,users[role].email]);
@@ -24,6 +25,7 @@ async function startServer(port=0){
   if(!String(url).startsWith('https://test-auth.invalid'))return originalFetch(url,options);
   const u=new URL(url),input=JSON.parse(options.body||'{}'),token=options.headers?.Authorization?.replace('Bearer ','');
   const role=token?.replace('test-access-',''),user=users[role];const reply=(data,status=200)=>new Response(JSON.stringify(data),{status,headers:{'Content-Type':'application/json'}});
+  if(['/auth/v1/signup','/auth/v1/recover'].includes(u.pathname)){authRequests.push(u);return reply({ok:true});}
   if(u.pathname==='/auth/v1/token'){
    const who=Object.keys(users).find(k=>users[k].email===input.email)||input.refresh_token?.replace('test-refresh-','');
    if(!users[who]||(!input.refresh_token&&input.password!=='test-password-123'))return reply({msg:'Invalid login'},400);
@@ -55,7 +57,7 @@ async function startServer(port=0){
   try{res.setHeader('Content-Type',type);res.end(fs.readFileSync(file));}catch{res.status(404).end();}
  });
  await new Promise(resolve=>server.listen(port,'127.0.0.1',resolve));
- return {url:'http://127.0.0.1:'+server.address().port,db,users,async close(){await new Promise(resolve=>server.close(resolve));global.fetch=originalFetch;for(const [k,v]of Object.entries(savedEnv)){if(v===undefined)delete process.env[k];else process.env[k]=v;}await db.close();}};
+ return {url:'http://127.0.0.1:'+server.address().port,db,users,authRequests,async close(){await new Promise(resolve=>server.close(resolve));global.fetch=originalFetch;for(const [k,v]of Object.entries(savedEnv)){if(v===undefined)delete process.env[k];else process.env[k]=v;}await db.close();}};
 }
 module.exports={startServer};
 if(require.main===module)startServer(Number(process.env.PORT)||4173).then(({url})=>console.log('TEST FIXTURE ONLY: '+url));
