@@ -1,0 +1,25 @@
+.cloud-gate {position:fixed;inset:0;z-index:9000;overflow:auto;background:#f2f6ef;display:grid;place-items:center;padding:28px;color:#173d32}
+.cloud-gate[hidden],.cloud-status[hidden] {display:none}
+body[data-cloud-gate="true"] #app,body[data-cloud-gate="true"] #portalEntry {display:none!important}
+.cloud-auth-card {width:min(100%,500px);background:#fff;padding:36px;border:1px solid #dbe5dc;border-radius:24px;box-shadow:0 20px 70px #12372b12}
+.cloud-auth-card h1 {font-size:28px;line-height:1.3;margin:28px 0 12px}.cloud-auth-card p {line-height:1.7;color:#4f6c5e}
+.cloud-wordmark {font-size:13px;letter-spacing:.18em;font-weight:800}
+.cloud-languages,.cloud-auth-links {display:flex;gap:14px;flex-wrap:wrap;margin:20px 0}
+.cloud-languages button,.cloud-auth-links button,.cloud-status button {background:transparent;border:0;color:#1d6c57;text-decoration:underline;cursor:pointer;padding:8px 3px;font:inherit}
+.cloud-languages [aria-pressed="true"] {font-weight:800;text-decoration:none}
+.cloud-auth-card label,#cloudPasswordReset label {display:grid;gap:8px;margin:18px 0;font-weight:700}
+.cloud-auth-card input,#cloudPasswordReset input {padding:13px;border:1px solid #b9cdbf;border-radius:8px;font:inherit;min-width:0;width:100%;box-sizing:border-box}
+.cloud-auth-card select {padding:13px;border:1px solid #b9cdbf;border-radius:8px;font:inherit;width:100%;background:#fff;color:inherit}
+.cloud-auth-card .cloud-demo-notice {padding:12px 15px;background:#fff5dd;border:1px solid #ead8a6;border-radius:10px;font-size:13px}
+.cloud-demo-identity {overflow-wrap:anywhere;font-size:14px}
+.cloud-auth-card .btn {margin:8px 10px 0 0}.cloud-auth-card form .btn {width:100%}
+.cloud-message {font-size:14px;line-height:1.6;min-height:1.5em;overflow-wrap:anywhere}
+.cloud-status {display:flex;align-items:center;gap:15px;flex-wrap:wrap;margin:0 0 20px;padding:12px 18px;background:#e7f3e9;border:1px solid #cfe0d2;border-radius:12px;font-size:13px}
+.cloud-status span {flex:1}.cloud-status[data-status="offline"],.cloud-status[data-status="updates"] {background:#fff3dd;border-color:#ebd39e}
+.cloud-publish {margin-bottom:24px}.cloud-publish p {line-height:1.7}
+#portalAccountsContent select {padding:9px;margin:5px 0;width:100%;max-width:330px;min-width:160px;border:1px solid #cbd9ce;border-radius:7px;font:inherit}
+#portalAccountsContent select[hidden] {display:none}#portalAccountsContent td {vertical-align:top;padding:14px}
+#cloudPasswordReset {max-width:450px;border:1px solid #dbe5dc;border-radius:20px;padding:30px;z-index:10000}#cloudPasswordReset::backdrop {background:#102d25aa}
+@media(max-width:600px){.cloud-auth-card{padding:24px}.cloud-gate{padding:15px}.cloud-status{gap:10px}}
+
+.cloud-role-options{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:20px 0}.cloud-role-options button{padding:13px 8px;border:1px solid #cbd9ce;border-radius:10px;background:#f5f8f3;color:#255743;font:inherit;cursor:pointer}.cloud-role-options [aria-pressed="true"]{background:#1c6955;color:white;border-color:#1c6955}
