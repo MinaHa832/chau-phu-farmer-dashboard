@@ -44,14 +44,17 @@
   }
   function activeRecords() { return stageDemoMode ? stageDemoRecords : (demoMode ? demoRecords : records); }
   function persistActual() {
+    if(window.MekongCloud?.enabled)return true;
     try { localStorage.setItem(STORE_KEY, JSON.stringify(records)); return true; }
     catch (_) { return false; }
   }
   function persistDemo() {
+    if(window.MekongCloud?.enabled)return true;
     try { localStorage.setItem(DEMO_STORE_KEY, JSON.stringify(demoRecords)); return true; }
     catch (_) { return false; }
   }
   function persistStageDemo() {
+    if(window.MekongCloud?.enabled)return true;
     try { localStorage.setItem(STAGE_DEMO_STORE_KEY, JSON.stringify(stageDemoRecords)); return true; }
     catch (_) { return false; }
   }
@@ -251,7 +254,7 @@
       setStatus('이 브라우저에 저장할 수 없습니다. 저장공간을 확인한 뒤 기록 백업 파일을 사용해 주세요.', true);
       return;
     }
-    setStatus(rmu + ' · ' + weekStart + ' · ' + fmt(volume) + ' m³ 공급자료를 저장했습니다. ' + METHODS[method].grade + '로 표시합니다. 다른 기기와는 자동 공유되지 않습니다.');
+    setStatus(window.MekongCloud?.enabled?window.MekongCloud.t('draftSupply'):rmu + ' · ' + weekStart + ' · ' + fmt(volume) + ' m³ 공급자료를 저장했습니다. ' + METHODS[method].grade + '로 표시합니다. 다른 기기와는 자동 공유되지 않습니다.');
     renderSummary([...document.querySelectorAll('#supplyWeek option')].map((option) => option.value));
     updatePreview();
     onChange();
@@ -309,7 +312,7 @@
     demoMode = true;
     stageDemoMode = false;
     stageScenarioInfo = null;
-    try { localStorage.setItem(MODE_KEY, 'demo'); } catch (_) {}
+    if(!window.MekongCloud?.enabled)try { localStorage.setItem(MODE_KEY, 'demo'); } catch (_) {}
     setStatus('18개 RMU × ' + weekStarts.length + '주 시연 공급량을 불러왔습니다. 유량·가동시간·15% 손실률은 시연 가정이며 실측이 아닙니다. 실제 공급기록은 따로 보존됩니다.');
     renderSummary(weekStarts);
     updateDemoControls();
@@ -454,7 +457,7 @@
     if (!persistStageDemo()) setStatus('가상 자료를 이 브라우저에 보존하지 못했습니다. 현재 화면에서만 표시합니다.', true);
     demoMode = false;
     stageDemoMode = true;
-    try { localStorage.setItem(MODE_KEY, 'stage-demo'); } catch (_) {}
+    if(!window.MekongCloud?.enabled)try { localStorage.setItem(MODE_KEY, 'stage-demo'); } catch (_) {}
     setStatus('18개 RMU × ' + weekStarts.length + '주 가상 공급량을 만들었습니다. ' + describeStageScenario(stageScenarioInfo));
     renderSummary(weekStarts);
     updateDemoControls();
@@ -464,7 +467,7 @@
   function useActualSupply() {
     demoMode = false;
     stageDemoMode = false;
-    try { localStorage.setItem(MODE_KEY, 'actual'); } catch (_) {}
+    if(!window.MekongCloud?.enabled)try { localStorage.setItem(MODE_KEY, 'actual'); } catch (_) {}
     setStatus('실제 공급기록으로 전환했습니다. 시연 자료는 별도로 보존되어 다시 불러올 수 있습니다.');
     updateDemoControls();
     onChange();

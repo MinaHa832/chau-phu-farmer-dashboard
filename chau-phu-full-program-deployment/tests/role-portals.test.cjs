@@ -51,3 +51,21 @@ test('English covers every existing benefit and monitoring translation key',()=>
  const monitor=vm.runInNewContext('('+frame.slice(frame.indexOf('    const I18N = ')+17,frame.indexOf('    I18N.en =')).trim().replace(/;$/,'')+')');
  assert.deepEqual(Object.keys(monitor.ko).filter(k=>!(k in c.window.MekongI18n.monitorEnglish)),[]);
 });
+test('shared supply drafts and scenarios preserve existing device records',()=>{
+ const key='mekong-suksuk.weekly-supply.v1';
+ const original={weekStart:'2026-05-01',rmu:'RMU-01',method:'rmu_meter',availableM3:111};
+ const saved=new Map([[key,JSON.stringify([original])],[key+'.demo',JSON.stringify([{...original,availableM3:222}])],[key+'.mode','actual']]);
+ const before=JSON.stringify([...saved]);const listeners={};
+ const control=value=>({value,addEventListener(type,handler){this[type]=handler;},classList:{toggle(){}}});
+ const nodes={supplyWeek:control('2026-05-01'),supplyRmu:control('RMU-01'),supplyMethod:control('rmu_meter'),supplyDirectM3:control('500'),supplyEvidence:control('meter record'),saveWeeklySupply:control(''),supplyFormStatus:control('')};
+ const cloud={enabled:true,t:key=>key};
+ const c={window:{MekongCloud:cloud},document:{getElementById:id=>nodes[id]||null,querySelectorAll:()=>[]},localStorage:{getItem:key=>saved.get(key)||null,setItem:(key,value)=>saved.set(key,value)}};
+ vm.runInNewContext(read('weekly-supply.js'),c);
+ const supply=c.window.MekongWeeklySupply;
+ supply.replaceShared([{...original,availableM3:300}],'actual');supply.bind(()=>{});nodes.saveWeeklySupply.click();
+ assert.equal(supply.get('2026-05-01','RMU-01').availableM3,500);
+ assert.equal(nodes.supplyFormStatus.textContent,'draftSupply');assert.equal(JSON.stringify([...saved]),before);
+ supply.loadDemo(['2026-05-01']);assert.equal(supply.records().length,18);supply.useActualSupply();
+ assert.equal(supply.get('2026-05-01','RMU-01').availableM3,500);assert.equal(JSON.stringify([...saved]),before);
+ cloud.enabled=false;supply.loadDemo(['2026-05-01']);assert.equal(saved.get(key+'.mode'),'demo');assert.equal(JSON.parse(saved.get(key+'.demo')).length,18);assert.equal(saved.get(key),JSON.stringify([original]));
+});
