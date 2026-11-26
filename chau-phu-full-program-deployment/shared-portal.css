@@ -9,6 +9,9 @@ body[data-cloud-gate="true"] #app,body[data-cloud-gate="true"] #portalEntry {dis
 .cloud-languages [aria-pressed="true"] {font-weight:800;text-decoration:none}
 .cloud-auth-card label,#cloudPasswordReset label {display:grid;gap:8px;margin:18px 0;font-weight:700}
 .cloud-auth-card input,#cloudPasswordReset input {padding:13px;border:1px solid #b9cdbf;border-radius:8px;font:inherit;min-width:0;width:100%;box-sizing:border-box}
+.cloud-auth-card select {padding:13px;border:1px solid #b9cdbf;border-radius:8px;font:inherit;width:100%;background:#fff;color:inherit}
+.cloud-auth-card .cloud-demo-notice {padding:12px 15px;background:#fff5dd;border:1px solid #ead8a6;border-radius:10px;font-size:13px}
+.cloud-demo-identity {overflow-wrap:anywhere;font-size:14px}
 .cloud-auth-card .btn {margin:8px 10px 0 0}.cloud-auth-card form .btn {width:100%}
 .cloud-message {font-size:14px;line-height:1.6;min-height:1.5em;overflow-wrap:anywhere}
 .cloud-status {display:flex;align-items:center;gap:15px;flex-wrap:wrap;margin:0 0 20px;padding:12px 18px;background:#e7f3e9;border:1px solid #cfe0d2;border-radius:12px;font-size:13px}

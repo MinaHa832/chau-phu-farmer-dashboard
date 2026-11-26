@@ -1,12 +1,15 @@
 'use strict';
 const auth=require('../lib/portal-auth');
+const demo=require('../lib/demo-session');
 module.exports=async(req,res)=>{
   auth.privateHeaders(res);
   const action=new URL(req.url,'https://portal.invalid').searchParams.get('action')||'status';
   try {
-    if(req.method==='GET' && action==='status')return res.status(200).json({enabled:auth.enabled()});
+    if(req.method==='GET' && action==='status')return res.status(200).json({enabled:auth.enabled(),demoAvailable:auth.enabled(),demoSession:!!demo.token(req)});
     if(req.method!=='POST')throw new auth.PortalError('METHOD_NOT_ALLOWED',405);
     auth.checkMutation(req);const input=auth.body(req);auth.config();
+    if(action==='demo')return res.status(200).json(await demo.enter(req,res,input));
+    if(action==='demo-logout')return res.status(200).json(await demo.leave(req,res));
     if(action==='logout') {
       // Clear the browser even if the provider is temporarily unavailable.
       const token=auth.cookies(req)[auth.cookieNames(req).access];
@@ -26,9 +29,14 @@ module.exports=async(req,res)=>{
       await auth.upstream('/auth/v1/user',{method:'PUT',token:access,data:{password:input.password}});
       return res.status(200).json({ok:true});
     }
-    if(!['login','signup','recover'].includes(action))throw new auth.PortalError('INVALID_ACTION');
+    if(!['login','signup','recover','resend'].includes(action))throw new auth.PortalError('INVALID_ACTION');
     const email=String(input.email||'').trim();
     if(email.length>254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))throw new auth.PortalError('INVALID_INPUT');
+    if(action==='resend') {
+      // Only resend an existing signup confirmation. Never create or approve users.
+      await auth.upstream('/auth/v1/resend?redirect_to='+encodeURIComponent(req.headers.origin+'/'),{method:'POST',data:{type:'signup',email}});
+      return res.status(200).json({ok:true,checkEmail:true});
+    }
     if(action==='recover') {
       await auth.upstream('/auth/v1/recover?redirect_to='+encodeURIComponent(req.headers.origin+'/'),{method:'POST',data:{email}});
       return res.status(200).json({ok:true,checkEmail:true});

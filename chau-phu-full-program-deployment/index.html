@@ -1021,20 +1021,23 @@
   }
   function clearFarms(){if(window.MekongCloud?.enabled){toast(window.MekongCloud.t('noReplace'));return;}if(!farms.length){toast('삭제할 농가가 없습니다.');return}if(!confirm(`등록된 ${farms.length}개 농가를 모두 삭제할까요? 복원하려면 백업 JSON이 필요합니다.`))return;farms=[];persistFarms();clearForm();refresh();toast('전체 농가 데이터가 삭제되었습니다.');}
   function loadAllocationDemo(skipConfirmation=false){
+    const shared=window.MekongCloud?.enabled;
+    if(shared&&window.MekongCloud.profile?.role!=='manager')return;
     const existing=farms.filter(f=>f.origin==='DEMO_ASSUMPTION'),real=farms.filter(f=>f.origin!=='DEMO_ASSUMPTION');
-    if(!skipConfirmation&&existing.length&&!confirm(`기존 시범 농가 ${existing.length}개를 새 54개 시연 시나리오로 교체할까요? 실제 등록 농가 ${real.length}개와 실제 공급기록은 보존됩니다.`))return;
+    if(!shared&&!skipConfirmation&&existing.length&&!confirm(`기존 시범 농가 ${existing.length}개를 새 54개 시연 시나리오로 교체할까요? 실제 등록 농가 ${real.length}개와 실제 공급기록은 보존됩니다.`))return;
     calendarStart='2026-05-01';$('calendarStart').value=calendarStart;calendarZone='all';$('calendarZone').value='all';$('calendarView').value='balance';
     climateMode='csv';$('climateMode').value='csv';WEEK_CACHE.clear();apiRequestId++;if(apiAbort)apiAbort.abort();
-    if(!seedDemoFarms(false))return;
+    if(!window.MekongCloud?.enabled&&!seedDemoFarms(false))return;
     const weekStarts=Array.from({length:WEEK_COUNT},(_,week)=>weekStart(week));
     window.MekongWeeklySupply?.loadDemo(weekStarts);
     navigate('calendar');renderCalendar();
     toast('시연 농가의 강우 차감 계획량을 요청량으로 보고 18개 RMU 배분을 계산했습니다. 공급량은 실측이 아닌 시연 가정입니다.');
   }
   async function loadStageAllocationDemo(){
+    if(window.MekongCloud?.enabled&&window.MekongCloud.profile?.role!=='manager')return;
     const existing=farms.filter(f=>f.origin==='DEMO_ASSUMPTION'),real=farms.filter(f=>f.origin!=='DEMO_ASSUMPTION');
-    if(existing.length&&!confirm(`기존 시범 농가 ${existing.length}개를 현재 캘린더 기간 기준 새 시나리오로 교체할까요? 실제 등록 농가 ${real.length}개와 실제 공급기록은 보존됩니다.`))return;
-    if(!seedDemoFarms(false))return;
+    if(!window.MekongCloud?.enabled&&existing.length&&!confirm(`기존 시범 농가 ${existing.length}개를 현재 캘린더 기간 기준 새 시나리오로 교체할까요? 실제 등록 농가 ${real.length}개와 실제 공급기록은 보존됩니다.`))return;
+    if(!window.MekongCloud?.enabled&&!seedDemoFarms(false))return;
     calendarZone='all';$('calendarZone').value='all';$('calendarView').value='balance';
     const weekStarts=Array.from({length:WEEK_COUNT},(_,week)=>weekStart(week));
     const button=$('loadStageSupplyDemo'),originalLabel=button.textContent;

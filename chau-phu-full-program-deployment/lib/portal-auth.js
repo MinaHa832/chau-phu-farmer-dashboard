@@ -61,8 +61,12 @@ async function upstream(path,{method='GET',data,token,request}={}) {
     const pg=result.code;
     const message=result.message||result.msg||result.error_description||'';
     const known=['AUTH_REQUIRED','APPROVAL_REQUIRED','FORBIDDEN','VERSION_CONFLICT','LAST_MANAGER','PILOT_FARMS_PROTECTED','DELIVERY_INVALID','TERMINAL_REQUEST','PLAN_CHANGED','VERIFY_BLOCKED','NOT_FOUND'];
-    const code=known.find(x=>message===x) || (pg==='23505'?'DUPLICATE_REQUEST':pg==='40001'?'VERSION_CONFLICT':pg==='42501'?'FORBIDDEN':response.status===429?'RATE_LIMITED':path.startsWith('/auth/')?'AUTH_FAILED':'INVALID_INPUT');
-    const status=pg==='40001'||pg==='23505'||code==='PLAN_CHANGED'?409:pg==='42501'?403:response.status===429?429:response.status>=500?503:response.status===401?401:400;
+    const authCodes={email_not_confirmed:'EMAIL_UNCONFIRMED',email_address_not_authorized:'MAIL_UNAVAILABLE',over_email_send_rate_limit:'EMAIL_RATE_LIMITED',over_request_rate_limit:'RATE_LIMITED',otp_expired:'CONFIRM_LINK_INVALID'};
+    // Return only allowlisted categories, never raw SMTP/provider messages.
+    const mailAction=/^\/auth\/v1\/(signup|recover|resend)(\?|$)/.test(path);
+    const providerCode=path.startsWith('/auth/')?authCodes[pg]:null;
+    const code=providerCode || known.find(x=>message===x) || (pg==='23505'?'DUPLICATE_REQUEST':pg==='40001'?'VERSION_CONFLICT':pg==='42501'?'FORBIDDEN':response.status===429?'RATE_LIMITED':response.status>=500?(mailAction?'MAIL_UNAVAILABLE':'SERVICE_UNAVAILABLE'):path.startsWith('/auth/')?'AUTH_FAILED':'INVALID_INPUT');
+    const status=code==='MAIL_UNAVAILABLE'||code==='SERVICE_UNAVAILABLE'?503:code==='EMAIL_RATE_LIMITED'||code==='RATE_LIMITED'?429:code==='EMAIL_UNCONFIRMED'?401:pg==='40001'||pg==='23505'||code==='PLAN_CHANGED'?409:pg==='42501'?403:response.status>=500?503:response.status===401?401:400;
     throw new PortalError(code,status);
   }
   return result;
