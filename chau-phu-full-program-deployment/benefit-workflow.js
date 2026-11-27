@@ -42,8 +42,8 @@
   };
 
   dict.en = window.MekongI18n?.benefitEnglish || {};
-  dict.ko.operatorReportPrivacy='신고 유형과 처리 상태만 표시합니다. 신고 원문과 식별 정보는 현장 관리자가 확인합니다.';
-  dict.vi.operatorReportPrivacy='Chỉ hiển thị loại và trạng thái. Quản lý hiện trường xem báo cáo gốc và thông tin định danh.';
+  dict.ko.operatorReportPrivacy='신고 유형과 처리 상태만 표시합니다. 신고 원문과 식별 정보는 제3자 현장관리자가 확인합니다.';
+  dict.vi.operatorReportPrivacy='Chỉ hiển thị loại và trạng thái. Giám sát hiện trường độc lập xem báo cáo gốc và thông tin định danh.';
   Object.keys(dict.ko).forEach(key => window.MekongI18n?.add(dict.ko[key],dict.vi[key]||dict.ko[key],dict.en[key]||dict.ko[key]));
   let language = window.MekongI18n?.language || 'ko';
   if(!window.MekongI18n) try { language = localStorage.getItem('mekong-suksuk.benefit-language') || 'ko'; } catch (_) {}
@@ -445,7 +445,7 @@
     list.innerHTML = [...incidents].sort((a, b) => b.createdAt.localeCompare(a.createdAt)).map((incident) => {
       const status = incident.status === 'closed' ? t('closed') : incident.status === 'investigating' ? t('investigating') : t('open');
       const label = t(incident.typeKey || 'issueOther');
-      return `<article class="benefit-record-card"><div class="benefit-record-top"><div><strong>${esc(label)}</strong><small>${esc(incident.rmu)} · ${esc(formatDate(incident.createdAt.slice(0, 10)))}</small></div><span class="benefit-state">${esc(status)}</span></div><p>${esc(window.MekongPortal?.role === 'operator' ? t('operatorReportPrivacy') : incident.details)}</p><p class="benefit-record-meta">${esc(t('reviewNote'))}: ${esc(incident.reviewNote || '—')}</p><div class="benefit-actions">${window.MekongPortal?.role === 'operator' ? '' : `${incident.status === 'open' ? `<button class="btn btn-secondary btn-small" data-incident-action="investigating" data-id="${esc(incident.id)}">${esc(t('investigate'))}</button>` : ''}${incident.status !== 'closed' ? `<button class="btn btn-secondary btn-small" data-incident-action="closed" data-id="${esc(incident.id)}">${esc(t('closeIncident'))}</button>` : ''}`}</div></article>`;
+      return `<article class="benefit-record-card"><div class="benefit-record-top"><div><strong>${esc(label)}</strong><small>${esc(incident.rmu)} · ${esc(formatDate(incident.createdAt.slice(0, 10)))}</small></div><span class="benefit-state">${esc(status)}</span></div><p>${esc(!['manager','farmer'].includes(window.MekongPortal?.role) ? t('operatorReportPrivacy') : incident.details)}</p><p class="benefit-record-meta">${esc(t('reviewNote'))}: ${esc(incident.reviewNote || '—')}</p><div class="benefit-actions">${window.MekongPortal?.role !== 'manager' ? '' : `${incident.status === 'open' ? `<button class="btn btn-secondary btn-small" data-incident-action="investigating" data-id="${esc(incident.id)}">${esc(t('investigate'))}</button>` : ''}${incident.status !== 'closed' ? `<button class="btn btn-secondary btn-small" data-incident-action="closed" data-id="${esc(incident.id)}">${esc(t('closeIncident'))}</button>` : ''}`}</div></article>`;
     }).join('');
   }
   function renderReviewer() {

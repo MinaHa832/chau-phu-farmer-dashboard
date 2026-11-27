@@ -70,7 +70,7 @@ async function fetchStage(){
  const payload=await request('/api/mrc');
  observations=(payload.stations||[]).filter(s=>s.waterLevel_m!==null&&s.waterLevel_m!==undefined&&String(s.waterLevel_m).trim()!==''&&Number.isFinite(Number(s.waterLevel_m))).map(s=>({stationId:String(s.stationId),stageM:Number(s.waterLevel_m),observedAt:s.lastMeasurement_local,source:s.source||'MRC / Google Sheets mirror'}));
  observation=observations.find(s=>s.stationId===(model()?.stationId||'039801'))||null;renderModel();
- if(!observation)status(t('noReading'),true);
+ status(t(observation?'connectionOk':'noReading'),!observation);
 }
 async function prepareModels(){
  if(!observation||observation.simulated){try{await fetchStage();}catch{}}
@@ -110,7 +110,7 @@ async function refreshSources(){
  if(data.weather?.current||data.current)detail=`<p>${t('observedAt')}: ${e((data.weather?.current||data.current).time||'—')}</p>`;
  return {kind,path,ok:true,at:new Date().toISOString(),detail};
  }));
- sourceResults=responses.map((x,i)=>x.status==='fulfilled'?x.value:{kind:paths[i][0],path:paths[i][1],ok:false,at:new Date().toISOString()});renderSources();
+ sourceResults=responses.map((x,i)=>x.status==='fulfilled'?x.value:{kind:paths[i][0],path:paths[i][1],ok:false,at:new Date().toISOString()});renderSources();status(t(sourceResults.every(x=>x.ok)?'connectionOk':'connectionError'),sourceResults.some(x=>!x.ok));
 }
 function renderRequestFilters(){
  let n=$('workspaceRequestFilter');if(!n){n=document.createElement('div');n.id='workspaceRequestFilter';n.className='card';$('portalRequestsContent').prepend(n);}
