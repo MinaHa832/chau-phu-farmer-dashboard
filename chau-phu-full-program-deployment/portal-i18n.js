@@ -306,6 +306,7 @@ Châu Phú · An Giang 시범지역 참고 지도와 사진 기준 18개 RMU|B�
     const trimmed=value.trim();let found=exact[trimmed];
     if(found)return value.replace(trimmed,found[language]);
     let text=displayName(value);
+    text=text.replace(/(\d+)개 구역에 농가 등록/g,(_,n)=>language==='vi'?`Nông hộ tại ${n} khu`:`Farms in ${n} areas`);
     if(!translationPattern){
       const escape=value=>value.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
       const keys=Object.keys(exact).sort((a,b)=>b.length-a.length);
@@ -356,5 +357,5 @@ Châu Phú · An Giang 시범지역 참고 지도와 사진 기준 18개 RMU|B�
     });
     translate();observer.observe(document.body,{subtree:true,childList:true,characterData:true});syncFrame();
   }
-  window.MekongI18n={t,translate,translateText,displayName,setLanguage,start,syncFrame,add,get language(){return language;}};
+  window.MekongI18n={register(rows){for(const [key,ko,vi,en] of rows){messages[key]={ko,vi,en};add(ko,vi,en);}},t,translate,translateText,displayName,setLanguage,start,syncFrame,add,get language(){return language;}};
 })();

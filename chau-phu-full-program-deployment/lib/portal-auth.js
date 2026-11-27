@@ -60,7 +60,7 @@ async function upstream(path,{method='GET',data,token,request}={}) {
   if(!response.ok) {
     const pg=result.code;
     const message=result.message||result.msg||result.error_description||'';
-    const known=['AUTH_REQUIRED','APPROVAL_REQUIRED','FORBIDDEN','VERSION_CONFLICT','LAST_MANAGER','PILOT_FARMS_PROTECTED','DELIVERY_INVALID','TERMINAL_REQUEST','PLAN_CHANGED','VERIFY_BLOCKED','NOT_FOUND'];
+    const known=['AUTH_REQUIRED','APPROVAL_REQUIRED','FORBIDDEN','VERSION_CONFLICT','LAST_MANAGER','PILOT_FARMS_PROTECTED','DELIVERY_INVALID','TERMINAL_REQUEST','PLAN_CHANGED','VERIFY_BLOCKED','NOT_FOUND','FLOW_SHARES','FLOW_SOURCE_MISMATCH'];
     const authCodes={email_not_confirmed:'EMAIL_UNCONFIRMED',email_address_not_authorized:'MAIL_UNAVAILABLE',over_email_send_rate_limit:'EMAIL_RATE_LIMITED',over_request_rate_limit:'RATE_LIMITED',otp_expired:'CONFIRM_LINK_INVALID'};
     // Return only allowlisted categories, never raw SMTP/provider messages.
     const mailAction=/^\/auth\/v1\/(signup|recover|resend)(\?|$)/.test(path);

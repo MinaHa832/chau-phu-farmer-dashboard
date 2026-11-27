@@ -32,6 +32,7 @@ async function getJson(url) {
   const response = await fetch(url, {
     headers: { accept: "application/json", "cache-control": "no-cache", "user-agent": "ChauPhuFarmerDashboard/1.0" },
     redirect: "follow",
+    signal: AbortSignal.timeout(15000),
   });
   const body = await response.text();
   if (!response.ok) throw new Error("Weather provider returned " + response.status);

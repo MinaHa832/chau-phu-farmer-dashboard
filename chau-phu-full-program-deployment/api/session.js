@@ -44,7 +44,7 @@ module.exports=async(req,res)=>{
     if(typeof input.password!=='string' || input.password.length< (action==='signup'?12:1) || input.password.length>128)throw new auth.PortalError('PASSWORD_LENGTH');
     if(action==='signup') {
       // requested_role is a request for approval, never an authorization claim.
-      await auth.upstream('/auth/v1/signup?redirect_to='+encodeURIComponent(req.headers.origin+'/'),{method:'POST',data:{email,password:input.password,data:{display_name:String(input.displayName||'').slice(0,100),requested_role:['farmer','operator','manager'].includes(input.requestedRole)?input.requestedRole:'farmer'}}});
+      await auth.upstream('/auth/v1/signup?redirect_to='+encodeURIComponent(req.headers.origin+'/'),{method:'POST',data:{email,password:input.password,data:{display_name:String(input.displayName||'').slice(0,100),requested_role:['farmer','operator','manager','cooperative','platform'].includes(input.requestedRole)?input.requestedRole:'farmer'}}});
       return res.status(200).json({ok:true,checkEmail:true});
     }
     const result=await auth.upstream('/auth/v1/token?grant_type=password',{method:'POST',data:{email,password:input.password}});

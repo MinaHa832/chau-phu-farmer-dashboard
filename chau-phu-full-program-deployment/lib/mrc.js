@@ -49,6 +49,7 @@ async function readSheet(url) {
   const response = await fetch(url, {
     headers: { accept: "text/csv,text/plain;q=0.9,*/*;q=0.8", "cache-control": "no-cache" },
     redirect: "follow",
+    signal: AbortSignal.timeout(15000),
   });
   if (!response.ok) throw new Error("Google Sheets returned " + response.status);
   return parseCsv(await response.text());

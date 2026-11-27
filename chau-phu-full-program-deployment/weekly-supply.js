@@ -7,6 +7,7 @@
   const MODE_KEY = STORE_KEY + '.mode';
   const RMUS = Array.from({ length: 18 }, (_, index) => 'RMU-' + String(index + 1).padStart(2, '0'));
   const METHODS = {
+    calibrated_stage: { label: '현장 보정 수위·유량 곡선', grade: '수위 보정 계획 추정' },
     rmu_meter: { label: 'RMU 인입부 유량계 합계', grade: '현장 계량 입력' },
     canal_meter: { label: '수로 유량 계측 후 주간 합산', grade: '현장 계량 입력' },
     canal_velocity: { label: '수로 단면적 × 평균 유속 × 통수시간', grade: '현장 계측 계산' },
@@ -59,7 +60,7 @@
     catch (_) { return false; }
   }
   function get(weekStart, rmu) { return activeRecords().find((record) => record.weekStart === weekStart && record.rmu === rmu) || null; }
-  function directMethod(method) { return ['rmu_meter', 'canal_meter', 'agency_plan', 'history_estimate'].includes(method); }
+  function directMethod(method) { return ['calibrated_stage','rmu_meter', 'canal_meter', 'agency_plan', 'history_estimate'].includes(method); }
   function calculatedFlow() {
     const method = $('supplyMethod')?.value || 'rmu_meter';
     if (method === 'canal_velocity') {
@@ -228,6 +229,7 @@
     updateDemoControls();
   }
   function save() {
+    if($('supplyMethod')?.value==='calibrated_stage'){window.MekongPortal?.navigate('watermodel');return;}
     if (demoMode || stageDemoMode) return setStatus('가상 시나리오 중에는 실제 공급자료를 수정할 수 없습니다. 실제 공급기록으로 전환한 뒤 저장해 주세요.', true);
     const weekStart = $('supplyWeek')?.value;
     const rmu = $('supplyRmu')?.value;
@@ -429,40 +431,21 @@
     if (info.reason) indexNote += ' · ' + info.reason;
     return sourceNote + ' · ' + station + ' ' + level + time + received + ' · ' + indexNote + ' · 수위 지표는 현재 16주 시나리오에 고정 적용되며 미래 수위 예측이 아닙니다.';
   }
-  async function loadStageScenario(weekStarts) {
-    if (!Array.isArray(weekStarts) || !weekStarts.length) {
-      setStatus('먼저 캘린더에서 표시할 기간을 확인해 주세요.', true);
-      return 0;
-    }
-    setStatus('연동된 MRC 수위·최근 관측 범위를 불러오고 있습니다.');
-    const info = await readStageContext();
-    const generated = [];
-    weekStarts.forEach((weekStart, weekIndex) => RMUS.forEach((rmu, rmuIndex) => {
-      const baseFlowM3h = 28 + ((rmuIndex * 11 + weekIndex * 7) % 27);
-      const runtimeHours = 12 + ((rmuIndex * 5 + weekIndex * 3) % 13);
-      const lossPct = 15;
-      const flowM3h = baseFlowM3h * info.factor;
-      const availableM3 = flowM3h * runtimeHours * (1 - lossPct / 100);
-      generated.push({
-        schema: 'mekong-suksuk-weekly-supply/v1', weekStart, rmu, method: 'pump_runtime', availableM3,
-        flowM3h, runtimeHours, lossPct, demoScenario: true, stageScenario: true,
-        stageIndex: info.stageIndex, stageFactor: info.factor,
-        evidence: '수위 지표 가상 · ' + (info.status === 'live' ? 'MRC 연동' : (info.status === 'snapshot' ? '내장 스냅샷' : '중립값')) + ' · ' + (info.stationName || '관측 자료 없음') + ' ' + (Number.isFinite(info.levelM) ? fmt(info.levelM) + ' m' : '') + ' · 가상 배율 ' + info.factor.toFixed(2) + ' · 기준 유량·가동시간·손실률 가정 · RMU 실측 아님',
-        recordedAt: new Date().toISOString()
-      });
-    }));
-    stageScenarioInfo = { ...info, startDate: weekStarts[0] };
-    if (generated[0]) generated[0].scenarioInfo = stageScenarioInfo;
-    stageDemoRecords = generated;
-    if (!persistStageDemo()) setStatus('가상 자료를 이 브라우저에 보존하지 못했습니다. 현재 화면에서만 표시합니다.', true);
-    demoMode = false;
-    stageDemoMode = true;
-    if(!window.MekongCloud?.enabled)try { localStorage.setItem(MODE_KEY, 'stage-demo'); } catch (_) {}
-    setStatus('18개 RMU × ' + weekStarts.length + '주 가상 공급량을 만들었습니다. ' + describeStageScenario(stageScenarioInfo));
-    renderSummary(weekStarts);
-    updateDemoControls();
-    onChange();
-    return generated.length;
+  async function loadStageScenario() {
+    // The old arbitrary 0.75–1.25 multiplier is retired. Open the calibrated
+    // model workspace; synthetic measurements remain explicitly labelled.
+    window.MekongPortal?.navigate('watermodel');
+    return 0;
+  }
+  function applyFlowRecords(incoming,scenario) {
+    const list=scenario?stageDemoRecords:records;
+    const merged=new Map(list.map(x=>[key(x.weekStart,x.rmu),x]));
+    for(const x of incoming)merged.set(key(x.weekStart,x.rmu),x);
+    const next=[...merged.values()].sort((a,b)=>a.weekStart.localeCompare(b.weekStart)||a.rmu.localeCompare(b.rmu));
+    if(scenario){stageDemoRecords=next;persistStageDemo();}else{records=next;persistActual();}
+    stageDemoMode=!!scenario;demoMode=false;stageScenarioInfo=null;
+    if(!window.MekongCloud?.enabled)try{localStorage.setItem(MODE_KEY,scenario?'stage-demo':'actual');}catch{}
+    updateDemoControls();onChange();
   }
   function useActualSupply() {
     demoMode = false;
@@ -486,5 +469,5 @@
     $('supplySummaryMode')?.addEventListener('change', () => renderSummary([...document.querySelectorAll('#supplyWeek option')].map((option) => option.value)));
     updateDemoControls();
   }
-  window.MekongWeeklySupply = { sharedMode:()=>stageDemoMode?'stage-demo':demoMode?'demo':'actual',replaceShared(items,mode){records=[];demoRecords=[];stageDemoRecords=[];demoMode=mode==='demo';stageDemoMode=mode==='stage-demo';if(stageDemoMode)stageDemoRecords=items;else if(demoMode)demoRecords=items;else records=items;}, records: () => activeRecords().map((record) => ({ ...record })), get, render, bind, loadDemo, loadStageScenario, useActualSupply, stageStartDate: () => stageScenarioInfo?.startDate || stageDemoRecords[0]?.weekStart || null, isDemoMode: () => demoMode || stageDemoMode, isStageDemoMode: () => stageDemoMode };
+  window.MekongWeeklySupply = { sharedMode:()=>stageDemoMode?'stage-demo':demoMode?'demo':'actual',replaceShared(items,mode){records=[];demoRecords=[];stageDemoRecords=[];demoMode=mode==='demo';stageDemoMode=mode==='stage-demo';if(stageDemoMode)stageDemoRecords=items;else if(demoMode)demoRecords=items;else records=items;}, applyFlowRecords, records: () => activeRecords().map((record) => ({ ...record })), get, render, bind, loadDemo, loadStageScenario, useActualSupply, stageStartDate: () => stageScenarioInfo?.startDate || stageDemoRecords[0]?.weekStart || null, isDemoMode: () => demoMode || stageDemoMode, isStageDemoMode: () => stageDemoMode };
 })();
