@@ -86,7 +86,7 @@
     // The shared data is kept in memory. Device-local demo stores remain untouched.
     window.MekongBenefit.replaceSharedState(benefitState(next),false);
     if(planningChanged)window.MekongWeeklySupply.replaceShared(next.planning?.supplyRecords||[],next.planning?.supplyMode||'actual');
-    if(farmsChanged||planningChanged)window.__MEKONG_TEST__.replaceSharedFarms(next.farms||[],planningChanged?(next.planning||{calendarStart:'2026-05-01',climateMode:'csv'}):{});
+    if(farmsChanged||planningChanged)window.__MEKONG_TEST__.replaceSharedFarms(next.farms||[],planningChanged?(next.planning||{calendarStart:'2026-05-01',climateMode:'csv'}):{},identityChanged&&window.MekongPortal.role!==next.profile.role);
     document.body.dataset.cloudGate='false';$('cloudGate').hidden=true;
     window.MekongPortal.acceptSession(next.profile);
     window.MekongBenefit.render();renderAdmin();statusBar();window.MekongWorkspace?.refresh();

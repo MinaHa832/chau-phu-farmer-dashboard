@@ -194,7 +194,7 @@
     if(window.MekongCloud?.enabled){if(!window.MekongCloud.approved){window.MekongCloud.showGate();return;}nextRole=window.MekongCloud.profile.role;}
     if(!MENUS[nextRole])return;
     role=nextRole;if(window.MekongCloud?.enabled){farmId=String(window.MekongCloud.profile.farmId||'');rmu=window.MekongCloud.profile.rmu||rmu;}ensureSelection();
-    if(globalRole()) for(const id of ['mapFarmFilter','calendarZone','benefitOpsRmu']) {const select=$(id);select.disabled=false;select.value='all';select.dispatchEvent(new Event('change',{bubbles:true}));}
+    if(globalRole()){window.__MEKONG_TEST__.resetScopeFilters();const select=$('benefitOpsRmu');select.disabled=false;select.value='all';}
     save('mekong-suksuk.portal-role.v2',role);
     document.body.dataset.portalRole=role;
     $('portalEntry').hidden=true;
