@@ -40,7 +40,7 @@
   let workspace='live', entryMode='demo', demoAvailable=false, demoRmu='RMU-01', demoFarm='B', authEmail='';
   let mutating=false, fetching=false, generation=0, lastSync='', status='syncing', gateMessage='', pendingSnapshot=null;
   function profile(){return snapshot?.profile;}
-  function approved(){return !!profile()?.approved && ['farmer','operator','manager'].includes(profile()?.role);}
+  function approved(){return !!profile()?.approved && ['farmer','operator','manager','cooperative','platform'].includes(profile()?.role);}
   async function api(url,data) {
     let response;
     try {response=await fetch(url,{method:data===undefined?'GET':'POST',credentials:'same-origin',cache:'no-store',headers:data===undefined?{}:{'Content-Type':'application/json','X-Mekong-Request':'1'},body:data===undefined?undefined:JSON.stringify(data)});}catch {throw Object.assign(new Error('SERVICE_UNAVAILABLE'),{code:'SERVICE_UNAVAILABLE'});}
@@ -52,7 +52,7 @@
   const sharedUrl=()=>'/api/shared'+(workspace==='demo'?'?workspace=demo':'');
   function announceAuth(){if(typeof BroadcastChannel!=='undefined'){const channel=new BroadcastChannel('mekong-auth');channel.postMessage('changed');channel.close();}}
   function demoControls() {
-    return `<form id="cloudDemoForm">${editingRole!=='manager'?`<label>${t('demoRmu')}<select id="cloudDemoRmu">${Array.from({length:18},(_,i)=>`RMU-${String(i+1).padStart(2,'0')}`).map(r=>`<option${r===demoRmu?' selected':''}>${r}</option>`).join('')}</select></label>`:''}${editingRole==='farmer'?`<label>${t('demoFarm')}<select id="cloudDemoFarm">${['A','B','C'].map(x=>`<option${x===demoFarm?' selected':''}>${x}</option>`).join('')}</select></label>`:''}<p class="cloud-demo-identity">${t('demoAccount')}: <strong>demo-${editingRole}${editingRole==='manager'?'':'-'+demoRmu.toLowerCase()}${editingRole==='farmer'?'-'+demoFarm.toLowerCase():''}</strong></p><button class="btn btn-primary" type="submit">${t('demoEnter')}</button></form><p class="cloud-demo-notice">${t('demoBanner')}</p><div class="cloud-auth-links"><button type="button" data-cloud-entry="live">${t('liveEntry')}</button></div>`;
+    return `<form id="cloudDemoForm">${!['manager','platform'].includes(editingRole)?`<label>${t('demoRmu')}<select id="cloudDemoRmu">${Array.from({length:18},(_,i)=>`RMU-${String(i+1).padStart(2,'0')}`).map(r=>`<option${r===demoRmu?' selected':''}>${r}</option>`).join('')}</select></label>`:''}${editingRole==='farmer'?`<label>${t('demoFarm')}<select id="cloudDemoFarm">${['A','B','C'].map(x=>`<option${x===demoFarm?' selected':''}>${x}</option>`).join('')}</select></label>`:''}<p class="cloud-demo-identity">${t('demoAccount')}: <strong>demo-${editingRole}${['manager','platform'].includes(editingRole)?'':'-'+demoRmu.toLowerCase()}${editingRole==='farmer'?'-'+demoFarm.toLowerCase():''}</strong></p><button class="btn btn-primary" type="submit">${t('demoEnter')}</button></form><p class="cloud-demo-notice">${t('demoBanner')}</p><div class="cloud-auth-links"><button type="button" data-cloud-entry="live">${t('liveEntry')}</button></div>`;
   }
   function showGate() {
     if(!active)return;
@@ -60,7 +60,7 @@
     $('cloudGate').hidden=false;
     const p=profile(), demo=demoAvailable&&entryMode==='demo'&&!p;
     const actionWord=x=>x==='signup'?'signUp':x==='recover'?'recover':x==='resend'?'resend':'signIn';
-    $('cloudGate').innerHTML=`<div class="cloud-auth-card"><div class="cloud-wordmark">MEKONG WATER LAB</div><div class="cloud-languages">${['ko','vi','en'].map(x=>`<button type="button" data-cloud-language="${x}" aria-pressed="${language()===x}">${{ko:'한국어',vi:'Tiếng Việt',en:'English'}[x]}</button>`).join('')}</div><h1>${t(p?'approval':demo?'demoTitle':'loginTitle')}</h1><p>${t(p?'approvalHelp':demo?'demoHelp':'loginHelp')}</p>${!p?`<div class="cloud-role-options">${['farmer','manager','operator'].map(r=>`<button type="button" data-cloud-request-role="${r}" aria-pressed="${editingRole===r}">${window.MekongI18n.t(r)}</button>`).join('')}</div>`:''}${p?`<p><strong>${esc(p.email)}</strong></p><button type="button" class="btn btn-primary" data-cloud-refresh>${t('refresh')}</button><button type="button" class="btn btn-secondary" data-cloud-logout>${t('signOut')}</button>${demoAvailable?`<button type="button" class="btn btn-secondary" data-cloud-entry="demo">${t('demoEntry')}</button>`:''}`:demo?demoControls():
+    $('cloudGate').innerHTML=`<div class="cloud-auth-card"><div class="cloud-wordmark">MEKONG WATER LAB</div><div class="cloud-languages">${['ko','vi','en'].map(x=>`<button type="button" data-cloud-language="${x}" aria-pressed="${language()===x}">${{ko:'한국어',vi:'Tiếng Việt',en:'English'}[x]}</button>`).join('')}</div><h1>${t(p?'approval':demo?'demoTitle':'loginTitle')}</h1><p>${t(p?'approvalHelp':demo?'demoHelp':'loginHelp')}</p>${!p?`<div class="cloud-role-options">${['farmer','cooperative','operator','platform','manager'].map(r=>`<button type="button" data-cloud-request-role="${r}" aria-pressed="${editingRole===r}">${window.MekongI18n.t(r)}</button>`).join('')}</div>`:''}${p?`<p><strong>${esc(p.email)}</strong></p><button type="button" class="btn btn-primary" data-cloud-refresh>${t('refresh')}</button><button type="button" class="btn btn-secondary" data-cloud-logout>${t('signOut')}</button>${demoAvailable?`<button type="button" class="btn btn-secondary" data-cloud-entry="demo">${t('demoEntry')}</button>`:''}`:demo?demoControls():
       `<form id="cloudAuthForm"><label>${t('email')}<input name="email" type="email" autocomplete="email" value="${esc(authEmail)}" required maxlength="254"></label>${formMode==='signup'?`<label>${t('name')}<input name="displayName" autocomplete="name" required maxlength="100"></label>`:''}${['recover','resend'].includes(formMode)?'':`<label>${t('password')}<input name="password" type="password" autocomplete="${formMode==='signup'?'new-password':'current-password'}" required ${formMode==='signup'?'minlength="12"':''} maxlength="128"></label>`}<button class="btn btn-primary" type="submit">${t(actionWord(formMode))}</button></form><div class="cloud-auth-links">${['login','signup','recover','resend'].filter(x=>x!==formMode).map(x=>`<button type="button" data-cloud-mode="${x}">${t(actionWord(x))}</button>`).join('')}${demoAvailable?`<button type="button" data-cloud-entry="demo">${t('demoEntry')}</button>`:''}</div>`}<p id="cloudGateMessage" class="cloud-message" role="status" aria-live="polite">${esc(gateMessage)}</p></div>`;
   }
   function statusBar() {
@@ -73,6 +73,7 @@
   function apply(next,{force=false}={}) {
     if(!next?.profile)throw new Error('Invalid shared profile');
     const identityChanged=JSON.stringify(next.profile)!==JSON.stringify(snapshot?.profile);
+    const farmsChanged=identityChanged||JSON.stringify(next.farms)!==JSON.stringify(snapshot?.farms);
     const planningChanged=identityChanged||next.planning?.publishedAt!==snapshot?.planning?.publishedAt;
     const sig=JSON.stringify({...next,serverTime:null});
     if(!force&&sig===fingerprint){status='connected';lastSync=next.serverTime||new Date().toISOString();statusBar();return;}
@@ -85,10 +86,10 @@
     // The shared data is kept in memory. Device-local demo stores remain untouched.
     window.MekongBenefit.replaceSharedState(benefitState(next),false);
     if(planningChanged)window.MekongWeeklySupply.replaceShared(next.planning?.supplyRecords||[],next.planning?.supplyMode||'actual');
-    window.__MEKONG_TEST__.replaceSharedFarms(next.farms||[],planningChanged?(next.planning||{calendarStart:'2026-05-01',climateMode:'csv'}):{});
+    if(farmsChanged||planningChanged)window.__MEKONG_TEST__.replaceSharedFarms(next.farms||[],planningChanged?(next.planning||{calendarStart:'2026-05-01',climateMode:'csv'}):{});
     document.body.dataset.cloudGate='false';$('cloudGate').hidden=true;
     window.MekongPortal.acceptSession(next.profile);
-    window.MekongBenefit.render();renderAdmin();statusBar();
+    window.MekongBenefit.render();renderAdmin();statusBar();window.MekongWorkspace?.refresh();
     window.dispatchEvent(new CustomEvent('mekong:records-updated'));
   }
   function benefitState(data) {
@@ -150,9 +151,9 @@
     finally{button.disabled=false;}
   }
   function renderAdmin() {
-    const root=$('portalAccountsContent');if(!root||profile()?.role!=='manager')return;
+    const root=$('portalAccountsContent');if(!root||profile()?.role!=='platform')return;
     const planning=snapshot.planning;
-    root.innerHTML=`<div class="card cloud-publish"><h2>${t('publish')}</h2><p>${t('publishHelp')}</p><p class="cloud-message">${planning?.stale?t('stalePlan'):planning?.publishedAt?esc(new Date(planning.publishedAt).toLocaleString()):t('noPlan')}</p><button type="button" class="btn btn-primary" data-cloud-publish>${t('publish')}</button></div><div class="card"><h2>${t('accounts')}</h2><div class="table-wrap"><table><thead><tr><th>${t('name')} / ${t('email')}</th><th>${t('assignment')}</th><th>${t('approved')}</th><th></th></tr></thead><tbody>${(snapshot.members||[]).map(m=>`<tr data-cloud-member="${esc(m.id)}" data-version="${m._version}"><td><strong>${esc(m.displayName)}</strong><br>${esc(m.email)}</td><td><label><select data-member-role>${['pending','farmer','operator','manager'].map(r=>`<option value="${r}"${m.role===r?' selected':''}>${r==='pending'?t('pending'):window.MekongI18n.t(r)}</option>`).join('')}</select></label><label><select data-member-farm><option value="">${t('select')}</option>${(snapshot.farms||[]).map(f=>`<option value="${esc(f.id)}"${m.farmId===f.id?' selected':''}>${esc(window.MekongI18n.displayName(f.name))} · ${esc(f.rmu)}</option>`).join('')}</select></label><label><select data-member-rmu><option value="">${t('select')}</option>${Array.from({length:18},(_,i)=>`RMU-${String(i+1).padStart(2,'0')}`).map(r=>`<option${m.rmu===r?' selected':''}>${r}</option>`).join('')}</select></label></td><td><label><input type="checkbox" data-member-approved${m.approved?' checked':''}> ${t('approved')}</label></td><td><button type="button" class="btn btn-primary btn-small" data-member-save>${t('saveMember')}</button></td></tr>`).join('')}</tbody></table></div><p id="cloudAdminMessage" class="cloud-message" role="status"></p></div>`;
+    root.innerHTML=`<div class="card cloud-publish"><h2>${t('publish')}</h2><p>${t('publishHelp')}</p><p class="cloud-message">${planning?.stale?t('stalePlan'):planning?.publishedAt?esc(new Date(planning.publishedAt).toLocaleString(language()==='vi'?'vi-VN':language()==='en'?'en-GB':'ko-KR')):t('noPlan')}</p><button type="button" class="btn btn-primary" data-cloud-publish>${t('publish')}</button></div><div class="card"><h2>${t('accounts')}</h2><div class="table-wrap"><table><thead><tr><th>${t('name')} / ${t('email')}</th><th>${t('assignment')}</th><th>${t('approved')}</th><th></th></tr></thead><tbody>${(snapshot.members||[]).map(m=>`<tr data-cloud-member="${esc(m.id)}" data-version="${m._version}"><td><strong>${esc(m.displayName)}</strong><br>${esc(m.email)}</td><td><label><select data-member-role>${['pending','farmer','operator','manager','cooperative','platform'].map(r=>`<option value="${r}"${m.role===r?' selected':''}>${r==='pending'?t('pending'):window.MekongI18n.t(r)}</option>`).join('')}</select></label><label><select data-member-farm><option value="">${t('select')}</option>${(snapshot.farms||[]).map(f=>`<option value="${esc(f.id)}"${m.farmId===f.id?' selected':''}>${esc(window.MekongI18n.displayName(f.name))} · ${esc(f.rmu)}</option>`).join('')}</select></label><label><select data-member-rmu><option value="">${t('select')}</option>${Array.from({length:18},(_,i)=>`RMU-${String(i+1).padStart(2,'0')}`).map(r=>`<option${m.rmu===r?' selected':''}>${r}</option>`).join('')}</select></label></td><td><label><input type="checkbox" data-member-approved${m.approved?' checked':''}> ${t('approved')}</label></td><td><button type="button" class="btn btn-primary btn-small" data-member-save>${t('saveMember')}</button></td></tr>`).join('')}</tbody></table></div><p id="cloudAdminMessage" class="cloud-message" role="status"></p></div>`;
     if(profile().demo){
       root.querySelector('.card:not(.cloud-publish)')?.remove();
       const notice=document.createElement('p');notice.id='cloudAdminMessage';notice.className='cloud-message';notice.setAttribute('role','status');root.querySelector('.cloud-publish').append(notice);
@@ -161,7 +162,7 @@
   }
   function memberControls(row) {
     const r=row.querySelector('[data-member-role]').value;
-    row.querySelector('[data-member-farm]').hidden=r!=='farmer';row.querySelector('[data-member-rmu]').hidden=r!=='operator';
+    row.querySelector('[data-member-farm]').hidden=r!=='farmer';row.querySelector('[data-member-rmu]').hidden=!['operator','cooperative'].includes(r);
     row.querySelector('[data-member-approved]').disabled=r==='pending';
   }
   async function adminClick(event) {
@@ -206,6 +207,7 @@
     window.addEventListener('mekong:language-changed',()=>{if(active&&!approved())showGate();renderAdmin();statusBar();});
     try {const setup=await api('/api/session?action=status');active=setup.enabled===true;demoAvailable=setup.demoAvailable===true;entryMode=new URLSearchParams(location.search).get('mode')==='live'?'live':'demo';workspace=setup.demoSession&&entryMode==='demo'?'demo':'live';}
     catch {active=true;gateMessage=t('error');}
+    const route=new URLSearchParams(location.search);const selected=window.MekongWorkspace?.normalizeRole(route.get('role'),route.get('actor'));if(selected)editingRole=selected;
     ready=true;
     if(!active){document.body.dataset.cloudGate='false';gate.hidden=true;return false;}
     showGate();
@@ -233,7 +235,7 @@
   window.MekongCloud={init,command,refresh,message,t,renderAdmin,showGate,logout,
     requestRole(value){editingRole=value;showGate();},
     allocationPlan(local) {
-      if(!active||!approved()||profile().role==='manager')return local;
+      if(!active||!approved()||profile().role==='platform')return local;
       if(snapshot.planning?.plan?.weeks?.length)return structuredClone(snapshot.planning.plan);
       return {...local,weeks:(local.weeks||[]).map(w=>({...w,rows:[]}))};
     },

@@ -5,11 +5,13 @@
   const RMUS = Array.from({length:18}, (_,i) => `RMU-${String(i+1).padStart(2,'0')}`);
   const CORE_PAGES = new Set(['setup','map','calendar','water','weather','data']);
   const MENUS = {
-    farmer: ['setup','map','schedule','water','weather','requests','reports','benefits'],
-    manager: ['map','schedule','algorithm','weather','water','requests','reports','benefits'],
-    operator: ['map','schedule','requests','water','weather','reports','benefits']
+    farmer: ['home','setup','map','schedule','water','weather','requests','reports','benefits','notices'],
+    manager: ['map','schedule','algorithm','watermodel','weather','water','requests','reports','benefits','notices','sources'],
+    cooperative: ['map','schedule','requests','watermodel','water','weather','notices','benefits'],
+    platform: ['map','schedule','algorithm','watermodel','weather','water','requests','reports','benefits','notices','sources','accounts'],
+    operator: ['map','schedule','requests','water','weather','reports','benefits','notices']
   };
-  const ICONS = {setup:'◫',map:'◇',schedule:'▦',algorithm:'≋',water:'≈',weather:'☀',requests:'▤',reports:'⚑',benefits:'₫',calendar:'▦',data:'◉',accounts:'♙'};
+  const ICONS = {home:'⌂',notices:'✉',watermodel:'∿',sources:'◉',setup:'◫',map:'◇',schedule:'▦',algorithm:'≋',water:'≈',weather:'☀',requests:'▤',reports:'⚑',benefits:'₫',calendar:'▦',data:'◉',accounts:'♙'};
   let role = 'entry', page = '', farmId = read('mekong-suksuk.farmer-demo-farm.v1'), rmu = read('mekong-suksuk.pump-rmu.v1') || 'RMU-01';
   let weekIndex = 0, coreRouting = false, initialized = false, rendering = false;
   const t = key => window.MekongI18n.t(key);
@@ -19,16 +21,18 @@
   function save(key,value) { try { localStorage.setItem(key,value); } catch {} }
   function farms() { return window.__MEKONG_TEST__?.farms || []; }
   function selectedFarm() { return farms().find(f=>String(f.id)===farmId); }
-  function scopeRmu() { return role==='farmer' ? selectedFarm()?.rmu || '' : role==='operator' ? rmu : ''; }
+  const globalRole=()=>['manager','platform'].includes(role);
+  const editAll=()=>role==='platform';
+  function scopeRmu() { return role==='farmer' ? selectedFarm()?.rmu || '' : ['operator','cooperative'].includes(role) ? rmu : ''; }
   function filterForRole(items, currentRole, selectedId, assignedRmu) {
     if(currentRole==='farmer') return items.filter(f=>String(f.id)===String(selectedId));
-    if(currentRole==='operator') return items.filter(f=>f.rmu===assignedRmu);
+    if(['operator','cooperative'].includes(currentRole)) return items.filter(f=>f.rmu===assignedRmu);
     return items;
   }
   function recordAllowed(item, currentRole, selectedId, assignedRmu, farmRmu) {
     if(currentRole==='entry')return false;
-    if(currentRole==='manager')return true;
-    if(currentRole==='operator')return item.rmu===assignedRmu;
+    if(['manager','platform'].includes(currentRole))return true;
+    if(['operator','cooperative'].includes(currentRole))return item.rmu===assignedRmu;
     const id=item.farmId??item.reporterFarmId;
     return id?String(id)===String(selectedId):!!farmRmu&&item.rmu===farmRmu;
   }
@@ -36,10 +40,10 @@
   function allows(item) {return recordAllowed(item,role,farmId,rmu,selectedFarm()?.rmu);}
   function labelFor(id) {
     if(id==='accounts')return window.MekongCloud.t('accounts');
-    if(id==='map') return t(role==='manager'?'allMap':'myMap');
-    if(id==='schedule') return t(role==='manager'?'allSchedule':'mySchedule');
+    if(id==='map') return t(globalRole()?'allMap':'myMap');
+    if(id==='schedule') return t(globalRole()?'allSchedule':'mySchedule');
     if(id==='reports') return t(role==='farmer'?'reportPage':role==='operator'?'reportUpdates':'reviewReports');
-    if(id==='benefits') return t(role==='manager'?'allBenefits':'myBenefits');
+    if(id==='benefits') return t(globalRole()?'allBenefits':'myBenefits');
     if(id==='requests') return t(role==='farmer'?'requestPage':'processRequests');
     return t(id);
   }
@@ -51,7 +55,7 @@
     if(!entry) return;
     entry.innerHTML = `<header class="portal-entry-header"><a class="portal-wordmark" href="./">MEKONG <span>WATER LAB</span></a>${languageSelect('portalEntryLanguage')}</header>
       <div class="portal-entry-intro"><span class="portal-kicker">CHÂU PHÚ · AN GIANG</span><h1>${t('entryTitle')}</h1><p>${t('entryDescription')}</p></div>
-      <div class="portal-role-grid">${['farmer','manager','operator'].map((key,i)=>`<a class="portal-role-card role-${key}" data-enter-role="${key}" href="?role=${key}"><span class="portal-role-icon" aria-hidden="true">${['♧','◇','≈'][i]}</span><h2>${t(key)}</h2><p>${t(key+'Description')}</p><span class="portal-role-features">${t(key+'Features')}</span><span class="portal-enter-label">${t('enter')}</span></a>`).join('')}</div>
+      <div class="portal-role-grid">${['farmer','cooperative','operator','platform','manager'].map((key,i)=>`<a class="portal-role-card role-${key}" data-enter-role="${key}" href="?role=${key}"><span class="portal-role-icon" aria-hidden="true">${['♧','◫','≈','♙','◇'][i]}</span><h2>${t(key)}</h2><p>${t(key+'Description')}</p><span class="portal-role-features">${t(key+'Features')}</span><span class="portal-enter-label">${t('enter')}</span></a>`).join('')}</div>
       <div class="portal-entry-footer"><div><b>18</b><span>RMU</span><i></i><b>54</b><span>${t('pilotFarms')}</span><i></i><b>3</b><span>${t('farmsPerRmu')}</span></div><p>${t('demoAccess')}</p></div>`;
   }
   function heading(id, title, description) {
@@ -61,7 +65,7 @@
     const entry=document.createElement('section'); entry.id='portalEntry'; entry.className='portal-entry'; entry.setAttribute('aria-label','Choose your workspace'); document.body.prepend(entry);
     const toolbar=document.createElement('div'); toolbar.id='portalToolbar'; toolbar.className='portal-toolbar'; document.querySelector('.top-actions').prepend(toolbar);
     const context=document.createElement('div'); context.id='portalContext'; context.className='portal-context'; $('content').prepend(context);
-    for(const id of ['schedule','requests','reports','benefits','accounts']) {
+    for(const id of ['home','schedule','requests','reports','benefits','accounts','notices','watermodel','sources']) {
       const el=document.createElement('section'); el.className='page'; el.id='page-portal-'+id;
       el.innerHTML=heading(id,'','')+`<div id="portal${id[0].toUpperCase()+id.slice(1)}Content"></div>`;
       $('content').append(el);
@@ -97,8 +101,8 @@
     document.querySelectorAll('#nav [data-platform-audience]').forEach(n=>n.removeAttribute('data-platform-audience'));
   }
   function renderNavigation() {
-    $('nav').innerHTML=MENUS[role].map(id=>`<a href="?role=${role}&amp;page=${id}" class="nav-link${page===id?' active':''}" data-portal-page="${id}"${page===id?' aria-current="page"':''}><span class="nav-icon" aria-hidden="true">${ICONS[id]}</span><span>${esc(labelFor(id))}</span></a>`).join('')+(role==='manager'?`<details class="portal-original-tools"><summary>${t('existingTools')}</summary>${['setup','calendar','data'].map(id=>`<a href="?role=${role}&amp;page=${id}" class="nav-link${page===id?' active':''}" data-portal-page="${id}"><span class="nav-icon">${ICONS[id]}</span><span>${labelFor(id)}</span></a>`).join('')}</details>`:'');
-    $('portalDemoTools').innerHTML=role==='manager'?`<a class="portal-demo-button" href="?role=manager&amp;page=algorithm&amp;scenario=demo" data-demo-scenario>${t('startDemo')}</a><small>${t('demoScenarioNote')}</small>`:'';
+    $('nav').innerHTML=MENUS[role].map(id=>`<a href="?role=${role}&amp;page=${id}" class="nav-link${page===id?' active':''}" data-portal-page="${id}"${page===id?' aria-current="page"':''}><span class="nav-icon" aria-hidden="true">${ICONS[id]}</span><span>${esc(labelFor(id))}</span></a>`).join('')+(editAll()?`<details class="portal-original-tools"><summary>${t('existingTools')}</summary>${['setup','calendar','data'].map(id=>`<a href="?role=${role}&amp;page=${id}" class="nav-link${page===id?' active':''}" data-portal-page="${id}"><span class="nav-icon">${ICONS[id]}</span><span>${labelFor(id)}</span></a>`).join('')}</details>`:'');
+    $('portalDemoTools').innerHTML=editAll()?`<a class="portal-demo-button" href="?role=platform&amp;page=algorithm&amp;scenario=demo" data-demo-scenario>${t('startDemo')}</a><small>${t('demoScenarioNote')}</small>`:'';
   }
   function ensureSelection() {
     if(!farms().some(f=>String(f.id)===farmId)) farmId=String(farms()[0]?.id || '');
@@ -106,10 +110,10 @@
   }
   function renderContext() {
     ensureSelection();
-    const scope=role==='manager'?t('allScope'):scopeRmu()||t('unassigned');
+    const scope=globalRole()?t('allScope'):scopeRmu()||t('unassigned');
     let control='';
     if(role==='farmer') control=`<label for="portalFarmSelect">${t('selectedFarm')}<select id="portalFarmSelect">${farms().map(f=>`<option value="${esc(f.id)}"${String(f.id)===farmId?' selected':''}>${esc(window.MekongI18n.displayName(f.name))} · ${esc(f.rmu||t('unassigned'))}</option>`).join('')}</select></label>`;
-    if(role==='operator') control=`<label for="portalRmuSelect">${t('assignedRmu')}<select id="portalRmuSelect">${RMUS.map(id=>`<option${id===rmu?' selected':''}>${id}</option>`).join('')}</select></label>`;
+    if(['operator','cooperative'].includes(role)) control=`<label for="portalRmuSelect">${t('assignedRmu')}<select id="portalRmuSelect">${RMUS.map(id=>`<option${id===rmu?' selected':''}>${id}</option>`).join('')}</select></label>`;
     $('portalContext').innerHTML=`<div class="portal-context-title"><span class="portal-role-badge">${t(role)}</span><strong>${esc(scope)}</strong><small>${scopeFarms(farms()).length} ${t('farmsUnit')}</small></div>${control}<span class="portal-demo-badge">${window.MekongCloud?.enabled?window.MekongCloud.t('lockedRole'):t('demoWorkspace')}</span>`;
     $('portalToolbar').innerHTML=`${languageSelect('portalAppLanguage')}<button type="button" class="btn btn-secondary btn-small" data-switch-role>${window.MekongCloud?.enabled?window.MekongCloud.t('signOut'):t('changeRole')}</button>`;
     if(window.MekongCloud?.enabled){for(const id of ['portalFarmSelect','portalRmuSelect'])if($(id))$(id).disabled=true;}
@@ -117,7 +121,7 @@
     document.querySelectorAll('[data-portal-scope-label]').forEach(n=>n.textContent=scope);
   }
   function applyScope() {
-    const staff=role!=='farmer', manager=role==='manager';
+    const staff=role!=='farmer', manager=globalRole();
     document.body.dataset.portalRole=role;
     document.body.dataset.platformMode=role==='farmer'?'farmer':'operator';
     const scoped=scopeRmu();
@@ -134,18 +138,19 @@
     }
     if(window.MekongCloud?.enabled){$('rmu').disabled=role==='farmer';}
     const allowedButtons=['exportBackup','restoreBackup','seedDemos','clearFarms','seedDemosCalendar','mapAddFarm','newFarmInZone'];
-    allowedButtons.forEach(id=>{const node=$(id);if(node){const target=node.type==='file'?node.closest('label'):node;target.dataset.portalBulk='true';target.hidden=!manager;}});
-    $('farmSearch').hidden=!manager;
-    document.querySelectorAll('[data-map-farm-action="edit"]').forEach(n=>n.hidden=role==='operator');
+    allowedButtons.forEach(id=>{const node=$(id);if(node){const target=node.type==='file'?node.closest('label'):node;target.dataset.portalBulk='true';target.hidden=!editAll();}});
+    $('farmSearch').hidden=!editAll();
+    document.querySelectorAll('[data-map-farm-action="edit"]').forEach(n=>n.hidden=!['farmer','platform','cooperative'].includes(role));
     document.querySelectorAll('#rmuBoundaryOverlay [data-zone-id]').forEach(n=>{
       const outside=!manager&&scoped&&n.dataset.zoneId!==scoped;
       n.classList.toggle('portal-outside-rmu',!!outside);n.setAttribute('tabindex',outside?'-1':'0');
     });
     if(!staff) $('benefitRequestSubmit').disabled=!farmId;
-    document.querySelectorAll('#farmDirectory [data-action="delete"]').forEach(n=>n.hidden=!manager);
-    $('exportBackup').hidden=!manager;
+    document.querySelectorAll('#farmDirectory [data-action="delete"]').forEach(n=>n.hidden=!editAll());
+    $('exportBackup').hidden=!editAll();
     if(window.MekongCloud?.enabled)for(const id of ['clearFarms','restoreBackup','importWeeklySupply','benefitLoadDemo']){const n=$(id);if(n)n.disabled=true;}
-    if(!manager) $('balanceAllocationPanel').hidden=true;
+    if(!globalRole()) $('balanceAllocationPanel').hidden=true;
+    window.MekongWorkspace?.applyPermissions(role);
   }
   function afterBenefitRender() {
     if(!initialized || role==='entry') return;
@@ -155,12 +160,12 @@
   function coreNavigate(id) {coreRouting=true;try{window.__MEKONG_TEST__.navigate(id);}finally{coreRouting=false;}}
   function route(next) {
     if(coreRouting||!initialized||role==='entry')return false;
-    const mapped=next==='farmer'?'schedule':next==='benefit'?'benefits':next==='calendar'&&role!=='manager'?'schedule':next;
+    const mapped=next==='farmer'?'schedule':next==='benefit'?'benefits':next==='calendar'&&!globalRole()?'schedule':next;
     navigate(mapped);return true;
   }
   function navigate(next,{focus=true}={}) {
     if(role==='entry')return;
-    const allowed=[...MENUS[role],...(role==='manager'?['setup','calendar','data']:[])];
+    const allowed=[...MENUS[role],...(editAll()?['setup','calendar','data']:[])];
     if(!allowed.includes(next))next=MENUS[role][0];
     page=next; document.body.dataset.portalPage=page;
     if(page==='algorithm'||CORE_PAGES.has(page)) {
@@ -176,7 +181,8 @@
       const title=$('page-portal-'+page).querySelector('[data-portal-page-title]');title.textContent=labelFor(page);
       $('page-portal-'+page).querySelector('[data-portal-page-description]').textContent=page==='accounts'?window.MekongCloud.t('accountsDescription'):t(page+'Description');
       if(page==='schedule')renderSchedule();
-      window.MekongBenefit.setRole(role==='farmer'?'farmer':'operator');
+      window.MekongWorkspace?.render(page);
+      window.MekongBenefit.setRole(role==='farmer'?'farmer':role==='manager'?'reviewer':'operator');
       window.MekongBenefit.render();
       if(page==='requests'&&role==='farmer')prefillRequest();
     }
@@ -188,7 +194,7 @@
     if(window.MekongCloud?.enabled){if(!window.MekongCloud.approved){window.MekongCloud.showGate();return;}nextRole=window.MekongCloud.profile.role;}
     if(!MENUS[nextRole])return;
     role=nextRole;if(window.MekongCloud?.enabled){farmId=String(window.MekongCloud.profile.farmId||'');rmu=window.MekongCloud.profile.rmu||rmu;}ensureSelection();
-    if(role==='manager') for(const id of ['mapFarmFilter','calendarZone','benefitOpsRmu']) {const select=$(id);select.disabled=false;select.value='all';select.dispatchEvent(new Event('change',{bubbles:true}));}
+    if(globalRole()) for(const id of ['mapFarmFilter','calendarZone','benefitOpsRmu']) {const select=$(id);select.disabled=false;select.value='all';select.dispatchEvent(new Event('change',{bubbles:true}));}
     save('mekong-suksuk.portal-role.v2',role);
     document.body.dataset.portalRole=role;
     $('portalEntry').hidden=true;
@@ -230,7 +236,7 @@
     const max=Math.max(1,total('requestM3'),total('plannedM3'),total('actualM3'));
     $('portalScheduleChart').innerHTML=[['plannedIntake','requestM3'],['allocated','plannedM3'],['delivered','actualM3']].map(([key,field])=>`<div><span>${t(key)}</span><div class="portal-volume-track"><i class="${field}" style="width:${total(field)/max*100}%"></i></div><b>${rows.some(x=>x[field]!==null)?fmt(total(field))+' m³':'—'}</b></div>`).join('');
     const date=weeks[weekIndex]?.startDate;
-    $('portalScheduleTable').innerHTML=`<table class="portal-schedule-table"><thead><tr>${['farm','rmu','schedulePeriod','plannedIntake','allocated','delivered','processing','action'].map(key=>`<th>${t(key)}</th>`).join('')}</tr></thead><tbody>${rows.length?rows.map(row=>`<tr data-portal-schedule-farm="${esc(row.farm.id)}"><td><strong>${esc(window.MekongI18n.displayName(row.farm.name))}</strong><small>${t(row.farm.crop)} · ${fmt(row.farm.area)} ha</small></td><td>${esc(row.farm.rmu||t('unassigned'))}</td><td>${esc(date||'—')}<small>${esc(datePlus(date,6))}</small></td><td>${row.requestM3===null?t('pending'):fmt(row.requestM3)}</td><td>${row.plannedM3===null?t('pending'):fmt(row.plannedM3)}</td><td>${row.actualM3===null?t('notRecorded'):fmt(row.actualM3)}</td><td><span class="portal-status status-${row.status}">${t('status_'+row.status)}</span></td><td><button type="button" class="btn btn-secondary btn-small" data-schedule-request="${esc(row.farm.id)}">${t(role==='farmer'?'request':'recordDelivery')}</button></td></tr>`).join(''):`<tr><td colspan="8">${t('noFarms')}</td></tr>`}</tbody></table>`;
+    $('portalScheduleTable').innerHTML=`<table class="portal-schedule-table"><thead><tr>${['farm','rmu','schedulePeriod','plannedIntake','allocated','delivered','processing','action'].map(key=>`<th>${t(key)}</th>`).join('')}</tr></thead><tbody>${rows.length?rows.map(row=>`<tr data-portal-schedule-farm="${esc(row.farm.id)}"><td><strong>${esc(window.MekongI18n.displayName(row.farm.name))}</strong><small>${t(row.farm.crop)} · ${fmt(row.farm.area)} ha</small></td><td>${esc(row.farm.rmu||t('unassigned'))}</td><td>${esc(date||'—')}<small>${esc(datePlus(date,6))}</small></td><td>${row.requestM3===null?t('pending'):fmt(row.requestM3)}</td><td>${row.plannedM3===null?t('pending'):fmt(row.plannedM3)}</td><td>${row.actualM3===null?t('notRecorded'):fmt(row.actualM3)}</td><td><span class="portal-status status-${row.status}">${t('status_'+row.status)}</span></td><td><button type="button" class="btn btn-secondary btn-small" data-schedule-request="${esc(row.farm.id)}">${t(role==='farmer'?'request':['operator','platform'].includes(role)?'recordDelivery':'processing')}</button></td></tr>`).join(''):`<tr><td colspan="8">${t('noFarms')}</td></tr>`}</tbody></table>`;
     $('portalScheduleNote').textContent=t('scheduleNote')+(window.MekongWeeklySupply?.isDemoMode()?' '+t('syntheticSupply'):'');
   }
   function prefillRequest(force=false) {
@@ -260,6 +266,7 @@
     if(role==='entry')return;
     ensureSelection();renderContext();renderNavigation();
     if(page==='schedule')renderSchedule();
+      window.MekongWorkspace?.render(page);
     if(page==='requests'&&role==='farmer')prefillRequest();
     afterBenefitRender();
     if(page&&!CORE_PAGES.has(page)&&page!=='algorithm'){
@@ -293,7 +300,7 @@
         else document.querySelector(`[data-operation-card$="|${CSS.escape(target.dataset.scheduleRequest)}"]`)?.scrollIntoView({block:'center'});
         return;
       }
-      if(role!=='manager'&&target.dataset.zoneId&&target.dataset.zoneId!==scopeRmu()){event.preventDefault();event.stopImmediatePropagation();}
+      if(!globalRole()&&target.dataset.zoneId&&target.dataset.zoneId!==scopeRmu()){event.preventDefault();event.stopImmediatePropagation();}
     },true);
     document.addEventListener('change',event=>{
       const id=event.target.id;
@@ -315,7 +322,7 @@
       if(!window.MekongWeeklySupply?.records().length) window.__MEKONG_TEST__.loadAllocationDemo();
       else window.__MEKONG_TEST__.seedDemoFarms(false);
     }
-    const params=new URLSearchParams(location.search),requested=params.get('role');if(MENUS[requested]){enter(requested);if(requested==='manager'&&params.get('scenario')==='demo')window.__MEKONG_TEST__.loadAllocationDemo(true);if(params.get('page'))navigate(params.get('page'));}else showEntry();
+    const params=new URLSearchParams(location.search),requested=window.MekongWorkspace?.normalizeRole(params.get('role'),params.get('actor'))||params.get('role');if(MENUS[requested]){enter(requested);if(requested==='platform'&&params.get('scenario')==='demo')window.__MEKONG_TEST__.loadAllocationDemo(true);if(params.get('page'))navigate(params.get('page'));}else showEntry();
   }
-  window.MekongPortal={filterForRole,recordAllowed,init,route,navigate,scopeFarms,allows,afterBenefitRender,refresh:refreshDisplays,get role(){return role;},acceptSession(p){if(!MENUS.manager.includes('accounts'))MENUS.manager.push('accounts');farmId=String(p.farmId||'');rmu=p.rmu||rmu;if(role!==p.role){enter(p.role);const requested=new URLSearchParams(location.search).get('page');if(requested)navigate(requested);if(p.role==='farmer'&&farms()[0])window.__MEKONG_TEST__.editFarm(farms()[0].id);}else refreshDisplays();},lockSession(){role='entry';page='';document.body.dataset.portalRole='entry';},selectFarm(id){if(window.MekongCloud?.enabled&&String(id)!==String(window.MekongCloud.profile?.farmId))return;farmId=String(id);save('mekong-suksuk.farmer-demo-farm.v1',farmId);},get farmId(){return farmId;},get rmu(){return scopeRmu();}};
+  window.MekongPortal={menus:MENUS,filterForRole,recordAllowed,init,route,navigate,scopeFarms,allows,afterBenefitRender,refresh:refreshDisplays,get role(){return role;},acceptSession(p){farmId=String(p.farmId||'');rmu=p.rmu||rmu;if(role!==p.role){enter(p.role);const requested=new URLSearchParams(location.search).get('page');if(requested)navigate(requested);if(p.role==='farmer'&&farms()[0]){window.__MEKONG_TEST__.editFarm(farms()[0].id);navigate(requested||'home');}}else refreshDisplays();},lockSession(){role='entry';page='';document.body.dataset.portalRole='entry';},selectFarm(id){if(window.MekongCloud?.enabled&&String(id)!==String(window.MekongCloud.profile?.farmId))return;farmId=String(id);save('mekong-suksuk.farmer-demo-farm.v1',farmId);},get farmId(){return farmId;},get rmu(){return scopeRmu();}};
 })();

@@ -15,11 +15,12 @@ async function startServer(port=0){
  await db.exec(fs.readFileSync(path.join(root,'supabase/seed.sql'),'utf8'));
  await db.exec(fs.readFileSync(path.join(root,'supabase/migrations/202611260002_shared_demo.sql'),'utf8'));
  await db.exec(fs.readFileSync(path.join(root,'supabase/demo-seed.sql'),'utf8'));
+ await db.exec(fs.readFileSync(path.join(root,'supabase/migrations/202611270001_roles_flow_notices.sql'),'utf8'));
  const authRequests=[],authPayloads=[],authFailures=[];
  const users={};for(const [i,role] of ['manager','farmer','operator','outside','pending'].entries()){
   const id=`00000000-0000-4000-8000-${String(i+1).padStart(12,'0')}`;users[role]={id,email:role+'@example.test',email_confirmed_at:'2026-11-26T00:00:00Z'};
   await db.query('insert into auth.users(id,email) values($1,$2)',[id,users[role].email]);
-  if(role==='manager')await db.query("update public.mekong_profiles set role='manager',approved=true where user_id=$1",[id]);
+  if(role==='manager')await db.query("update public.mekong_profiles set role='platform',approved=true where user_id=$1",[id]);
   if(role==='farmer')await db.query("update public.mekong_profiles set role='farmer',approved=true,farm_id='DEMO-RMU-01-A' where user_id=$1",[id]);
   if(['operator','outside'].includes(role))await db.query("update public.mekong_profiles set role='operator',approved=true,rmu=$2 where user_id=$1",[id,role==='operator'?'RMU-01':'RMU-02']);
  }
